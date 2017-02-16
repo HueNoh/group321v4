@@ -32,7 +32,7 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		if (0 == result) {
 			map.put("name", map.get("id"));
 		} else {
-			System.out.println("실패");
+			System.out.println("�떎�뙣");
 		}
 
 		return result;
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	public List searchBoard(Map map) {
 		// TODO Auto-generated method stub
 
-		// 蹂대뜑 �쟾泥닿��깋
+		// 癰귣��쐭 占쎌읈筌ｋ떯占쏙옙源�
 		return memberDao.selectBoard();
 	}
 
@@ -308,5 +308,15 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	public List updateLabelName(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.updateLabelName(map);
+	}	@Override
+	public List searchFilter(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.searchFilter(map);
 	}
+	@Override
+	public List searchLabel(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.searchLabel(map);
+	}
+
 }

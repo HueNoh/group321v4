@@ -36,9 +36,11 @@
 
 .list {
 	width: 100%;
-	max-height:; min-height : 10px;
+	max-height:;
+	min-height: 10px;
 	float: left;
-	min-height: 10px; float : left;
+	min-height: 10px;
+	float: left;
 	overflow-y: auto;
 }
 
@@ -74,6 +76,10 @@
 
 .card-detail-main {
 	float: left;
+}
+
+#filter {
+	background-color: #448cb7;
 }
 
 .card-detail-main>h1 {
@@ -172,6 +178,7 @@
 	z-index: 3;
 	display: inline-block;
 }
+
 .submenu:first-child {
 	text-align: center;
 }
@@ -182,13 +189,16 @@
 	width: 188px;
 	height: 30px;
 	margin-right: 23px;
-	
 }
 
 .btn_label_setting {
 	margin-bottom: 5px;
 	width: 16px;
 	height: 16px;
+}
+.labels{
+width: 100px;
+margin-top: 10px;
 }
 
 #label1 {
@@ -335,7 +345,11 @@
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = ${users};
+		var users = $
+		{
+			users
+		}
+		;
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -344,7 +358,7 @@
 						console.log(ev);
 						var result = $('#mainList').sortable('toArray');
 						console.log(result);
-						
+
 						var moveData = new Object();
 						var msg = '';
 						for (var i = 0; i < result.length; i++) {
@@ -368,10 +382,12 @@
 								b_num : b_num
 							}
 
-						}).done(function(msg){
-							send('mainList', 'listMove', '${sessionScope.id}',
-									'${sessionScope.b_num}', '0', '0');
-						});
+						}).done(
+								function(msg) {
+									send('mainList', 'listMove',
+											'${sessionScope.id}',
+											'${sessionScope.b_num}', '0', '0');
+								});
 
 					}
 
@@ -473,40 +489,41 @@
 					l_num : cardl_num
 
 				}
-			}).done(function(msg) {
-				console.log(msg);
-				var cardArr = JSON.parse(msg);
+			}).done(
+					function(msg) {
+						console.log(msg);
+						var cardArr = JSON.parse(msg);
 
-				var newCard = document.createElement('div');
-				var c_num = cardArr.c_num;
+						var newCard = document.createElement('div');
+						var c_num = cardArr.c_num;
 
-				newCard.id = c_num;
-				newCard.className = 'list-card';
-				newCard.onclick = function() {
+						newCard.id = c_num;
+						newCard.className = 'list-card';
+						newCard.onclick = function() {
 
-					cardView(b_num, cardl_num, c_num)
+							cardView(b_num, cardl_num, c_num)
 
-				};
-				// 카드 내부의 label div 생성!!!
-				for (var j = 1; j <= 7; j++) {
-					var labelDiv = document.createElement('div');
-					labelDiv.id = 'labelDiv' + c_num + '_' + j;
-					newCard.append(labelDiv);
-				}
+						};
+						// 카드 내부의 label div 생성!!!
+						for (var j = 1; j <= 7; j++) {
+							var labelDiv = document.createElement('div');
+							labelDiv.id = 'labelDiv' + c_num + '_' + j;
+							newCard.append(labelDiv);
+						}
 
-				var createCardText = document
-						.createTextNode(cardArr.title);
+						var createCardText = document
+								.createTextNode(cardArr.title);
 
-				newCard.appendChild(createCardText);
-				document.getElementById('list' + cardId).appendChild(
-						newCard);
+						newCard.appendChild(createCardText);
+						document.getElementById('list' + cardId).appendChild(
+								newCard);
 
-				var cardHtml = $('#list' + cardId)[0].innerHTML;
-				send('cardCreate', 'cardCreate', '${sessionScope.id}',
-						'${sessionScope.b_num}', '0', '0');
-				$('#addCardContainer' + cardId).toggle();
-				$('#addCardTitle' + cardId).val('');
-			});
+						var cardHtml = $('#list' + cardId)[0].innerHTML;
+						send('cardCreate', 'cardCreate', '${sessionScope.id}',
+								'${sessionScope.b_num}', '0', '0');
+						$('#addCardContainer' + cardId).toggle();
+						$('#addCardTitle' + cardId).val('');
+					});
 		}
 	}
 
@@ -521,60 +538,61 @@
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(function(msg) {
-			console.log(msg);
-			var detail = JSON.parse(msg);
+		}).done(
+				function(msg) {
+					console.log(msg);
+					var detail = JSON.parse(msg);
 
-			var cardInfo = detail[0];
-			var cardReply = detail[1];
-			//hs
-			var cardLink = detail[2];
-// 			console.log('cardLink=' + cardLink[0]);
+					var cardInfo = detail[0];
+					var cardReply = detail[1];
+					//hs
+					var cardLink = detail[2];
+					// 			console.log('cardLink=' + cardLink[0]);
 
-			handelDesc(0); // description textarea 숨기기
-// 			console.log(detail);
-			var content = cardInfo.content;
+					handelDesc(0); // description textarea 숨기기
+					// 			console.log(detail);
+					var content = cardInfo.content;
 
-			var label = cardInfo.label;
-			var labelName = cardInfo.labelname; 
-			console.log("view: "+labelName);
+					var label = cardInfo.label;
+					var labelName = cardInfo.labelname;
+					console.log("view: " + labelName);
 
-			labelShow(label);
-			labelNameShow(labelName);
+					labelShow(label);
+					labelNameShow(labelName);
 
-			if (null != content) {
-				$('.content_div').text(content);
-			} else {
-				$('.content_div').text('');
-			}
+					if (null != content) {
+						$('.content_div').text(content);
+					} else {
+						$('.content_div').text('');
+					}
 
-			$.each(cardReply, function(i) {
+					$.each(cardReply, function(i) {
 
-				createReplyDiv(cardReply[i].seq, cardReply[i].content,
-						cardReply[i].m_id);
+						createReplyDiv(cardReply[i].seq, cardReply[i].content,
+								cardReply[i].m_id);
 
-			});
+					});
 
-			//hs
-			$('#attachLink').children().empty();
-			$.each(cardLink, function(i) {
-				var node = document.createElement('div');
-				var textNode = document
-						.createTextNode(cardLink[i].content);
-				var aTag = document.createElement('a');
-				aTag.href = cardLink[i].content;
-				aTag.appendChild(textNode);
-				aTag.target = '_blank';
-				node.appendChild(aTag);
-				//console.log(node);
+					//hs
+					$('#attachLink').children().empty();
+					$.each(cardLink, function(i) {
+						var node = document.createElement('div');
+						var textNode = document
+								.createTextNode(cardLink[i].content);
+						var aTag = document.createElement('a');
+						aTag.href = cardLink[i].content;
+						aTag.appendChild(textNode);
+						aTag.target = '_blank';
+						node.appendChild(aTag);
+						//console.log(node);
 
-				$('#attachLink').append(node);
-			});
+						$('#attachLink').append(node);
+					});
 
-			document.getElementById('cardNum').value = c_num;
+					document.getElementById('cardNum').value = c_num;
 
-			cardModal.style.display = "block";
-		});
+					cardModal.style.display = "block";
+				});
 
 	}
 
@@ -594,16 +612,17 @@
 			}
 		}
 	}
-	
+
 	function labelNameShow(labelName) {
+		console.log(labelName);
 		if (null == labelName) {
 			label = ",,,,,,";
 		}
 		var labelNameArr = labelName.split(',');
-		console.log('show: '+labelNameArr);
+		console.log('show: ' + labelNameArr);
 		for (var i = 1; i <= 7; i++) {
 			if ('' != labelNameArr[i - 1]) {
-				$('#label_name' + i).text(labelNameArr[i-1]);
+				$('#label_name' + i).text(labelNameArr[i - 1]);
 			}
 		}
 	}
@@ -734,7 +753,7 @@
 		var div = document.createElement('div');
 		div.id = 'list' + id;
 		div.className = 'list';
-		
+
 		var addCardArea = document.createElement('div');
 		addCardArea.className = 'addCardArea';
 
@@ -786,7 +805,6 @@
 		addCardArea.append(addCardContainer);
 		list_foot.append(addCardArea);
 		list_foot.appendChild(addCardDiv);
-		
 
 		//nhs
 		viewList.appendChild(list_title);
@@ -847,32 +865,33 @@
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(function(msg) {
+		}).done(
+				function(msg) {
 
-			var detail = JSON.parse(msg);
-			var cardInfo = detail[0];
-			var cardReply = detail[1];
+					var detail = JSON.parse(msg);
+					var cardInfo = detail[0];
+					var cardReply = detail[1];
 
-			var label = cardInfo.label;
+					var label = cardInfo.label;
 
-			if (label == null) {
-				label = "0,0,0,0,0,0,0";
-			}
+					if (label == null) {
+						label = "0,0,0,0,0,0,0";
+					}
 
-			var labelArr = label.split(',');
+					var labelArr = label.split(',');
 
-// 			console.log('labelSet: ' + labelArr);
+					// 			console.log('labelSet: ' + labelArr);
 
-			for (var i = 1; i <= 7; i++) {
-				if ('0' != labelArr[i - 1]) {
-					$('#labelDiv' + c_num + '_' + i).css(
-							'background-color',
-							rgb2hex($('#label' + i).css(
-									"background-color")));
-					$('#labelDiv' + c_num + '_' + i).show();
-				}
-			}
-		});
+					for (var i = 1; i <= 7; i++) {
+						if ('0' != labelArr[i - 1]) {
+							$('#labelDiv' + c_num + '_' + i).css(
+									'background-color',
+									rgb2hex($('#label' + i).css(
+											"background-color")));
+							$('#labelDiv' + c_num + '_' + i).show();
+						}
+					}
+				});
 
 	}
 
@@ -920,45 +939,48 @@
 	}
 	function listSortable(id) {
 
-		$('#list' + id).sortable({
-			connectWith : '.list',
-			update : function(ev, ui) {
-				var result1 = $('#list' + id).sortable('toArray');
-				var targetId = ev.target.id;
-				var parentId = ev.toElement.parentElement.id;
-				var cardArr = '';
+		$('#list' + id).sortable(
+				{
+					connectWith : '.list',
+					update : function(ev, ui) {
+						var result1 = $('#list' + id).sortable('toArray');
+						var targetId = ev.target.id;
+						var parentId = ev.toElement.parentElement.id;
+						var cardArr = '';
 
-				if (targetId == parentId) {
-					
+						if (targetId == parentId) {
 
-					for (var i = 0; i < result1.length; i++) {
-						if (i < (result1.length - 1)) {
-							cardArr += result1[i] + ',';
-						} else {
-							cardArr += result1[i];
+							for (var i = 0; i < result1.length; i++) {
+								if (i < (result1.length - 1)) {
+									cardArr += result1[i] + ',';
+								} else {
+									cardArr += result1[i];
+								}
+
+							}
+
+							$.ajax({
+								url : '/main/moveCard',
+								method : 'post',
+								data : {
+
+									b_num : b_num,
+									l_num : id,
+									c_num : ev.toElement.id,
+									msg : cardArr,
+									length : result1.length
+								}
+
+							}).done(
+									function(msg) {
+										send('cardMove', 'cardMove',
+												'${sessionScope.id}',
+												'${sessionScope.b_num}', '0',
+												'0');
+									});
 						}
-
 					}
-
-					$.ajax({
-						url : '/main/moveCard',
-						method : 'post',
-						data : {
-
-							b_num : b_num,
-							l_num : id,
-							c_num : ev.toElement.id,
-							msg : cardArr,
-							length : result1.length
-						}
-
-					}).done(function(msg){
-						send('cardMove', 'cardMove', '${sessionScope.id}',
-								'${sessionScope.b_num}', '0', '0');
-					});
-				}
-			}
-		});
+				});
 	}
 	function openChat() {
 		chatOnOff = true;
@@ -980,11 +1002,12 @@
 				b_num : '${sessionScope.b_num}'
 			}
 
-		}).done(function(msg) {
-			send('${sessionScope.id}', 'unConnec',
-					'${sessionScope.id}', '${sessionScope.b_num}', '0',
-					'0');
-		});
+		}).done(
+				function(msg) {
+					send('${sessionScope.id}', 'unConnec',
+							'${sessionScope.id}', '${sessionScope.b_num}', '0',
+							'0');
+				});
 
 	}
 
@@ -1063,55 +1086,54 @@
 			$('#user').append(div);
 		});
 	}
-	
+
 	function changeLabelName(num) {
 		var inputLabelName = $('#label_name').val();
 
 		$.ajax({
-			method: 'post'
-			, url: '/main/selectLabelName'
-			, data: {
-				c_key: $('#cardNum')[0].value
+			method : 'post',
+			url : '/main/selectLabelName',
+			data : {
+				c_key : $('#cardNum')[0].value
 			}
-		}).done(function(msg){
+		}).done(function(msg) {
 			var detail = JSON.parse(msg);
 			console.log(detail);
 			var labelName = detail.labelName;
-			
+
 			$('#label_name' + num).text(inputLabelName);
-			
- 			console.log("asdfasfd: "+inputLabelName);
-			
+
+			console.log("asdfasfd: " + inputLabelName);
+
 			$('#label_name').text('');
-			
-			
+
 			var labelNameArr = makeLabelNameArr(labelName, num);
-			
+
 			var tempArr = labelNameArr.toString();
-			
+
 			$.ajax({
-				method: 'post'
-				, url: '/main/updateLabelName'
-				, data: {
-					b_num: b_num
-					, labelName: tempArr
+				method : 'post',
+				url : '/main/updateLabelName',
+				data : {
+					b_num : b_num,
+					labelName : tempArr
 				}
-			}).done(function(msg){
+			}).done(function(msg) {
 				var result = JSON.parse(msg);
-				
+
 			});
-			
-		});	
+
+		});
 	}
-	
+
 	function makeLabelNameArr(labelName, num) {
 		var inputLabelName = $('#label_name').val();
 		var labelNameArr = labelName;
 		labelNameArr = labelName.split(',');
 		labelNameArr[num - 1] = inputLabelName;
-		
-// 		console.log('make: '+labelNameArr);
-		
+
+		// 		console.log('make: '+labelNameArr);
+
 		return labelNameArr;
 	}
 
@@ -1120,50 +1142,51 @@
 		$('#selected_label' + num).css('background-color', backgroundColor);
 
 		var isNone = $('#selected_label' + num).css('display');
-		
+
 		$.ajax({
-			method : 'post'
-			, url : '/main/selectLabel'
-			, data : {
+			method : 'post',
+			url : '/main/selectLabel',
+			data : {
 				c_key : $('#cardNum')[0].value
 			}
-		}).done(function(msg) {
-			var detail = JSON.parse(msg);
+		}).done(
+				function(msg) {
+					var detail = JSON.parse(msg);
 
-			var label = detail.label;
-			console.log(detail);
+					var label = detail.label;
+					console.log(detail);
 
-			var c_num = $('#cardNum')[0].value;
+					var c_num = $('#cardNum')[0].value;
 
-			var labelArr;
-			$('#labelDiv' + c_num + '_' + num).css('background-color',
-					backgroundColor);
-			if ('none' != isNone) {
-				labelArr = makeLabelArr(label, num, 'del');
-				$('#selected_label' + num).hide();
-				$('#labelDiv' + c_num + '_' + num).hide();
-			} else {
-				labelArr = makeLabelArr(label, num, 'ins');
-				$('#selected_label' + num).show();
-				$('#labelDiv' + c_num + '_' + num).show();
-			}
+					var labelArr;
+					$('#labelDiv' + c_num + '_' + num).css('background-color',
+							backgroundColor);
+					if ('none' != isNone) {
+						labelArr = makeLabelArr(label, num, 'del');
+						$('#selected_label' + num).hide();
+						$('#labelDiv' + c_num + '_' + num).hide();
+					} else {
+						labelArr = makeLabelArr(label, num, 'ins');
+						$('#selected_label' + num).show();
+						$('#labelDiv' + c_num + '_' + num).show();
+					}
 
-			var tempArr = labelArr.toString();
+					var tempArr = labelArr.toString();
 
-			$.ajax({
-				method : 'post',
-				url : '/main/updateLabel',
-				data : {
-					c_key : $('#cardNum')[0].value
-					, label : tempArr
-				}
-			}).done(function(msg) {
+					$.ajax({
+						method : 'post',
+						url : '/main/updateLabel',
+						data : {
+							c_key : $('#cardNum')[0].value,
+							label : tempArr
+						}
+					}).done(function(msg) {
 
-			});
+					});
 
-		});
+				});
 	}
-	
+
 	function makeLabelArr(label, num, action) {
 		var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
 
@@ -1189,6 +1212,13 @@
 		var bodyHeight = document.body.offsetHeight - 150;
 
 		document.getElementById("msgOff").style.top = bodyHeight + "px";
+
+	}
+	function openFilter() {
+		document.getElementById("filter").style.width = "300px";
+	}
+	function closeFilter() {
+		document.getElementById("filter").style.width = "0px";
 
 	}
 
@@ -1252,7 +1282,7 @@
 				<a class="menu-icon" href="#"><i class="icon-reorder"></i></a>
 				<ul class="side-menu">
 					<h2 class="title">Menu</h2>
-					<li class="link"><a href="#" class="link_tag1">Filter</a></li>
+					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
 					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
 					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
 					<li class="link"><a href="#" class="link_tag4">File</a></li>
@@ -1270,6 +1300,9 @@
 			<jsp:include page="chat.jsp" flush="false"></jsp:include>
 		</div>
 
+		<div id="filter" class="side-filter">
+			<jsp:include page="filter.jsp" flush="false"></jsp:include>
+		</div>
 		<div id="invite" class="side-invite">
 			<jsp:include page="invite.jsp" flush="false"></jsp:include>
 		</div>
@@ -1327,45 +1360,31 @@
 								<input type="text" id="label_name">
 								<li id="label1" onclick="label('1');">&nbsp; <span id="label_name1">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('1')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('1')">
 								</a>
 								<li id="label2" onclick="label('2');">&nbsp; <span id="label_name2">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 	
-									class="btn_label_setting" onclick="changeLabelName('2')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('2')">
 								</a>
 								<li id="label3" onclick="label('3');">&nbsp; <span id="label_name3">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('3')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('3')">
 								</a>
 								<li id="label4" onclick="label('4');">&nbsp; <span id="label_name4">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('4')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('4')">
 								</a>
 								<li id="label5" onclick="label('5');">&nbsp; <span id="label_name5">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('5')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('5')">
 								</a>
 								<li id="label6" onclick="label('6');">&nbsp; <span id="label_name6">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('6')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('6')">
 								</a>
 								<li id="label7" onclick="label('7');">&nbsp; <span id="label_name7">&nbsp;</span>
 								</li>
-								<a href="#">
-									<img alt="label_setting" src="/resources/images/btn_label_setting.png" 
-									class="btn_label_setting" onclick="changeLabelName('7')"> 
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('7')">
 								</a>
 							</ul>
 						</div>

@@ -274,4 +274,14 @@ public class MemberDaoImpl implements MemberDaoInterface {
 		return mapper.updateLabelName(map);
 	}
 
+	public List searchFilter(Map map) {
+		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
+		return mapper.searchFilter(map);
+	}
+
+	public List searchLabel(Map map) {
+		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
+		return mapper.searchLabel(map);
+	}
+
 }

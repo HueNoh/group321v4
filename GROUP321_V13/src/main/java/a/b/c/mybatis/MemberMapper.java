@@ -92,4 +92,7 @@ public interface MemberMapper {
 
 	public List updateLabelName(Map map);
 
+	public List searchFilter(Map map);
+
+	public List searchLabel(Map map);
 }

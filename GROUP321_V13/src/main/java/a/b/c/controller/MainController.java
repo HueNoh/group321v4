@@ -309,7 +309,23 @@ public class MainController {
 		//
 		return new Gson().toJson(obj);
 	}
+	@RequestMapping(value = "/searchFilter", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String searchFilter(Model model, @RequestParam Map map) {
 
+		List list = memberService.searchFilter(map);
+		return new Gson().toJson(list);
+	}
+
+	@RequestMapping(value = "/searchLabel", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String searchLabel(Model model, @RequestParam Map map) {
+		List list = memberService.searchLabel(map);
+		System.out.println("filter: "+list);
+		return new Gson().toJson(list);
+	}
 	public String loginChk(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
 		session = request.getSession(false);
 		String id = (String) session.getAttribute("id");
@@ -329,7 +345,7 @@ public class MainController {
 	public String selectHistory(Model model, @RequestParam Map map) {
 
 		List list = memberService.selectHistory(map);
-		System.out.println("히스토리가져오기:" + list);
+		System.out.println("�엳�뒪�넗由ш��졇�삤湲�:" + list);
 		return new Gson().toJson(list);
 	}
 

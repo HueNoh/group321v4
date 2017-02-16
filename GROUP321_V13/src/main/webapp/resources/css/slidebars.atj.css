@@ -1,4 +1,4 @@
-.side-invite {
+.side-invite, .side-filter {
 	height: 100%; /* 100% Full-height */
 	width: 0; /* 0 width - change this with JavaScript */
 	position: fixed; /* Stay in place */
@@ -11,6 +11,7 @@
 	transition: 0.5s;
 	/* 0.5 second transition effect to slide in the sidenav */
 }
+
 
 .sidenav-chat {
 	height: 100%; /* 100% Full-height */

@@ -20,7 +20,7 @@ var cardModal = document.getElementById("cardModal");
 
 var chatClose = document.getElementById("mySidenavChat");
 var inviteClose = document.getElementById("invite");
-
+var filterClose = document.getElementById("filter");
 // When the user clicks the button, open the modal
 btn.onclick = function() {
 	modal.style.display = "block";
@@ -45,6 +45,8 @@ window.onclick = function(event) {
 		closeChat();
 	} else if (event.target == inviteClose) {
 		closeInviteMember();
+	}else if (event.target == filterClose) {
+		closeFilter();
 	}
 }
 
