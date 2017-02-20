@@ -99,8 +99,18 @@ public class MainController {
 		}
 
 	}
+	@RequestMapping(value = "/deleteCard", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String deleteCard(@RequestParam Map map){
+		System.out.println(map);
+		int result = memberService.deleteCard(map);
+		List list = memberService.searchList(map);
 
-	@RequestMapping(value = "/deleteList", method = { RequestMethod.GET, RequestMethod.POST })
+		
+		return new Gson().toJson(list);
+	}
+	
+	@RequestMapping(value = "/deleteList", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public String deleteList(@RequestParam Map map) {
 		int result = memberService.deleteList(map);
