@@ -10,6 +10,11 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/resources/js/jquery-3.1.1.js"></script>
+
 <link rel="stylesheet" href="/resources/css/slidebars.css">
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
@@ -57,6 +62,8 @@ body::-webkit-scrollbar-thumb
 	overflow-y: auto;
 }
 
+
+
 .list {
 	width: 100%;
 	max-height:;
@@ -84,6 +91,12 @@ body::-webkit-scrollbar-thumb
 .viewList .list_foot, .viewList .addCard, .viewList .list_title {
 	width: 100%;
 }
+
+
+#nal {
+	overflow-y: auto;
+}
+
 
 #mainList {
 	float: left;
@@ -586,7 +599,7 @@ body::-webkit-scrollbar-thumb
 					});
 		}
 	}
-
+	var dateC_num=0;
 	function cardView(b_num, l_num, c_num) {
 		$('#cardReply').empty();
 		$('#commentArea').val('');
@@ -618,6 +631,18 @@ body::-webkit-scrollbar-thumb
 					var labelName = cardInfo.labelname;
 					console.log("view: " + labelName);
 
+					
+					var dueDate = cardInfo.duedate;
+					$('#date').val(dueDate);
+					
+					if(null!=dueDate){
+						$('.nal_div').text(dueDate); 
+					}else{
+						$('.nal_div').text(''); 
+					}
+					
+					 
+					
 					labelShow(label);
 					labelNameShow(labelName);
 
@@ -651,7 +676,7 @@ body::-webkit-scrollbar-thumb
 					});
 
 					document.getElementById('cardNum').value = c_num;
-
+					dateC_num=c_num;
 					cardModal.style.display = "block";
 				});
 
@@ -728,7 +753,10 @@ body::-webkit-scrollbar-thumb
 			$('.content_area').hide();
 		}
 	}
+	
 
+ 	
+ 	
 	function sendDesc() {
 		$('.content_tag').show();
 		$('.content_div').show();
@@ -1404,6 +1432,95 @@ body::-webkit-scrollbar-thumb
 		window.open('profile?profileId=' + id, '',
 				'width=400, height=300, left=500, top=400');
 	}
+	
+	  $(function(){
+			$("#wow").datepicker({
+				
+				showButtonPanel: true,
+				changeMonth: true,
+		        changeYear: true,
+				onSelect : function(day){
+					
+					$.ajax({
+						method : 'post',
+						url : '/main/dueDate',
+						data : {
+							c_key : dateC_num,
+							day : day
+							
+						}
+					}).done(function(msg) {
+						
+						$('#date').val(day);
+						var detail = JSON.parse(msg);
+						console.log('date:'+msg);
+						
+				 
+					   $('.nal_div').text("D-day  "+day);
+					   
+						  
+						 var sday = "남은일"; 
+						 var today = new Date(); 
+						 var mday = new Date(day); 
+						 var tmime = (mday.getTime() - today.getTime()); 
+						 var itime = 24 * 60 * 60 * 1000; 
+						 var fdday = tmime / itime; 
+						 var dday = Math.floor(fdday)+1; 
+						 if (dday == 0) 
+							 console.log("오늘입니다."); 
+						 else if (dday > 0) 
+							 console.log(sday + "은 " + dday + "일 남았습니다."); 
+						 else if (dday < 0) 
+							 console.log(sday + "은 " + dday + "일 지났습니다.");  
+						
+						 $('.nal2_div').text("D-day 까지 "+dday+ " 일 남았습니다.");
+						 
+						 
+						/*  $(document).ready(function(){
+							    $("#calBtn").click(function(){
+							        $("p").prepend(day);
+							    });
+							    $("#nal2").click(function(){
+							        $("ol").prepend("<li>Prepended item</li>");
+							    });
+							}); 		 */		
+							
+							
+						/* var today = new Date() ;
+						var endDate =new Date("day") ;
+						 
+						var btMs = endDate.getTime() - today.getTime() ;
+						var dday = btMs / (1000*60*60*24) ;
+						
+						console.log('남은날짜:'+dday); */
+						
+						/* 	if(days<0)
+							alert("그날이 지났다");
+						else if (days < 1) 
+							alert("내일이 그날이다");
+							else
+							alert("그날까지" + <font color=red><b> + days + </b></font>+ "일 남았다");  */
+						
+					});
+				}
+			
+			});
+	
+		$("#datepicker").css('display','none');
+		});
+		
+	 function showCal(){
+
+			$( "#wow" ).toggle();
+		} 
+	 
+  /* 	 $(document).ready(function(){
+		$('#calBtn').append(dueDate); 
+		    });   */
+	 
+	 
+
+	 
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -1525,6 +1642,36 @@ body::-webkit-scrollbar-thumb
 								</div>
 							</div>
 						</div>
+						
+						
+			 				
+							<div class="nal_div" ></div>
+							<div class="nal2_div" ></div>
+							
+						<!-- 	<div class="nal_area" id="nal_area"> -->
+							
+							
+							
+							
+							
+				<!-- 		<p>마감일: <input type="text" id="date" ></p>
+						<input type="text" id="dday"  placeholder="남은 날짜">
+<div id="dday"></div>
+						 -->
+					
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						<h3>Add Comment</h3>
 						<textarea rows="10" cols="80" id="commentArea" required="required"></textarea>
 						<input type="button" value="SAVE" onclick="comment();">
@@ -1620,10 +1767,20 @@ body::-webkit-scrollbar-thumb
 						</button>
 						<br> <br>
 						<!-- 						<input type="text" id="date_picker"> -->
+
+						<button id="calBtn" onclick="showCal()">
+							<span><img alt="label"
+								src="/resources/images/calendar.jpg" width="25px" height="25px"
+								class="btn-delete">&nbsp;Calendar</span>
+						</button>
+						<div id="wow" style="display:none;"></div>
+						<br> <br>
+
+
 						<button>
 							<span><img alt="label"
 								src="/resources/images/btn_calendar.png" width="20px"
-								height="20px" class="btn-calendar">&nbsp;&nbsp;&nbsp;Calendar</span>
+								height="20px" class="btn-calendar"/>&nbsp;&nbsp;&nbsp;Calendar</span>
 						</button>
 						<br> <br>
 						<button>
