@@ -1,6 +1,7 @@
 package a.b.c.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -45,14 +46,12 @@ public class MainController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
-		session = request.getSession(false);
 
 		Map inBoardMemberMap = inBoardMember.getInstanceMap();
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		String userId = (String) session.getAttribute("id");
 		int b_num = Integer.valueOf((String) map.get("b_num"));
 		
-		System.out.println("list map: "+map);
 		session.setAttribute("b_num", b_num);
 		model.addAttribute("b_num", b_num);
 		
@@ -100,8 +99,6 @@ public class MainController {
 	@ResponseBody
 	public int deleteBoard(@RequestParam Map map){
 		int result = memberService.deleteBoard(map);
-		System.out.println("deleteBoard map: "+map);
-		System.out.println(result);
 		return result;
 		
 	}
@@ -111,7 +108,6 @@ public class MainController {
 	@ResponseBody
 	public String searchBoard(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		session = request.getSession(false);
 		map.put("id", session.getAttribute("id"));
 		List list = memberService.searchBoard(map);
 		return new Gson().toJson(list);
@@ -162,7 +158,6 @@ public class MainController {
 	@ResponseBody
 	public String createCard(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		List list = memberService.insertCard(map);
 		Map lastBoard = (Map) list.get(list.size() - 1);
 		return new Gson().toJson(lastBoard);
@@ -173,15 +168,12 @@ public class MainController {
 	@ResponseBody
 	public String selectCardDetail(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		session = request.getSession(false);
 
 		session.setAttribute("l_num", map.get("l_num"));
 		session.setAttribute("c_num", map.get("c_num"));
 
-		System.out.println(map);
 
 		List list = memberService.selectCardDetail(map);
-		System.out.println(list);
 		return new Gson().toJson(list);
 	}
 
@@ -199,7 +191,6 @@ public class MainController {
 			RequestMethod.POST }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String insertLink(@RequestParam Map map) {
-		System.out.println("insertLinkMap: " + map);
 		int result = memberService.insertLink(map);
 		List list = memberService.selectLink(map);
 
@@ -257,7 +248,6 @@ public class MainController {
 	public String selectLabel(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		String str = memberService.selectLabel(map);
-
 		if (str == null) {
 			str = "0,0,0,0,0,0,0";
 		}
@@ -274,7 +264,6 @@ public class MainController {
 	public String selectLabelName(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		String str = memberService.selectLabelName(map);
-		System.out.println(str);
 		if (str == null) {
 			str = ",,,,,,";
 		}
@@ -303,8 +292,8 @@ public class MainController {
 	public String updateLabelName(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		List list = memberService.updateLabelName(map);
-		System.out.println(map);
 		JsonObject obj = new JsonObject();
+		
 		obj.addProperty("labelName", (String) map.get("labelName"));
 		//
 		return new Gson().toJson(obj);
@@ -323,7 +312,6 @@ public class MainController {
 	@ResponseBody
 	public String searchLabel(Model model, @RequestParam Map map) {
 		List list = memberService.searchLabel(map);
-		System.out.println("filter: "+list);
 		return new Gson().toJson(list);
 	}
 	public String loginChk(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
@@ -345,7 +333,6 @@ public class MainController {
 	public String selectHistory(Model model, @RequestParam Map map) {
 
 		List list = memberService.selectHistory(map);
-		System.out.println("�엳�뒪�넗由ш��졇�삤湲�:" + list);
 		return new Gson().toJson(list);
 	}
 
@@ -390,13 +377,11 @@ public class MainController {
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	public String profile(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		System.out.println("profile");
 		String m_id = request.getParameter("profileId");
 
 		map.put("m_id", m_id);
 		List list = memberService.profile(map);
 		map = (Map) list.get(0);
-		System.out.println(map);
 		
 		model.addAttribute("name", map.get("m_name"));
 		model.addAttribute("regdate", map.get("regdate"));

@@ -45,6 +45,7 @@ public class ChatController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
 
+		
 		return "home";
 	}
 
@@ -52,7 +53,6 @@ public class ChatController {
 	@ResponseBody
 	public String chatMsg(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		System.out.println(map);
 		String error = null;
 
 		try {
@@ -63,7 +63,6 @@ public class ChatController {
 			} else {
 				error = "002";
 			}
-			System.out.println(error);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -148,10 +147,6 @@ public class ChatController {
 				list2.add(id);
 			}
 		}
-		System.out.println("===============================");
-		System.out.println("list2 : " + list2);
-		System.out.println("inBoardMemberMap : " + inBoardMemberMap);
-		System.out.println("===============================");
 		model.addAttribute("users", new Gson().toJson(list2));
 
 		return new Gson().toJson(list2);

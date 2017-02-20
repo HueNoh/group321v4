@@ -1,10 +1,6 @@
 package a.b.c.controller;
 
-import java.text.DateFormat;
-
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import a.b.c.service.MemberServiceInterface;
 
@@ -45,7 +38,6 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, HttpSession session, HttpServletRequest request) {
 		String route = null;
-		session = request.getSession(false);
 		if (null != session) {
 			route = "redirect:/main/board";
 		} else {
@@ -62,21 +54,16 @@ public class HomeController {
 		String loginChk = null;
 
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
-		Map inBoardMemberMap = inBoardMember.getInstanceMap();
 		Map inUserIpMap = inBoardMember.getUserIpMap();
-
-		System.out.println(session.getAttribute("id"));
 
 		if (null != session.getAttribute("id")) {
 
 			loginChk = "redirect:/main/board";
 
 		} else {
-			System.out.println(inUserIpMap);
 			boolean userOk = false;
 
 			if (inBoardMemberSet.contains(map.get("id"))) {
-				System.out.println(map.get("id"));
 				Iterator it = inUserIpMap.keySet().iterator();
 				while (it.hasNext()) {
 					String ip = (String) it.next();
@@ -87,9 +74,9 @@ public class HomeController {
 						userOk = false;
 					}
 				}
-				
+
 				if (userOk) {
-					model.addAttribute("err", "접속된 아이디입니다.");
+					model.addAttribute("err", "001");
 					loginChk = "home";
 
 				} else {
@@ -99,16 +86,20 @@ public class HomeController {
 					if (result == 0) {
 
 						session = request.getSession();
+						System.out.println(session.getCreationTime());
+
 						session.setAttribute("id", map.get("id"));
 						session.setAttribute("b_num", 0);
+						session.setAttribute("ip", request.getRemoteAddr());
+						
 						inBoardMemberSet.add(map.get("id"));
 						inUserIpMap.remove(request.getRemoteHost());
 						inUserIpMap.put(request.getRemoteHost(), map.get("id"));
 
 						loginChk = "redirect:/main/board";
 					} else {
+						model.addAttribute("err", "002");
 						loginChk = "home";
-						model.addAttribute("err", "아이디와 비밀번호를 확인해 주세요.");
 					}
 				}
 			} else {
@@ -127,7 +118,7 @@ public class HomeController {
 					loginChk = "redirect:/main/board";
 				} else {
 					loginChk = "home";
-					model.addAttribute("err", "아이디와 비밀번호를 확인해 주세요.");
+					model.addAttribute("err", "002");
 				}
 			}
 
@@ -140,10 +131,7 @@ public class HomeController {
 	public int chkId(Locale locale, Model model, @RequestParam Map map) {
 		logger.info("Welcome dupCheck! The client locale is {}.", locale);
 
-		System.out.println("�븘�씠�뵒泥댄겕: " + map);
-
 		int result = memberService.chkIdDup(map);
-		System.out.println(result);
 
 		return result;
 
