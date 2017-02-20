@@ -350,6 +350,16 @@ public class MainController {
 		}
 		return loginChk;
 	}
+	
+	@RequestMapping(value = "/logOut")
+	public String logOut(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
+		session = request.getSession(false);
+		if(session != null) {
+			session.invalidate();
+		}
+		
+		return "home";
+	}
 
 	@RequestMapping(value = "/selectHistory", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
