@@ -40,7 +40,12 @@ public class MainController {
 
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public String board(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
+		String err = request.getParameter("err");
 
+		String ip = request.getParameter("dupLogIp");
+		System.out.println("dupLog: " + ip);
+		model.addAttribute("err", err);
+		model.addAttribute("dupLogIp", ip);
 		return loginChk(map, request, session, "board");
 	}
 
@@ -51,12 +56,12 @@ public class MainController {
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		String userId = (String) session.getAttribute("id");
 		int b_num = Integer.valueOf((String) map.get("b_num"));
-		
+
 		session.setAttribute("b_num", b_num);
 		model.addAttribute("b_num", b_num);
-		
+
 		model.addAttribute("title", memberService.selectBoardOne(map).get("title"));
-		
+
 		map.put("id", userId);
 		map.put("b_num", b_num);
 
@@ -94,26 +99,24 @@ public class MainController {
 		}
 
 	}
-	
-	@RequestMapping(value = "/deleteList", method = {RequestMethod.GET, RequestMethod.POST})
+
+	@RequestMapping(value = "/deleteList", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String deleteList(@RequestParam Map map){
+	public String deleteList(@RequestParam Map map) {
 		int result = memberService.deleteList(map);
 		List list = memberService.searchList(map);
-		
+
 		return new Gson().toJson(list);
 	}
-	
-	
-	@RequestMapping(value = "/deleteBoard", method = {RequestMethod.GET, RequestMethod.POST})
+
+	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public int deleteBoard(@RequestParam Map map){
+	public int deleteBoard(@RequestParam Map map) {
 		int result = memberService.deleteBoard(map);
 		return result;
-		
+
 	}
-	
-	
+
 	@RequestMapping(value = "/searchBoard", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String searchBoard(Locale locale, Model model, HttpSession session, HttpServletRequest request,
@@ -181,7 +184,6 @@ public class MainController {
 
 		session.setAttribute("l_num", map.get("l_num"));
 		session.setAttribute("c_num", map.get("c_num"));
-
 
 		List list = memberService.selectCardDetail(map);
 		return new Gson().toJson(list);
@@ -267,7 +269,7 @@ public class MainController {
 
 		return new Gson().toJson(obj);
 	}
-	
+
 	@RequestMapping(value = "/selectLabelName", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
@@ -277,7 +279,7 @@ public class MainController {
 		if (str == null) {
 			str = ",,,,,,";
 		}
-		
+
 		JsonObject obj = new JsonObject();
 		obj.addProperty("labelName", str);
 
@@ -295,7 +297,7 @@ public class MainController {
 		//
 		return new Gson().toJson(obj);
 	}
-	
+
 	@RequestMapping(value = "/updateLabelName", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
@@ -303,11 +305,12 @@ public class MainController {
 			@RequestParam Map map) {
 		List list = memberService.updateLabelName(map);
 		JsonObject obj = new JsonObject();
-		
+
 		obj.addProperty("labelName", (String) map.get("labelName"));
 		//
 		return new Gson().toJson(obj);
 	}
+
 	@RequestMapping(value = "/searchFilter", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
@@ -324,6 +327,7 @@ public class MainController {
 		List list = memberService.searchLabel(map);
 		return new Gson().toJson(list);
 	}
+
 	public String loginChk(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
 		session = request.getSession(false);
 		String id = (String) session.getAttribute("id");
@@ -344,6 +348,14 @@ public class MainController {
 
 		List list = memberService.selectHistory(map);
 		return new Gson().toJson(list);
+	}
+	@RequestMapping(value = "/dupLog", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String dupLog(Model model, @RequestParam Map map,HttpSession session, HttpServletRequest request) {
+		session.invalidate();
+		
+		return new Gson().toJson("다른 아이피로 접속되었습니다.");
 	}
 
 	@RequestMapping(value = "/inUsers", method = { RequestMethod.POST,
@@ -392,7 +404,7 @@ public class MainController {
 		map.put("m_id", m_id);
 		List list = memberService.profile(map);
 		map = (Map) list.get(0);
-		
+
 		model.addAttribute("name", map.get("m_name"));
 		model.addAttribute("regdate", map.get("regdate"));
 		model.addAttribute("id", map.get("m_id"));

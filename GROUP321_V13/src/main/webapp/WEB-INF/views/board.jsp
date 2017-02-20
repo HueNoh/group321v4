@@ -6,8 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>Board</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
 <link rel="stylesheet" href="/resources/css/style.css">
 <link rel="stylesheet" type="text/css" href="/resources/css/common.css">
@@ -15,20 +14,20 @@
 .board {
 	position: relative;
 }
+
 .boardDelBtn {
 	display: block;
 	position: absolute;
 	right: 5px;
 	top: 5px;
 }
-
 </style>
 <script>
 	history.pushState(null, null, location.href);
 	window.onpopstate = function(event) {
 		history.go(1);
 	}
-	
+
 	var sessionId = '${sessionScope.id}';
 	var createDiv = '';
 	var webSocket = new WebSocket('ws://211.183.8.20/board');
@@ -52,11 +51,25 @@
 		var id = arrMsg[0];
 		var msg = arrMsg[1];
 		var access = arrMsg[2];
+		console.log(access);
 
 		if ("boardCreate" == access) {
 			if (id != sessionId) {
 				createDiv += msg;
 				$('#' + id).html(createDiv);
+			}
+		} else if ("dupLog" == access) {
+			console.log('dup1');
+			if (msg == '${sessionScope.ip}') {
+				$.ajax({
+					url : '/main/dupLog',
+					method : 'post',
+					dataType : 'json'
+										
+				}).done(function(msg){
+					alert(msg);
+					location.href = '/';
+				});
 			}
 		}
 	}
@@ -83,43 +96,57 @@
 		if ("boardCreate" == acc) {
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
+		}else if ("dupLog" == acc) {
+			var jsonStr = JSON.stringify(msg);
+			webSocket.send(jsonStr);
 		}
 	}
 	window.onload = function() {
+		console.log('${sessionScope.ip}');
+		var err = '${err}';
+		if ('001' == err) {
+			var dupLogIp = '${dupLogIp}';
+			send(dupLogIp, 'dupLog', '${sessionScope.id}');
+
+		}
+
 		$.ajax({
 			url : '/main/searchBoard',
 			method : 'post',
-		}).done(function(msg) {
-			var jArr = JSON.parse(msg);
-			$.each(jArr, function(i) {
-				var b_num = jArr[i].b_num;
-				var div = document.createElement('div');
-				var text = '';
-				div.id = 'board' + b_num;
-				div.className = 'board';
+		}).done(
+				function(msg) {
+					var jArr = JSON.parse(msg);
+					$.each(jArr, function(i) {
+						var b_num = jArr[i].b_num;
+						var div = document.createElement('div');
+						var text = '';
+						div.id = 'board' + b_num;
+						div.className = 'board';
 
-				var aTag = document.createElement('a');
-				var createAText = document.createTextNode(jArr[i].title + '_' + b_num);
+						var aTag = document.createElement('a');
+						var createAText = document.createTextNode(jArr[i].title
+								+ '_' + b_num);
 
-				aTag.setAttribute('href', '/main/list?b_num=' + b_num);
-				aTag.appendChild(createAText);
-				div.appendChild(aTag);
-				
-				//hs
-				var aTagDelBtn = document.createElement('a');
-				aTagDelBtn.className = 'boardDelBtn';
-				var aTagDelBtnText = document.createTextNode('x');
-				aTagDelBtn.appendChild(aTagDelBtnText);
-				//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
-				aTagDelBtn.setAttribute('href', '#');
-				aTagDelBtn.setAttribute('onclick', 'deleteBoard('+ b_num +');');
-				div.appendChild(aTagDelBtn);
+						aTag.setAttribute('href', '/main/list?b_num=' + b_num);
+						aTag.appendChild(createAText);
+						div.appendChild(aTag);
 
-				document.getElementById('viewBoard').appendChild(div);
+						//hs
+						var aTagDelBtn = document.createElement('a');
+						aTagDelBtn.className = 'boardDelBtn';
+						var aTagDelBtnText = document.createTextNode('x');
+						aTagDelBtn.appendChild(aTagDelBtnText);
+						//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
+						aTagDelBtn.setAttribute('href', '#');
+						aTagDelBtn.setAttribute('onclick', 'deleteBoard('
+								+ b_num + ');');
+						div.appendChild(aTagDelBtn);
 
-			});
+						document.getElementById('viewBoard').appendChild(div);
 
-		});
+					});
+
+				});
 
 	};
 
@@ -132,71 +159,72 @@
 				title : title
 			}
 
-		}).done(function(msg) {
+		}).done(
+				function(msg) {
 
-			var arrBoard = JSON.parse(msg);
+					var arrBoard = JSON.parse(msg);
 
-			var div = document.createElement('div');
-			div.id = 'board' + arrBoard.b_num;
-			div.className = 'board';
+					var div = document.createElement('div');
+					div.id = 'board' + arrBoard.b_num;
+					div.className = 'board';
 
-			var aTag = document.createElement('a');
-			var createAText = document.createTextNode(arrBoard.title + '_' + arrBoard.b_num);
+					var aTag = document.createElement('a');
+					var createAText = document.createTextNode(arrBoard.title
+							+ '_' + arrBoard.b_num);
 
-			aTag.setAttribute('href', '/main/list?b_num=' + arrBoard.b_num);
-			aTag.appendChild(createAText);
-			div.appendChild(aTag);
+					aTag.setAttribute('href', '/main/list?b_num='
+							+ arrBoard.b_num);
+					aTag.appendChild(createAText);
+					div.appendChild(aTag);
 
-			document.getElementById('createBoard').appendChild(div);
+					document.getElementById('createBoard').appendChild(div);
 
-			var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
-			send(boardHtml, 'boardCreate', 'createBoard');
+					var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
+					send(boardHtml, 'boardCreate', 'createBoard');
 
-		});
+				});
 	};
-	
+
 	//hs
-	$(function(){
-		$('#CBContainer').css('display','none');
-		
-		$('#addBoard').click(function(){
+	$(function() {
+		$('#CBContainer').css('display', 'none');
+
+		$('#addBoard').click(function() {
 			$('#CBContainer').toggle();
-	    	$('#CBTitle').focus();
-			$('#CBTitle').val('');	 
+			$('#CBTitle').focus();
+			$('#CBTitle').val('');
 		});
-		
-		$('#CBSubmit').click(function(){
+
+		$('#CBSubmit').click(function() {
 			if ($('#CBTitle').val()) {
 				addBoard($('#CBTitle').val());
 			}
 		});
-		
+
 	});
-	
-	function deleteBoard(b_num){
+
+	function deleteBoard(b_num) {
 		$.ajax({
 			method : 'post',
 			url : '/main/deleteBoard',
 			data : {
 				b_num : b_num
 			}
-		}).done(function(msg){
+		}).done(function(msg) {
 			//alert(msg);
-			var tmp = '#board'+b_num;
-			
-			if(msg==0){
+			var tmp = '#board' + b_num;
+
+			if (msg == 0) {
 				$(tmp).remove();
 			}
 		});
 	};
-	
 </script>
 </head>
 <body>
 	<!-- 상단바 -->
 	<header id="header" class="clearfix">
-		<a href="/main/board"><h1>PROJECT 321</h1></a> <a href="#"
-			class="btn_board"><span>Boards</span></a>
+		<a href="/main/board"><h1>PROJECT 321</h1></a> <a href="#" class="btn_board"><span>Boards</span></a>
 		<form action="#" method="post" id="sch_main_wrap">
 			<fieldset>
 				<input type="text" name="sch_main" id="sch_main">
@@ -220,7 +248,6 @@
 			</div>
 		</div>
 	</div>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 </body>
 </html>

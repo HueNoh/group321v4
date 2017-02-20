@@ -12,22 +12,25 @@
 <style>
 </style>
 <script>
-	var err = '000';
+	var err = '${err}';
 	window.onload = function() {
-		err = '${err}';
 		if ('001' == err) {
 			var isOk = confirm('접속중인 아이디입니다. 접속하시겠습니까?');
-			if(isOk){
-				$('#logCho').val('001');
-				
-				console.log($('#logCho'));
-				/* $('#log').submit(); */
+			if (isOk) {
+				var id = '${id}';
+				var pw = '${pw}';
+				location.href = '/logDup?id=' + id + '&pw=' + pw;
 			}
 		} else if ('002' == err) {
+			$('#errChk').val(err);
 			var createAText = document.createTextNode('로그인에 실패하였습니다.');
 			$('#err').append(createAText);
 		}
 	};
+
+	function log() {
+		$('#log').submit();
+	}
 </script>
 
 </head>
@@ -37,8 +40,7 @@
 		<form action="/login" id="log" method="post">
 
 			<h1>project321</h1>
-			<input type="hidden" name="logCho" value="000">
-			<input type="text" name="id" placeholder="아이디" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <input type="password" name="pw" placeholder="비밀번호" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <a href="login" onclick="document.getElementById('log').submit();"><div class="btn">로그인</div></a>
+			<input type="text" name="id" id="id" placeholder="아이디" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <input type="password" name="pw" id="pw" placeholder="비밀번호" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <a href="login" onclick="log();"><div class="btn">로그인</div></a>
 			<!-- End Btn -->
 
 		</form>
@@ -52,9 +54,6 @@
 
 	</div>
 	<!-- End Box -->
-
-
-
 
 	<div id="err"></div>
 	<!--  <p>비밀번호를 잊어먹으셨나요? <u style="color:#f1c40f;">Click Here!</u></p>-->

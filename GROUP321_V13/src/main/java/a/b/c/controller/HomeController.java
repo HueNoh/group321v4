@@ -53,21 +53,26 @@ public class HomeController {
 
 		String loginChk = null;
 
+		System.out.println(request.getParameter("errChk"));
+		String errChk = request.getParameter("errChk");
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		Map inUserIpMap = inBoardMember.getUserIpMap();
 
+		System.out.println("map" + map);
+		String err = "000";
 		if (null != session.getAttribute("id")) {
 
-			loginChk = "redirect:/main/board";
+			loginChk = "redirect:/main/board?err=" + err;
 
 		} else {
+
 			boolean userOk = false;
 
 			if (inBoardMemberSet.contains(map.get("id"))) {
 				Iterator it = inUserIpMap.keySet().iterator();
 				while (it.hasNext()) {
-					String ip = (String) it.next();
-					if (inUserIpMap.get(ip).equals(map.get("id")) && !ip.equals(request.getRemoteHost())) {
+					String id = (String) it.next();
+					if (!inUserIpMap.get(id).equals(request.getRemoteHost()) && id.equals(map.get("id"))) {
 						userOk = true;
 						break;
 					} else {
@@ -76,54 +81,52 @@ public class HomeController {
 				}
 
 				if (userOk) {
+
 					model.addAttribute("err", "001");
+					model.addAttribute("id", map.get("id"));
+					model.addAttribute("pw", map.get("pw"));
 					loginChk = "home";
 
 				} else {
-					int result = memberService.loginChk(map);
-					model.addAttribute("loginChk", result);
+					System.out.println(userOk);
 
-					if (result == 0) {
-
-						session = request.getSession();
-						System.out.println(session.getCreationTime());
-
-						session.setAttribute("id", map.get("id"));
-						session.setAttribute("b_num", 0);
-						session.setAttribute("ip", request.getRemoteAddr());
-						
-						inBoardMemberSet.add(map.get("id"));
-						inUserIpMap.remove(request.getRemoteHost());
-						inUserIpMap.put(request.getRemoteHost(), map.get("id"));
-
-						loginChk = "redirect:/main/board";
-					} else {
-						model.addAttribute("err", "002");
-						loginChk = "home";
-					}
+					loginChk = loginOper(session, request, map, model) + "?err=" + err;
 				}
 			} else {
-				int result = memberService.loginChk(map);
-				model.addAttribute("loginChk", result);
-
-				if (result == 0) {
-
-					session = request.getSession();
-					session.setAttribute("id", map.get("id"));
-					session.setAttribute("b_num", 0);
-					inBoardMemberSet.add(map.get("id"));
-					inUserIpMap.remove(request.getRemoteHost());
-					inUserIpMap.put(request.getRemoteHost(), map.get("id"));
-
-					loginChk = "redirect:/main/board";
-				} else {
-					loginChk = "home";
-					model.addAttribute("err", "002");
-				}
+				loginChk = loginOper(session, request, map, model) + "?err=" + err;
 			}
 
 		}
+		System.out.println("loginChk" + loginChk);
 		return loginChk;
+	}
+
+	private String loginOper(HttpSession session, HttpServletRequest request, Map map, Model model) {
+
+		int result = memberService.loginChk(map);
+		model.addAttribute("loginChk", result);
+
+		if (result == 0) {
+
+			Set inBoardMemberSet = inBoardMember.getInstanceSet();
+			Map inUserIpMap = inBoardMember.getUserIpMap();
+
+			session = request.getSession();
+			session.setAttribute("id", map.get("id"));
+			session.setAttribute("b_num", 0);
+			session.setAttribute("ip", request.getRemoteAddr());
+
+			inBoardMemberSet.add(map.get("id"));
+			inUserIpMap.remove(map.get("id"));
+			inUserIpMap.put(map.get("id"), request.getRemoteHost());
+
+			System.out.println("inUserIpMap" + inUserIpMap);
+			return "redirect:/main/board";
+		} else {
+			model.addAttribute("err", "002");
+			return "home";
+		}
+
 	}
 
 	@RequestMapping(value = "/chkIdDup", method = { RequestMethod.GET, RequestMethod.POST })
@@ -157,6 +160,16 @@ public class HomeController {
 		}
 		return "success";
 
+	}
+
+	@RequestMapping(value = "/logDup", method = { RequestMethod.POST, RequestMethod.GET })
+	public String logDup(Model model, @RequestParam Map map, HttpSession session, HttpServletRequest request) {
+		System.out.println("logDup");
+		String err = "001";
+		Map inUserIpMap = inBoardMember.getUserIpMap();
+
+		String ip = (String) inUserIpMap.get(map.get("id"));
+		return loginOper(session, request, map, model) + "?err=" + err + "&dupLogIp=" + ip;
 	}
 
 }
