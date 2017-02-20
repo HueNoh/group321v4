@@ -364,6 +364,13 @@ body::-webkit-scrollbar-thumb
 	display: block;
 	font-weight: bold;
 }
+
+.cardDelBtn {
+	top: 0px;
+	display: block;
+	
+}
+
 </style>
 <script>
 	document.onkeydown = refl;
@@ -527,7 +534,6 @@ body::-webkit-scrollbar-thumb
 		$('#addCardTitle' + id).val('');
 		cardId = id;
 		cardl_num = l_num;
-
 	}
 
 	function addCardDetail() {
@@ -598,6 +604,7 @@ body::-webkit-scrollbar-thumb
 					var detail = JSON.parse(msg);
 
 					var cardInfo = detail[0];
+
 					var cardReply = detail[1];
 					//hs
 					var cardLink = detail[2];
@@ -631,14 +638,14 @@ body::-webkit-scrollbar-thumb
 					$('#attachLink').children().empty();
 					$.each(cardLink, function(i) {
 						var node = document.createElement('div');
+
 						var textNode = document
 								.createTextNode(cardLink[i].content);
 						var aTag = document.createElement('a');
 						aTag.href = cardLink[i].content;
 						aTag.appendChild(textNode);
 						aTag.target = '_blank';
-						node.appendChild(aTag);
-						//console.log(node);
+						node.appendChild(aTag);	
 
 						$('#attachLink').append(node);
 					});
@@ -875,7 +882,6 @@ body::-webkit-scrollbar-thumb
 		aDelList.setAttribute('onclick', 'deleteList('+b_num+','+l_num+');');
 		viewList.appendChild(aDelList);
 		
-		
 		viewList.appendChild(list_title);
 
 		viewList.appendChild(div);
@@ -984,7 +990,7 @@ body::-webkit-scrollbar-thumb
 				cardDiv.onclick = function() {
 					cardView(b_num, l_num, c_num);
 				};
-
+				
 				labelSet(b_num, l_num, c_num);
 
 				// 카드 내부의 label div 생성!!!
@@ -1134,6 +1140,33 @@ body::-webkit-scrollbar-thumb
 				$('#popup_layer, #overlay_t').hide();
 			}
 		});
+		
+		$('#deleteCard').click(function(){
+			$.ajax({
+				method: 'post',
+				url: '/main/deleteCard',
+				data: {
+					b_num : b_num,
+					c_key : $('#cardNum')[0].value
+				}
+			}).done(function(msg){
+				$('#cardModal').css('display','none');
+				var listArr = JSON.parse(msg);
+				$('#mainList').children().remove();
+				$.each(listArr, function(i) {
+
+					var l_num = listArr[i].l_num;
+					var id = l_num;
+					var l_title = listArr[i].title;
+					
+					listView(id, l_title, l_num);
+					cardSearch(b_num, l_num, id);
+
+				});
+				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+				setWidthOnload(numOfList); // Onload 시 전체 width 설정
+			});
+		});
 
 	});
 	
@@ -1154,20 +1187,12 @@ body::-webkit-scrollbar-thumb
 				var l_num = listArr[i].l_num;
 				var id = l_num;
 				var l_title = listArr[i].title;
-
+				
 				listView(id, l_title, l_num);
-
-				/*
-				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
-				 */
 				cardSearch(b_num, l_num, id);
 
 			});
-
 			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-
-			console.log('length_onload: ' + numOfList);
-
 			setWidthOnload(numOfList); // Onload 시 전체 width 설정
 		});
 		
@@ -1589,10 +1614,9 @@ body::-webkit-scrollbar-thumb
 							</div>
 						</button>
 						<br> <br>
-						<button>
-							<span><img alt="label"
-								src="/resources/images/btn_delete.png" width="20px"
-								height="20px" class="btn-delete">&nbsp;Delete</span>
+
+						<button id="deleteCard">
+							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;Delete</span>
 						</button>
 						<br> <br>
 						<!-- 						<input type="text" id="date_picker"> -->

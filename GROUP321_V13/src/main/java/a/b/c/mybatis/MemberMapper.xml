@@ -103,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 카드 삭제 -->
 	<select id="deleteCard" statementType="CALLABLE" resultType="int" parameterType="java.util.HashMap">
 		{
-		call deleteCard(#{b_num}, #{l_num},#{c_num})
+		call deleteCard(#{c_key})
 		}
 	</select>
 	<!-- 카드 보기 -->

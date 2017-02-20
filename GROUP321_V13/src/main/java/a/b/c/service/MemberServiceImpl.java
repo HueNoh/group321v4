@@ -325,4 +325,10 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		return memberDao.deleteList(map);
 	}
 
+	@Override
+	public int deleteCard(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.deleteCard(map);
+	}
+
 }
