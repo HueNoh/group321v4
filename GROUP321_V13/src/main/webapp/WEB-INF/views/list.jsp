@@ -562,6 +562,7 @@ margin-top: 10px;
 					var detail = JSON.parse(msg);
 
 					var cardInfo = detail[0];
+
 					var cardReply = detail[1];
 					//hs
 					var cardLink = detail[2];
@@ -942,15 +943,6 @@ margin-top: 10px;
 					cardView(b_num, l_num, c_num);
 				};
 				
-				//카드 삭제 버튼
-				var aDelCard = document.createElement('a');
-				aDelCard.className = 'cardDelBtn';
-				var aDelCardText = document.createTextNode('x');
-				aDelCard.appendChild(aDelCardText);
-				aDelCard.setAttribute('href','#');
-				aDelCard.setAttribute('onclick', 'deleteCard('+b_num+','+l_num+','+c_num+');');
-				cardDiv.appendChild(aDelCard);
-
 				labelSet(b_num, l_num, c_num);
 
 				// 카드 내부의 label div 생성!!!
@@ -1100,6 +1092,33 @@ margin-top: 10px;
 				$('#popup_layer, #overlay_t').hide();
 			}
 		});
+		
+		$('#deleteCard').click(function(){
+			$.ajax({
+				method: 'post',
+				url: '/main/deleteCard',
+				data: {
+					b_num : b_num,
+					c_key : $('#cardNum')[0].value
+				}
+			}).done(function(msg){
+				$('#cardModal').css('display','none');
+				var listArr = JSON.parse(msg);
+				$('#mainList').children().remove();
+				$.each(listArr, function(i) {
+
+					var l_num = listArr[i].l_num;
+					var id = l_num;
+					var l_title = listArr[i].title;
+					
+					listView(id, l_title, l_num);
+					cardSearch(b_num, l_num, id);
+
+				});
+				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+				setWidthOnload(numOfList); // Onload 시 전체 width 설정
+			});
+		});
 
 	});
 	
@@ -1110,35 +1129,6 @@ margin-top: 10px;
 			data: {
 				b_num: b_num,
 				l_num: l_num
-			}
-		}).done(function(msg){
-			//카드 삭제 시 리스트 뷰 재구성
-			var listArr = JSON.parse(msg);
-			$('#mainList').children().remove();
-			$.each(listArr, function(i) {
-
-				var l_num = listArr[i].l_num;
-				var id = l_num;
-				var l_title = listArr[i].title;
-				
-				listView(id, l_title, l_num);
-				cardSearch(b_num, l_num, id);
-
-			});
-			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-			setWidthOnload(numOfList); // Onload 시 전체 width 설정
-		});
-		
-	}
-	
-	function deleteCard(b_num, l_num, c_num) {
-		$.ajax({
-			method: 'post',
-			url: '/main/deleteCard',
-			data: {
-				b_num: b_num,
-				l_num: l_num,
-				c_num: c_num
 			}
 		}).done(function(msg){
 			//카드 삭제 시 리스트 뷰 재구성
@@ -1496,7 +1486,7 @@ margin-top: 10px;
 							</div>
 						</button>
 						<br> <br>
-						<button>
+						<button id="deleteCard">
 							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;Delete</span>
 						</button>
 						<br> <br>
