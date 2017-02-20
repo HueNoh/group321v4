@@ -72,7 +72,10 @@ public interface MemberServiceInterface {
 	public String selectLabelName(Map map);
 
 	public List updateLabelName(Map map);
+
 	public List searchFilter(Map map);
 
 	public List searchLabel(Map map);
+
+	public int deleteList(Map map);
 }
