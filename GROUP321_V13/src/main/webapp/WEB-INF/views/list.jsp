@@ -7,16 +7,39 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>List</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
 <link rel="stylesheet" href="/resources/css/slidebars.css">
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="/resources/css/websocket.atj.css">
 <!-- <link rel="stylesheet" href="/resources/css/jquery-ui.css"> -->
 <style>
+a:hover, #addList>div {cursor: pointer}
+/* 
+body::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb
+{
+	background-color: gray;
+	border-radius: 5px;
+	height: 5px;
+}
+ */
 .listBorder, .addListBorder {
 	width: 250px;
 	height: 100%;
@@ -44,7 +67,17 @@
 	overflow-y: auto;
 }
 
+.list::scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
 .list-card:hover {
+	cursor: pointer;
+}
+
+.addCard>a:hover {
 	cursor: pointer;
 }
 
@@ -172,11 +205,12 @@
 }
 
 .submenu>li>span {
-	font-size: 20px;
-	font-weight: bold;
-	color: black;
-	z-index: 3;
-	display: inline-block;
+	font-size: 15px;
+    margin-top: 5px;
+    font-weight: bold;
+    color: black;
+    z-index: 3;
+    display: inline-block;
 }
 
 .submenu:first-child {
@@ -196,9 +230,10 @@
 	width: 16px;
 	height: 16px;
 }
-.labels{
-width: 100px;
-margin-top: 10px;
+
+.labels {
+	width: 100px;
+	margin-top: 10px;
 }
 
 #label1 {
@@ -229,12 +264,20 @@ margin-top: 10px;
 	background-color: #6A5ACD;
 }
 
+.label_div {
+	width: 600px;
+}
+
 .label_div>input {
 	display: none;
 	width: 40px;
-	height: 20px;
+	height: 30px;
 	border-radius: 5px;
+	margin-bottom: 5px;
 	border: 1px;
+	font-size: 15px;
+    font-weight: bold;
+    color: black;
 	box-shadow: 2px 2px 1px lightslategrey;
 }
 
@@ -306,6 +349,21 @@ margin-top: 10px;
 .addCardContainer {
 	display: none;
 }
+
+.list_title {
+	text-align: left;
+	text-indent: 1em;
+	font-weight: bold;
+	
+}
+
+.listDelBtn {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	display: block;
+	font-weight: bold;
+}
 </style>
 <script>
 	document.onkeydown = refl;
@@ -345,11 +403,7 @@ margin-top: 10px;
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = $
-		{
-			users
-		}
-		;
+		var users = ${users};
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -549,7 +603,7 @@ margin-top: 10px;
 					var cardLink = detail[2];
 					// 			console.log('cardLink=' + cardLink[0]);
 
-					handelDesc(0); // description textarea 숨기기
+					handleDesc(0); // description textarea 숨기기
 					// 			console.log(detail);
 					var content = cardInfo.content;
 
@@ -614,7 +668,9 @@ margin-top: 10px;
 	}
 
 	function labelNameShow(labelName) {
-		console.log(labelName);
+		var labelWidth = 0;
+		
+// 		console.log(labelName);
 		if (null == labelName) {
 			label = ",,,,,,";
 		}
@@ -622,7 +678,10 @@ margin-top: 10px;
 		console.log('show: ' + labelNameArr);
 		for (var i = 1; i <= 7; i++) {
 			if ('' != labelNameArr[i - 1]) {
+				labelWidth = byteCalc(labelNameArr[i - 1]);
 				$('#label_name' + i).text(labelNameArr[i - 1]);
+				$('#selected_label' + i).css('width', labelWidth*10);
+				$('#selected_label' + i).val(labelNameArr[i - 1]);
 			}
 		}
 	}
@@ -649,7 +708,7 @@ margin-top: 10px;
 
 	}
 
-	function handelDesc(num) {
+	function handleDesc(num) {
 
 		$('.content_textarea').val('');
 
@@ -713,6 +772,7 @@ margin-top: 10px;
 	}
 
 	function labelView() {
+
 		// 		console.log('inside');
 		// 		$('.btn_label_toggle').next("div").toggleClass('submenu_hidden');
 		if ($('.btn-label-view').next("div").hasClass('submenu_hidden')) {
@@ -760,12 +820,12 @@ margin-top: 10px;
 		var viewList = document.createElement('div');
 		viewList.id = 'viewList' + id;
 		viewList.className = 'viewList';
-
+		
 		var listBorder = document.createElement('div');
 		listBorder.id = id;
 		listBorder.className = 'listBorder';
 
-		//nhs
+		//hs
 		var list_title = document.createElement('div');
 		list_title.className = 'list_title';
 		list_title.innerHTML = l_title;
@@ -806,7 +866,16 @@ margin-top: 10px;
 		list_foot.append(addCardArea);
 		list_foot.appendChild(addCardDiv);
 
-		//nhs
+		//hs
+		var aDelList = document.createElement('a');
+		aDelList.className = 'listDelBtn';
+		var aDelListText = document.createTextNode('x');
+		aDelList.appendChild(aDelListText);
+		aDelList.setAttribute('href','#');
+		aDelList.setAttribute('onclick', 'deleteList('+b_num+','+l_num+');');
+		viewList.appendChild(aDelList);
+		
+		
 		viewList.appendChild(list_title);
 
 		viewList.appendChild(div);
@@ -1067,6 +1136,42 @@ margin-top: 10px;
 		});
 
 	});
+	
+	function deleteList(b_num, l_num) {
+		$.ajax({
+			method: 'post',
+			url: '/main/deleteList',
+			data: {
+				b_num: b_num,
+				l_num: l_num
+			}
+		}).done(function(msg){
+			//카드 삭제 시 리스트 뷰 재구성
+			var listArr = JSON.parse(msg);
+			$('#mainList').children().remove();
+			$.each(listArr, function(i) {
+
+				var l_num = listArr[i].l_num;
+				var id = l_num;
+				var l_title = listArr[i].title;
+
+				listView(id, l_title, l_num);
+
+				/*
+				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
+				 */
+				cardSearch(b_num, l_num, id);
+
+			});
+
+			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+
+			console.log('length_onload: ' + numOfList);
+
+			setWidthOnload(numOfList); // Onload 시 전체 width 설정
+		});
+		
+	}
 
 	function userConnection(users) {
 		$.each(users, function(i) {
@@ -1086,44 +1191,81 @@ margin-top: 10px;
 			$('#user').append(div);
 		});
 	}
+	
+	function byteCalc(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
+	{
+	      var len = 0;
+// 	      var newStr = '';
+	  
+	      for (var i=0;i<str.length; i++) 
+	      {
+	        var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
+	        // 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
+	        
+	       var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
+	        
+
+	        if ((n>= 0)&&(n<256)) len ++; // ASCII 문자코드 set.
+	        else len += 2; // 한글이면 2byte로 계산한다.
+	        
+// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
+// 	        else newStr = newStr + nv;
+	      }
+	      return len;
+	}
 
 	function changeLabelName(num) {
 		var inputLabelName = $('#label_name').val();
-
-		$.ajax({
-			method : 'post',
-			url : '/main/selectLabelName',
-			data : {
-				c_key : $('#cardNum')[0].value
-			}
-		}).done(function(msg) {
-			var detail = JSON.parse(msg);
-			console.log(detail);
-			var labelName = detail.labelName;
-
-			$('#label_name' + num).text(inputLabelName);
-
-			console.log("asdfasfd: " + inputLabelName);
-
-			$('#label_name').text('');
-
-			var labelNameArr = makeLabelNameArr(labelName, num);
-
-			var tempArr = labelNameArr.toString();
-
+		var labelWidth = byteCalc(inputLabelName);
+		
+		if(labelWidth > 20) {
+			alert('라벨 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
+			$('#label_name').val('');
+		} else {
 			$.ajax({
 				method : 'post',
-				url : '/main/updateLabelName',
+				url : '/main/selectLabelName',
 				data : {
-					b_num : b_num,
-					labelName : tempArr
+					c_key : $('#cardNum')[0].value
 				}
 			}).done(function(msg) {
-				var result = JSON.parse(msg);
+				var detail = JSON.parse(msg);
+				console.log(detail);
+				var labelName = detail.labelName;
+
+				$('#label_name' + num).text(inputLabelName);
+
+//	 			alert(labelWidth);
+				
+				if(labelWidth <= 4) labelWidth = 4;
+				else if(labelWidth >= 18) labelWidth = 18;
+				
+				$('#selected_label' + num).css('width', labelWidth*10);
+
+				$('#selected_label' + num).val(inputLabelName);
+
+				console.log("asdfasfd: " + inputLabelName);
+
+				$('#label_name').text('');
+
+				var labelNameArr = makeLabelNameArr(labelName, num);
+
+				var tempArr = labelNameArr.toString();
+
+				$.ajax({
+					method : 'post',
+					url : '/main/updateLabelName',
+					data : {
+						b_num : b_num,
+						labelName : tempArr
+					}
+				}).done(function(msg) {
+					var result = JSON.parse(msg);
+
+				});
 
 			});
-
-		});
+		}		
 	}
 
 	function makeLabelNameArr(labelName, num) {
@@ -1140,7 +1282,7 @@ margin-top: 10px;
 	function label(num) {
 		var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
 		$('#selected_label' + num).css('background-color', backgroundColor);
-
+		
 		var isNone = $('#selected_label' + num).css('display');
 
 		$.ajax({
@@ -1249,7 +1391,9 @@ margin-top: 10px;
 
 
 	<header id="header" class="clearfix">
-		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> <a href="#" class="btn_board"> <span>Boards</span>
+		<a href="/main/board"><h1 style="top: -10px;"
+				onclick="unConnect();">PROJECT 321</h1></a> <a href="#"
+			class="btn_board"> <span>Boards</span>
 		</a>
 		<form action="#" method="post" id="sch_main_wrap">
 			<fieldset>
@@ -1260,7 +1404,8 @@ margin-top: 10px;
 		<!-- 		<button id="testDatepicker" style="width: 80px; height: 20px;"></button> -->
 		<a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
-	<div style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;">${title}</div>
+	<div
+		style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;">${title}</div>
 	<div id="content">
 		<div class="g3-container" canvas="container" align="right">
 			<div class="content">
@@ -1282,11 +1427,15 @@ margin-top: 10px;
 				<a class="menu-icon" href="#"><i class="icon-reorder"></i></a>
 				<ul class="side-menu">
 					<h2 class="title">Menu</h2>
-					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
-					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
-					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
+					<li class="link"><a href="#"
+						class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
+					<li class="link" onclick="getHistory();"><a href="#"
+						class="link_tag2" id="myBtn">History</a></li>
+					<li class="link"><a href="#" onclick="openChat();"
+						class="link_tag3 js-close-right-slidebar">Chatting</a></li>
 					<li class="link"><a href="#" class="link_tag4">File</a></li>
-					<li class="link"><a href="#" onclick="inviteMember()" class="link_tag5 js-close-right-slidebar">Members</a></li>
+					<li class="link"><a href="#" onclick="inviteMember()"
+						class="link_tag5 js-close-right-slidebar">Members</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -1320,23 +1469,32 @@ margin-top: 10px;
 
 						<h1>card title</h1>
 						<div class="label_div">
-							<input id="selected_label1" type="button" onclick="label('1')"> <input id="selected_label2" type="button" onclick="label('2')"> <input id="selected_label3" type="button" onclick="label('3')"> <input id="selected_label4" type="button" onclick="label('4')"> <input id="selected_label5" type="button" onclick="label('5')"> <input id="selected_label6" type="button" onclick="label('6')"> <input id="selected_label7" type="button" onclick="label('7')">
+							<input id="selected_label1" type="button" onclick="label('1')">
+							<input id="selected_label2" type="button" onclick="label('2')">
+							<input id="selected_label3" type="button" onclick="label('3')">
+							<input id="selected_label4" type="button" onclick="label('4')">
+							<input id="selected_label5" type="button" onclick="label('5')">
+							<input id="selected_label6" type="button" onclick="label('6')">
+							<input id="selected_label7" type="button" onclick="label('7')">
 						</div>
-
+						<br>
 						<div id="contentId">
 							<!-- 					<div class="card-desc"> -->
 							<!-- 							<a href="#" class="	 glyphicon-pencil content_tag"	onclick="createDescriptionDiv();">&nbsp;description...</a> -->
-							<a href="#" class="	 glyphicon-pencil content_tag" onclick="handelDesc(1);">&nbsp;content...</a>
+							<a href="#" class="	 glyphicon-pencil content_tag"
+								onclick="handleDesc(1);">&nbsp;content...</a>
 							<div class="content_div"></div>
 							<div class="content_area" id="content_area">
 								<div class="content_text">
 									<textarea rows="10" cols="80" class="content_textarea"></textarea>
 								</div>
 								<div>
-									<button value="SAVE" style="width: 40px; height: 30px;" onclick="sendDesc();">
+									<button value="SAVE" style="width: 40px; height: 30px;"
+										onclick="sendDesc();">
 										<img alt="send" src="/resources/images/btn_send.png">
 									</button>
-									<button value="X" style="width: 40px; height: 30px;" onclick="handelDesc(0);">
+									<button value="X" style="width: 40px; height: 30px;"
+										onclick="handleDesc(0);">
 										<img alt="send" src="/resources/images/btn_cancel.png">
 									</button>
 								</div>
@@ -1352,39 +1510,62 @@ margin-top: 10px;
 					<div class="card-detail-sidebar">
 						<button onclick="labelView();" class="btn-label-view dropdown">
 							<!-- 						<input type="button" onclick="labelView();" class="btn-label-view dropdown"> -->
-							<span class="btn_label_toggle"><img alt="label" src="/resources/images/btn_label.png" width="20px" height="20px" class="btn-label">&nbsp;Label</span>
+							<span class="btn_label_toggle"><img alt="label"
+								src="/resources/images/btn_label.png" width="20px" height="20px"
+								class="btn-label">&nbsp;Label</span>
 						</button>
 						<div class="submenu_hidden">
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
 								<input type="text" id="label_name">
-								<li id="label1" onclick="label('1');">&nbsp; <span id="label_name1">&nbsp;</span>
+								<li id="label1" onclick="label('1');">&nbsp; <span
+									id="label_name1">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('1')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('1')">
 								</a>
-								<li id="label2" onclick="label('2');">&nbsp; <span id="label_name2">&nbsp;</span>
+								<li id="label2" onclick="label('2');">&nbsp; <span
+									id="label_name2">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('2')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('2')">
 								</a>
-								<li id="label3" onclick="label('3');">&nbsp; <span id="label_name3">&nbsp;</span>
+								<li id="label3" onclick="label('3');">&nbsp; <span
+									id="label_name3">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('3')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('3')">
 								</a>
-								<li id="label4" onclick="label('4');">&nbsp; <span id="label_name4">&nbsp;</span>
+								<li id="label4" onclick="label('4');">&nbsp; <span
+									id="label_name4">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('4')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('4')">
 								</a>
-								<li id="label5" onclick="label('5');">&nbsp; <span id="label_name5">&nbsp;</span>
+								<li id="label5" onclick="label('5');">&nbsp; <span
+									id="label_name5">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('5')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('5')">
 								</a>
-								<li id="label6" onclick="label('6');">&nbsp; <span id="label_name6">&nbsp;</span>
+								<li id="label6" onclick="label('6');">&nbsp; <span
+									id="label_name6">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('6')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('6')">
 								</a>
-								<li id="label7" onclick="label('7');">&nbsp; <span id="label_name7">&nbsp;</span>
+								<li id="label7" onclick="label('7');">&nbsp; <span
+									id="label_name7">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('7')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('7')">
 								</a>
 							</ul>
 						</div>
@@ -1396,25 +1577,35 @@ margin-top: 10px;
 								height="20px" class="btn-attachment">&nbsp;Attachment</span>
 						</button> -->
 						<button id="insertLink">
-							<span><img alt="label" src="/resources/images/btn_attachment.png" width="20px" height="20px" class="btn-attachment">&nbsp;Attachment</span>
+							<span><img alt="label"
+								src="/resources/images/btn_attachment.png" width="20px"
+								height="20px" class="btn-attachment">&nbsp;Attachment</span>
 							<div id="overlay_t"></div>
 							<div id="popup_layer">
-								<input type="text" id="insertLinkInput" placeholder="attach link"> <input type="button" id="linkSubmit" class="close" value="save">
+								<input type="text" id="insertLinkInput"
+									placeholder="attach link"> <input type="button"
+									id="linkSubmit" class="close" value="save">
 								<!-- <button id="linkSubmit">SAVE</button> -->
 							</div>
 						</button>
 						<br> <br>
 						<button>
-							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;Delete</span>
+							<span><img alt="label"
+								src="/resources/images/btn_delete.png" width="20px"
+								height="20px" class="btn-delete">&nbsp;Delete</span>
 						</button>
 						<br> <br>
 						<!-- 						<input type="text" id="date_picker"> -->
 						<button>
-							<span><img alt="label" src="/resources/images/btn_calendar.png" width="20px" height="20px" class="btn-calendar">&nbsp;&nbsp;&nbsp;Calendar</span>
+							<span><img alt="label"
+								src="/resources/images/btn_calendar.png" width="20px"
+								height="20px" class="btn-calendar">&nbsp;&nbsp;&nbsp;Calendar</span>
 						</button>
 						<br> <br>
 						<button>
-							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;empty2</span>
+							<span><img alt="label"
+								src="/resources/images/btn_delete.png" width="20px"
+								height="20px" class="btn-delete">&nbsp;empty2</span>
 						</button>
 						<br> <br>
 					</div>
@@ -1428,7 +1619,8 @@ margin-top: 10px;
 	</div>
 
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/slidebars.js"></script>
 <script src="/resources/js/scripts.js"></script>
