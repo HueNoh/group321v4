@@ -604,7 +604,7 @@ body::-webkit-scrollbar-thumb
 					// 			console.log('cardLink=' + cardLink[0]);
 
 					handleDesc(0); // description textarea 숨기기
-					// 			console.log(detail);
+					console.log(detail);
 					var content = cardInfo.content;
 
 					var label = cardInfo.label;
@@ -679,6 +679,8 @@ body::-webkit-scrollbar-thumb
 		for (var i = 1; i <= 7; i++) {
 			if ('' != labelNameArr[i - 1]) {
 				labelWidth = byteCalc(labelNameArr[i - 1]);
+				if(labelWidth <= 4) labelWidth = 4;
+				else if(labelWidth >= 18) labelWidth = 18;
 				$('#label_name' + i).text(labelNameArr[i - 1]);
 				$('#selected_label' + i).css('width', labelWidth*10);
 				$('#selected_label' + i).val(labelNameArr[i - 1]);
@@ -907,6 +909,8 @@ body::-webkit-scrollbar-thumb
 				var l_title = listArr[i].title;
 
 				listView(id, l_title, l_num);
+				
+				
 
 				/*
 				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
@@ -1216,6 +1220,7 @@ body::-webkit-scrollbar-thumb
 
 	function changeLabelName(num) {
 		var inputLabelName = $('#label_name').val();
+		
 		var labelWidth = byteCalc(inputLabelName);
 		
 		if(labelWidth > 20) {
@@ -1233,17 +1238,24 @@ body::-webkit-scrollbar-thumb
 				console.log(detail);
 				var labelName = detail.labelName;
 
-				$('#label_name' + num).text(inputLabelName);
-
 //	 			alert(labelWidth);
 				
 				if(labelWidth <= 4) labelWidth = 4;
 				else if(labelWidth >= 18) labelWidth = 18;
 				
 				$('#selected_label' + num).css('width', labelWidth*10);
-
-				$('#selected_label' + num).val(inputLabelName);
-
+				
+				if('' == inputLabelName) {
+					$('#selected_label'+num).val(" ");
+					$('#selected_label'+num).append("&nbsp;");
+					
+					$('#label_name' + num).text(' ');
+					$('#label_name' + num).append("&nbsp;");
+				} else {
+					$('#selected_label' + num).val(inputLabelName);
+					$('#label_name' + num).text(inputLabelName);
+				}
+				
 				console.log("asdfasfd: " + inputLabelName);
 
 				$('#label_name').text('');
@@ -1379,6 +1391,16 @@ body::-webkit-scrollbar-thumb
 		window.open('profile?profileId=' + id, '',
 				'width=400, height=300, left=500, top=400');
 	}
+	
+// 	function signOut() {
+// 		$.ajax({
+// 			method: 'post'
+// 			, url: '/main/logOut'
+// 		}).done(function(){
+// 			alert('로그아웃 완료');
+// 		});
+// 	}
+	
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -1436,6 +1458,8 @@ body::-webkit-scrollbar-thumb
 					<li class="link"><a href="#" class="link_tag4">File</a></li>
 					<li class="link"><a href="#" onclick="inviteMember()"
 						class="link_tag5 js-close-right-slidebar">Members</a></li>
+					<li class="link"><a href="/main/logOut"
+						class="link_tag6 js-close-right-slidebar">SignOut</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -1469,13 +1493,13 @@ body::-webkit-scrollbar-thumb
 
 						<h1>card title</h1>
 						<div class="label_div">
-							<input id="selected_label1" type="button" onclick="label('1')">
-							<input id="selected_label2" type="button" onclick="label('2')">
-							<input id="selected_label3" type="button" onclick="label('3')">
-							<input id="selected_label4" type="button" onclick="label('4')">
-							<input id="selected_label5" type="button" onclick="label('5')">
-							<input id="selected_label6" type="button" onclick="label('6')">
-							<input id="selected_label7" type="button" onclick="label('7')">
+							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;">
+							<input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;">
+							<input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;">
+							<input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;">
+							<input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;">
+							<input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;">
+							<input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
 						</div>
 						<br>
 						<div id="contentId">
@@ -1518,6 +1542,55 @@ body::-webkit-scrollbar-thumb
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
 								<input type="text" id="label_name">
+<!-- 								<li id="label1" onclick="label('1');">&nbsp; <button -->
+<!-- 									id="label_name1">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('1')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label2" onclick="label('2');">&nbsp; <button -->
+<!-- 									id="label_name2">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('2')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label3" onclick="label('3');">&nbsp; <button -->
+<!-- 									id="label_name3">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('3')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label4" onclick="label('4');">&nbsp; <button -->
+<!-- 									id="label_name4">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('4')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label5" onclick="label('5');">&nbsp; <button -->
+<!-- 									id="label_name5">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('5')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label6" onclick="label('6');">&nbsp; <button -->
+<!-- 									id="label_name6">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('6')"> -->
+<!-- 								</a> -->
+<!-- 								<li id="label7" onclick="label('7');">&nbsp; <button -->
+<!-- 									id="label_name7">&nbsp;</button> -->
+<!-- 								</li> -->
+<!-- 								<a href="#"> <img alt="label_setting" -->
+<!-- 									src="/resources/images/btn_label_setting.png" -->
+<!-- 									class="btn_label_setting" onclick="changeLabelName('7')"> -->
+<!-- 								</a> -->
 								<li id="label1" onclick="label('1');">&nbsp; <span
 									id="label_name1">&nbsp;</span>
 								</li>
