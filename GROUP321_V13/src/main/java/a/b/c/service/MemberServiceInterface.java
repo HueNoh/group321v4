@@ -75,13 +75,11 @@ public interface MemberServiceInterface {
 
 	public List searchFilter(Map map);
 
-<<<<<<< HEAD
-	public List searchLabel(Map map);
-
 	public int deleteList(Map map);
 
 	public int deleteCard(Map map);
-=======
-	public List searchLabel(Map map);	public List dueDate(Map map);
->>>>>>> refs/heads/c
+
+	public List searchLabel(Map map);
+
+	public List dueDate(Map map);
 }
