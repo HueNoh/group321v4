@@ -1436,7 +1436,6 @@ body::-webkit-scrollbar-thumb
 		<div id="message" onclick="openChat();"></div>
 	</div>
 
-
 	<header id="header" class="clearfix">
 		<a href="/main/board"><h1 style="top: -10px;"
 				onclick="unConnect();">PROJECT 321</h1></a> <a href="#"
