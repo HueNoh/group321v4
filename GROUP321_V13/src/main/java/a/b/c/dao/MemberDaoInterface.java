@@ -36,6 +36,7 @@ public interface MemberDaoInterface {
 
 	public int updateCard(Map map);
 
+	public List dueDate(Map map);
 	public int deleteCard(Map map);
 
 	public List selectCard(Map map);

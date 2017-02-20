@@ -284,4 +284,10 @@ public class MemberDaoImpl implements MemberDaoInterface {
 		return mapper.searchLabel(map);
 	}
 
+	@Override
+	public List dueDate(Map map) {
+		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
+		return mapper.dueDate(map);
+	}
+
 }

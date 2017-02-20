@@ -318,5 +318,10 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		// TODO Auto-generated method stub
 		return memberDao.searchLabel(map);
 	}
+	@Override
+	public List dueDate(Map map) {
+		// TODO Auto-generated method stub
+		return  memberDao.dueDate(map);
+	}
 
 }
