@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="/resources/css/websocket.atj.css">
 <!-- <link rel="stylesheet" href="/resources/css/jquery-ui.css"> -->
 <style>
+a:hover, #addList>div {cursor: pointer}
 .listBorder, .addListBorder {
 	width: 250px;
 	height: 100%;
@@ -305,6 +306,21 @@ margin-top: 10px;
 
 .addCardContainer {
 	display: none;
+}
+
+.list_title {
+	text-align: left;
+	text-indent: 1em;
+	font-weight: bold;
+	
+}
+
+.listDelBtn {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	display: block;
+	font-weight: bold;
 }
 </style>
 <script>
@@ -756,12 +772,12 @@ margin-top: 10px;
 		var viewList = document.createElement('div');
 		viewList.id = 'viewList' + id;
 		viewList.className = 'viewList';
-
+		
 		var listBorder = document.createElement('div');
 		listBorder.id = id;
 		listBorder.className = 'listBorder';
 
-		//nhs
+		//hs
 		var list_title = document.createElement('div');
 		list_title.className = 'list_title';
 		list_title.innerHTML = l_title;
@@ -802,7 +818,16 @@ margin-top: 10px;
 		list_foot.append(addCardArea);
 		list_foot.appendChild(addCardDiv);
 
-		//nhs
+		//hs
+		var aDelList = document.createElement('a');
+		aDelList.className = 'listDelBtn';
+		var aDelListText = document.createTextNode('x');
+		aDelList.appendChild(aDelListText);
+		aDelList.setAttribute('href','#');
+		aDelList.setAttribute('onclick', 'deleteList('+b_num+','+l_num+');');
+		viewList.appendChild(aDelList);
+		
+		
 		viewList.appendChild(list_title);
 
 		viewList.appendChild(div);
@@ -1063,6 +1088,42 @@ margin-top: 10px;
 		});
 
 	});
+	
+	function deleteList(b_num, l_num) {
+		$.ajax({
+			method: 'post',
+			url: '/main/deleteList',
+			data: {
+				b_num: b_num,
+				l_num: l_num
+			}
+		}).done(function(msg){
+			//카드 삭제 시 리스트 뷰 재구성
+			var listArr = JSON.parse(msg);
+			$('#mainList').children().remove();
+			$.each(listArr, function(i) {
+
+				var l_num = listArr[i].l_num;
+				var id = l_num;
+				var l_title = listArr[i].title;
+
+				listView(id, l_title, l_num);
+
+				/*
+				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
+				 */
+				cardSearch(b_num, l_num, id);
+
+			});
+
+			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+
+			console.log('length_onload: ' + numOfList);
+
+			setWidthOnload(numOfList); // Onload 시 전체 width 설정
+		});
+		
+	}
 
 	function userConnection(users) {
 		$.each(users, function(i) {

@@ -96,6 +96,16 @@ public class MainController {
 
 	}
 	
+	@RequestMapping(value = "/deleteList", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String deleteList(@RequestParam Map map){
+		int result = memberService.deleteList(map);
+		List list = memberService.searchList(map);
+		
+		return new Gson().toJson(list);
+	}
+	
+	
 	@RequestMapping(value = "/deleteBoard", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public int deleteBoard(@RequestParam Map map){
