@@ -322,6 +322,13 @@ margin-top: 10px;
 	display: block;
 	font-weight: bold;
 }
+
+.cardDelBtn {
+	top: 0px;
+	display: block;
+	
+}
+
 </style>
 <script>
 	document.onkeydown = refl;
@@ -485,7 +492,6 @@ margin-top: 10px;
 		$('#addCardTitle' + id).val('');
 		cardId = id;
 		cardl_num = l_num;
-
 	}
 
 	function addCardDetail() {
@@ -589,14 +595,14 @@ margin-top: 10px;
 					$('#attachLink').children().empty();
 					$.each(cardLink, function(i) {
 						var node = document.createElement('div');
+
 						var textNode = document
 								.createTextNode(cardLink[i].content);
 						var aTag = document.createElement('a');
 						aTag.href = cardLink[i].content;
 						aTag.appendChild(textNode);
 						aTag.target = '_blank';
-						node.appendChild(aTag);
-						//console.log(node);
+						node.appendChild(aTag);	
 
 						$('#attachLink').append(node);
 					});
@@ -827,7 +833,6 @@ margin-top: 10px;
 		aDelList.setAttribute('onclick', 'deleteList('+b_num+','+l_num+');');
 		viewList.appendChild(aDelList);
 		
-		
 		viewList.appendChild(list_title);
 
 		viewList.appendChild(div);
@@ -936,6 +941,15 @@ margin-top: 10px;
 				cardDiv.onclick = function() {
 					cardView(b_num, l_num, c_num);
 				};
+				
+				//카드 삭제 버튼
+				var aDelCard = document.createElement('a');
+				aDelCard.className = 'cardDelBtn';
+				var aDelCardText = document.createTextNode('x');
+				aDelCard.appendChild(aDelCardText);
+				aDelCard.setAttribute('href','#');
+				aDelCard.setAttribute('onclick', 'deleteCard('+b_num+','+l_num+','+c_num+');');
+				cardDiv.appendChild(aDelCard);
 
 				labelSet(b_num, l_num, c_num);
 
@@ -1106,20 +1120,41 @@ margin-top: 10px;
 				var l_num = listArr[i].l_num;
 				var id = l_num;
 				var l_title = listArr[i].title;
-
+				
 				listView(id, l_title, l_num);
-
-				/*
-				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
-				 */
 				cardSearch(b_num, l_num, id);
 
 			});
-
 			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+			setWidthOnload(numOfList); // Onload 시 전체 width 설정
+		});
+		
+	}
+	
+	function deleteCard(b_num, l_num, c_num) {
+		$.ajax({
+			method: 'post',
+			url: '/main/deleteCard',
+			data: {
+				b_num: b_num,
+				l_num: l_num,
+				c_num: c_num
+			}
+		}).done(function(msg){
+			//카드 삭제 시 리스트 뷰 재구성
+			var listArr = JSON.parse(msg);
+			$('#mainList').children().remove();
+			$.each(listArr, function(i) {
 
-			console.log('length_onload: ' + numOfList);
+				var l_num = listArr[i].l_num;
+				var id = l_num;
+				var l_title = listArr[i].title;
+				
+				listView(id, l_title, l_num);
+				cardSearch(b_num, l_num, id);
 
+			});
+			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
 			setWidthOnload(numOfList); // Onload 시 전체 width 설정
 		});
 		

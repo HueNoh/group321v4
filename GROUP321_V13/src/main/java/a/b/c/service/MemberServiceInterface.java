@@ -78,4 +78,6 @@ public interface MemberServiceInterface {
 	public List searchLabel(Map map);
 
 	public int deleteList(Map map);
+
+	public int deleteCard(Map map);
 }
