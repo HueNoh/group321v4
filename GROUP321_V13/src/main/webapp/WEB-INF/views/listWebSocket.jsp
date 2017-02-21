@@ -58,17 +58,13 @@
 			} else if ("close" == access) {
 
 			} else if ('listMove' == access) {
-				if (id != '${sessionScope.id}') {
 
 					$('#' + msg).html('');
 					listSearch(b_num);
-				}
 
 			} else if ("cardMove" == access) {
-				if (id != '${sessionScope.id}') {
 					$('#mainList').html('');
 					listSearch(b_num);
-				}
 			} else if ('listCreate' == access) {
 				if (id != '${sessionScope.id}') {
 

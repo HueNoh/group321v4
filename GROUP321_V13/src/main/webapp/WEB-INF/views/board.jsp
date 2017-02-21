@@ -14,7 +14,10 @@
 .board {
 	position: relative;
 }
-
+.board_name{
+	overflow: hidden;
+	word-break: break-all;
+}
 .boardDelBtn {
 	display: block;
 	position: absolute;
@@ -171,12 +174,14 @@
 					var aTag = document.createElement('a');
 					var createAText = document.createTextNode(arrBoard.title
 							+ '_' + arrBoard.b_num);
+					
+					aTag.className = 'board_name';
 
 					aTag.setAttribute('href', '/main/list?b_num='
 							+ arrBoard.b_num);
 					aTag.appendChild(createAText);
 					div.appendChild(aTag);
-
+					
 					document.getElementById('createBoard').appendChild(div);
 
 					var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
@@ -194,31 +199,66 @@
 			$('#CBTitle').focus();
 			$('#CBTitle').val('');
 		});
-
+//70 35
 		$('#CBSubmit').click(function() {
-			if ($('#CBTitle').val()) {
-				addBoard($('#CBTitle').val());
+			var boardTitle = $('#CBTitle').val();
+			var lengthOfBoardTitle = byteCalc(boardTitle);
+			console.log('boardLength: '+lengthOfBoardTitle);
+			if(lengthOfBoardTitle > 70) {
+				alert('보드 이름은 영문 70자, 한글 35자를 넘을 수 없습니다');
+				$('#CBTitle').val('');
+			} else {
+				if ($('#CBTitle').val()) {
+					addBoard($('#CBTitle').val());
+				}
 			}
 		});
 
 	});
 
 	function deleteBoard(b_num) {
-		$.ajax({
-			method : 'post',
-			url : '/main/deleteBoard',
-			data : {
-				b_num : b_num
-			}
-		}).done(function(msg) {
-			//alert(msg);
-			var tmp = '#board' + b_num;
-
-			if (msg == 0) {
-				$(tmp).remove();
-			}
-		});
+		var result = confirm('보드를 삭제 하시겠습니까?'); 
+		
+		if(result) {
+			$.ajax({
+				method : 'post',
+				url : '/main/deleteBoard',
+				data : {
+					b_num : b_num
+				}
+			}).done(function(msg) {
+				//alert(msg);
+				var tmp = '#board' + b_num;
+	
+				if (msg == 0) {
+					$(tmp).remove();
+				}
+			});
+		}
 	};
+	
+	function byteCalc(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
+	{
+	      var len = 0;
+// 	      var newStr = '';
+	  
+	      for (var i=0;i<str.length; i++) 
+	      {
+	        var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
+	        // 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
+	        
+	       var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
+	        
+
+	        if ((n>= 0)&&(n<256)) len ++; // ASCII 문자코드 set.
+	        else len += 2; // 한글이면 2byte로 계산한다.
+	        
+// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
+// 	        else newStr = newStr + nv;
+	      }
+	      return len;
+	}
+	
 </script>
 </head>
 <body>
@@ -243,7 +283,7 @@
 		<div id="addBoard">
 			<div>Create</div>
 			<div id="CBContainer">
-				<textarea id="CBTitle" style="width: 95%;"></textarea>
+				<textarea id="CBTitle" style="width: 95%;" wrap="hard"></textarea>
 				<button id="CBSubmit">SAVE</button>
 			</div>
 		</div>
