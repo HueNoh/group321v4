@@ -10,6 +10,11 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/resources/js/jquery-3.1.1.min.js"></script>
+
 <link rel="stylesheet" href="/resources/css/slidebars.css">
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
@@ -57,6 +62,8 @@ body::-webkit-scrollbar-thumb
 	overflow-y: auto;
 }
 
+
+
 .list {
 	width: 100%;
 	max-height:;
@@ -84,6 +91,12 @@ body::-webkit-scrollbar-thumb
 .viewList .list_foot, .viewList .addCard, .viewList .list_title {
 	width: 100%;
 }
+
+
+#nal {
+	overflow-y: auto;
+}
+
 
 #mainList {
 	float: left;
@@ -586,7 +599,7 @@ body::-webkit-scrollbar-thumb
 					});
 		}
 	}
-
+	var dateC_num=0;
 	function cardView(b_num, l_num, c_num) {
 		$('#cardReply').empty();
 		$('#commentArea').val('');
@@ -618,6 +631,31 @@ body::-webkit-scrollbar-thumb
 					var labelName = cardInfo.labelname;
 					console.log("view: " + labelName);
 
+					
+					var dueDate = cardInfo.duedate;
+					$('#date').val(dueDate);
+					
+					
+					if(null!=dueDate){
+						
+						 var sday = "D-day"; 
+						 var today = new Date(); 
+						 var mday = new Date(dueDate); 
+						 var tmime = (mday.getTime() - today.getTime()); 
+						 var itime = 24 * 60 * 60 * 1000; 
+						 var fdday = tmime / itime; 
+						 var dday = Math.floor(fdday)+1; 
+						
+												
+						$('.nal_div').text("D-day  "+dueDate); 
+						$('.nal2_div').text("D-day 까지 "+dday+ " 일 남았습니다."); 
+					}else{
+						$('.nal_div').text(''); 
+						$('.nal2_div').text(''); 
+					}
+					
+					 
+					
 					labelShow(label);
 					labelNameShow(labelName);
 
@@ -651,7 +689,7 @@ body::-webkit-scrollbar-thumb
 					});
 
 					document.getElementById('cardNum').value = c_num;
-
+					dateC_num=c_num;
 					cardModal.style.display = "block";
 				});
 
@@ -730,7 +768,10 @@ body::-webkit-scrollbar-thumb
 			$('.content_area').hide();
 		}
 	}
+	
 
+ 	
+ 	
 	function sendDesc() {
 		$('.content_tag').show();
 		$('.content_div').show();
@@ -1417,15 +1458,77 @@ body::-webkit-scrollbar-thumb
 				'width=400, height=300, left=500, top=400');
 	}
 	
-// 	function signOut() {
-// 		$.ajax({
-// 			method: 'post'
-// 			, url: '/main/logOut'
-// 		}).done(function(){
-// 			alert('로그아웃 완료');
-// 		});
-// 	}
+
+	  $(function(){
+			$("#wow").datepicker({
+				
+				
+				changeMonth: true,
+				closeText: 'close',
+				dateFormat: 'yy-mm-dd',
+				autoclose: true,
+		        changeYear: true,
+				onSelect : function(day){
+					
+					$.ajax({
+						method : 'post',
+						url : '/main/dueDate',
+						data : {
+							c_key : dateC_num,
+							day : day
+							
+						}
+					}).done(function(msg) {
+						
+						$('#date').val(day);
+						var detail = JSON.parse(msg);
+						console.log('date:'+msg);
+						
+				 
+					   $('.nal_div').text("D-day     :"+day)
+					   
+						  
+						 var sday = "D-day"; 
+						 var today = new Date(); 
+						 var mday = new Date(day); 
+						 var tmime = (mday.getTime() - today.getTime()); 
+						 var itime = 24 * 60 * 60 * 1000; 
+						 var fdday = tmime / itime; 
+						 var dday = Math.floor(fdday)+1; 
+						 if (dday == 0) 
+							 $('.nal2_div').text("오늘입니다."); 
+						 else if (dday > 0) 
+							 $('.nal2_div').text(sday + "까지 " + dday + "일 남았습니다."); 
+						 else if (dday < 0) 
+							 $('.nal2_div').text(sday + "로부터 " + dday + "일 지났습니다.");  
+						
+						 $("#wow").css('display','none');
+					});
+				}
+			
+			});
 	
+		
+		});
+		
+
+	  
+	  
+	 function showCal(){
+
+			$( "#wow" ).toggle();
+		} 
+	 
+
+	 
+	 $('#wow').datepicker().on('changeDate', function (day) {
+		$('#wow').hide();
+	});   
+		    
+		    
+		    
+
+	 
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -1548,6 +1651,18 @@ body::-webkit-scrollbar-thumb
 								</div>
 							</div>
 						</div>
+						
+						
+			 				
+							<div class="nal_div" ></div>
+							<div class="nal2_div" ></div>
+							
+				<!-- 		<p>마감일: <input type="text" id="date" ></p>
+						<input type="text" id="dday"  placeholder="남은 날짜">
+<div id="dday"></div>
+						 -->
+					
+												
 						<h3>Add Comment</h3>
 						<textarea rows="10" cols="80" id="commentArea" required="required"></textarea>
 						<input type="button" value="SAVE" onclick="comment();">
@@ -1566,55 +1681,6 @@ body::-webkit-scrollbar-thumb
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
 								<input type="text" id="label_name">
-<!-- 								<li id="label1" onclick="label('1');">&nbsp; <button -->
-<!-- 									id="label_name1">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('1')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label2" onclick="label('2');">&nbsp; <button -->
-<!-- 									id="label_name2">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('2')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label3" onclick="label('3');">&nbsp; <button -->
-<!-- 									id="label_name3">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('3')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label4" onclick="label('4');">&nbsp; <button -->
-<!-- 									id="label_name4">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('4')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label5" onclick="label('5');">&nbsp; <button -->
-<!-- 									id="label_name5">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('5')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label6" onclick="label('6');">&nbsp; <button -->
-<!-- 									id="label_name6">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('6')"> -->
-<!-- 								</a> -->
-<!-- 								<li id="label7" onclick="label('7');">&nbsp; <button -->
-<!-- 									id="label_name7">&nbsp;</button> -->
-<!-- 								</li> -->
-<!-- 								<a href="#"> <img alt="label_setting" -->
-<!-- 									src="/resources/images/btn_label_setting.png" -->
-<!-- 									class="btn_label_setting" onclick="changeLabelName('7')"> -->
-<!-- 								</a> -->
 								<li id="label1" onclick="label('1');">&nbsp; <span
 									id="label_name1">&nbsp;</span>
 								</li>
@@ -1692,10 +1758,20 @@ body::-webkit-scrollbar-thumb
 						</button>
 						<br> <br>
 						<!-- 						<input type="text" id="date_picker"> -->
+
+						<button id="calBtn" onclick="showCal()">
+							<span><img alt="label"
+								src="/resources/images/calendar.jpg" width="25px" height="25px"
+								class="btn-delete">&nbsp;Calendar</span>
+						</button>
+						<div id="wow" style="display:none;"></div>
+						<br> <br>
+
+
 						<button>
 							<span><img alt="label"
 								src="/resources/images/btn_calendar.png" width="20px"
-								height="20px" class="btn-calendar">&nbsp;&nbsp;&nbsp;Calendar</span>
+								height="20px" class="btn-calendar"/>&nbsp;&nbsp;&nbsp;empty1</span>
 						</button>
 						<br> <br>
 						<button>

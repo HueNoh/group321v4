@@ -432,4 +432,16 @@ public class MainController {
 		return "profile";
 
 	}
+	
+
+	@RequestMapping(value = "/dueDate", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String dueDate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		System.out.println(map);
+		List result = memberService.dueDate(map);
+		System.out.println(result);
+		return new Gson().toJson(map.get("day"));
+	}
 }
