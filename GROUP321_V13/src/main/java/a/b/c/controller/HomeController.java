@@ -159,7 +159,6 @@ public class HomeController {
 			logger.debug("personService.insertPerson(map)" + String.valueOf(result));
 		}
 		return "success";
-
 	}
 
 	@RequestMapping(value = "/logDup", method = { RequestMethod.POST, RequestMethod.GET })
@@ -167,7 +166,6 @@ public class HomeController {
 		System.out.println("logDup");
 		String err = "001";
 		Map inUserIpMap = inBoardMember.getUserIpMap();
-
 		String ip = (String) inUserIpMap.get(map.get("id"));
 		return loginOper(session, request, map, model) + "?err=" + err + "&dupLogIp=" + ip;
 	}
