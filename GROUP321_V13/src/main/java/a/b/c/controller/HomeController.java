@@ -150,13 +150,19 @@ public class HomeController {
 			logger.debug("personService.insertPerson(map)" + String.valueOf(result));
 		}
 		return "success";
-
 	}
 
 	@RequestMapping(value = "/logDup", method = { RequestMethod.POST, RequestMethod.GET })
 	public String logDup(Model model, @RequestParam Map map, HttpSession session, HttpServletRequest request) {
 
-		return loginOper(session, request, map, model);
+
+
+		System.out.println("logDup");
+		String err = "001";
+		Map inUserIpMap = inBoardMember.getUserIpMap();
+		String ip = (String) inUserIpMap.get(map.get("id"));
+		return loginOper(session, request, map, model) + "?err=" + err + "&dupLogIp=" + ip;
+
 	}
 
 }

@@ -1670,10 +1670,13 @@ body::-webkit-scrollbar-thumb
 
 	}
 
-	function profile(id) {
-		window.open('profile?profileId=' + id, '',
-				'width=400, height=300, left=500, top=400');
+	 function profile(id) {
+		window.open('profile?profileId=' + id, '','width=400, height=300, left=500, top=400');
 	}
+
+				
+
+
 
 	$(function() {
 		$("#wow").datepicker({
@@ -1722,6 +1725,7 @@ body::-webkit-scrollbar-thumb
 		});
 	});
 
+
 	function logout() {
 		var result = confirm('로그아웃 하시겠습니까?');
 
@@ -1733,6 +1737,28 @@ body::-webkit-scrollbar-thumb
 	function showCal() {
 		$("#wow").toggle();
 	}
+
+	
+		
+	function showCal(){
+		$( "#wow" ).toggle();
+	} 
+	 
+	$('#wow').datepicker().on('changeDate', function (day) {
+		$('#wow').hide();
+	});   
+		    
+		    
+	function logout() {
+		var result = confirm('로그아웃 하시겠습니까?'); 
+		
+		if(result) { //yes 
+			location.replace('/main/logOut');
+		}
+	}
+	
+	$('#id').text(id);
+
 
 	$(function() {
 		$('#wow').datepicker().on('changeDate', function(day) {
@@ -1806,8 +1832,10 @@ body::-webkit-scrollbar-thumb
 	</div>
 
 	<header id="header" class="clearfix">
-		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> <a href="#" class="btn_board"> <span>Boards</span>
-		</a>
+
+		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> 
+		<a href="#" onclick="profile('${id}')"  class="btn_board"><span>${id}</span></a>
+		<a href="#"	onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
 		<form action="#" method="post" id="sch_main_wrap">
 			<fieldset>
 				<input type="text" name="sch_main" id="sch_main">

@@ -41,7 +41,8 @@
 		<form action="/login" id="log" method="post">
 
 			<h1>project321</h1>
-			<input type="text" name="id" id="id" placeholder="아이디" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <input type="password" name="pw" id="pw" placeholder="비밀번호" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" /> <a href="login" onclick="log();"><div class="btn">로그인</div></a>
+			<input type="text" name="id" id="id" placeholder="아이디" onFocus="field_focus(this, '아이디');" onblur="field_blur(this, '아이디');" class="email" /> 
+			<input type="password" name="pw" id="pw" placeholder="비밀번호" onFocus="field_focus(this, '비밀번호');" onblur="field_blur(this, '비밀번호');" class="email" /> <a href="login" onclick="log();"><div class="btn">로그인</div></a>
 			<!-- End Btn -->
 
 		</form>
