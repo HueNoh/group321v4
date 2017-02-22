@@ -7,8 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>List</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -19,12 +18,13 @@
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="/resources/css/websocket.atj.css">
 <!-- <link rel="stylesheet" href="/resources/css/jquery-ui.css"> -->
 <style>
-a:hover, #addList>div {cursor: pointer}
+a:hover, #addList>div {
+	cursor: pointer
+}
 /* 
 body::-webkit-scrollbar-track
 {
@@ -62,8 +62,6 @@ body::-webkit-scrollbar-thumb
 	overflow-y: auto;
 }
 
-
-
 .list {
 	width: 100%;
 	max-height:;
@@ -92,11 +90,9 @@ body::-webkit-scrollbar-thumb
 	width: 100%;
 }
 
-
 #nal {
 	overflow-y: auto;
 }
-
 
 .list_title {
 	overflow: hidden;
@@ -224,11 +220,11 @@ body::-webkit-scrollbar-thumb
 
 .submenu>li>span {
 	font-size: 15px;
-    margin-top: 5px;
-    font-weight: bold;
-    color: black;
-    z-index: 3;
-    display: inline-block;
+	margin-top: 5px;
+	font-weight: bold;
+	color: black;
+	z-index: 3;
+	display: inline-block;
 }
 
 .submenu:first-child {
@@ -294,8 +290,8 @@ body::-webkit-scrollbar-thumb
 	margin-bottom: 5px;
 	border: 1px;
 	font-size: 15px;
-    font-weight: bold;
-    color: black;
+	font-weight: bold;
+	color: black;
 	box-shadow: 2px 2px 1px lightslategrey;
 }
 
@@ -343,14 +339,15 @@ body::-webkit-scrollbar-thumb
 
 #commentArea {
 	border-radius: 5px;
-    border: 2px solid #888;
-    box-shadow: 2px 2px 6px -2px lightslategrey
+	border: 2px solid #888;
+	box-shadow: 2px 2px 6px -2px lightslategrey
 }
 
 .comment_writer {
 	font-weight: bold;
 	color: #D2691E;
 }
+
 .comment_writer:hover {
 	cursor: pointer;
 }
@@ -391,7 +388,6 @@ body::-webkit-scrollbar-thumb
 	text-align: left;
 	text-indent: 1em;
 	font-weight: bold;
-	
 }
 
 .listDelBtn {
@@ -405,9 +401,7 @@ body::-webkit-scrollbar-thumb
 .cardDelBtn {
 	top: 0px;
 	display: block;
-	
 }
-
 </style>
 <script>
 	document.onkeydown = refl;
@@ -427,7 +421,7 @@ body::-webkit-scrollbar-thumb
 	var chatOnOff = false;
 
 	var b_num = '${b_num}';
-	var webSocket = new WebSocket('ws://211.183.8.20/list');
+	var webSocket = new WebSocket('ws://211.183.8.14/list');
 
 	webSocket.onopen = function(event) {
 		onOpen(event)
@@ -471,6 +465,7 @@ body::-webkit-scrollbar-thumb
 						moveData = result;
 
 						var data = JSON.stringify(moveData);
+						sessionChk();
 						$.ajax({
 							url : '/main/moveList',
 							method : 'post',
@@ -495,7 +490,11 @@ body::-webkit-scrollbar-thumb
 
 		viewMsg();
 		inUsers();
-
+		$("#inputMessage").keydown(function(key) {
+			if (key.keyCode == 13) {
+				$("#sendMessage").click();
+			}
+		});
 	};
 
 	function setWidthOnload(num) {
@@ -531,6 +530,7 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function addList(title) {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/createList',
@@ -541,27 +541,26 @@ body::-webkit-scrollbar-thumb
 
 			}
 
-		}).done(
-				function(msg) {
+		}).done(function(msg) {
 
-					var arrList = JSON.parse(msg);
-					var id = arrList.l_num;
-					//nhs
-					var l_title = arrList.title;
+			var arrList = JSON.parse(msg);
+			var id = arrList.l_num;
+			//nhs
+			var l_title = arrList.title;
 
-					listView(id, l_title, arrList.l_num);
+			listView(id, l_title, arrList.l_num);
 
-					numOfList = $('.viewList').length;
-					setWidthAddList(numOfList);
+			numOfList = $('.viewList').length;
+			setWidthAddList(numOfList);
 
-					/* 각 리스트들의 카드들을 쇼터블 하는 function */
-					listSortable(id);
+			/* 각 리스트들의 카드들을 쇼터블 하는 function */
+			listSortable(id);
 
-					var listHtml = $('#mainList')[0].innerHTML;
-					send('mainList', 'listCreate', '${sessionScope.id}',
-							'${sessionScope.b_num}', '0', '0');
+			var listHtml = $('#mainList')[0].innerHTML;
+			send('mainList', 'listCreate', '${sessionScope.id}',
+					'${sessionScope.b_num}', '0', '0');
 
-				});
+		});
 
 	}
 
@@ -583,6 +582,7 @@ body::-webkit-scrollbar-thumb
 				alert('카드 이름은 영문 30자, 한글 15자를 넘을 수 없습니다');
 				$('#addCardTitle' + cardId).val('');
 			} else {
+				sessionChk();
 				$.ajax({
 					method : 'post',
 					url : '/main/createCard',
@@ -593,41 +593,40 @@ body::-webkit-scrollbar-thumb
 						l_num : cardl_num
 
 					}
-				}).done(
-						function(msg) {
-							console.log(msg);
-							var cardArr = JSON.parse(msg);
+				}).done(function(msg) {
+					console.log(msg);
+					var cardArr = JSON.parse(msg);
 
-							var newCard = document.createElement('div');
-							var c_num = cardArr.c_num;
+					var newCard = document.createElement('div');
+					var c_num = cardArr.c_num;
 
-							newCard.id = c_num;
-							newCard.className = 'list-card';
-							newCard.onclick = function() {
+					newCard.id = c_num;
+					newCard.className = 'list-card';
+					newCard.onclick = function() {
 
-								cardView(b_num, cardl_num, c_num)
+						cardView(b_num, cardl_num, c_num)
 
-							};
-							// 카드 내부의 label div 생성!!!
-							for (var j = 1; j <= 7; j++) {
-								var labelDiv = document.createElement('div');
-								labelDiv.id = 'labelDiv' + c_num + '_' + j;
-								newCard.append(labelDiv);
-							}
+					};
+					// 카드 내부의 label div 생성!!!
+					for (var j = 1; j <= 7; j++) {
+						var labelDiv = document.createElement('div');
+						labelDiv.id = 'labelDiv' + c_num + '_' + j;
+						newCard.append(labelDiv);
+					}
 
-							var createCardText = document
-									.createTextNode(cardArr.title);
+					var createCardText = document
+							.createTextNode(cardArr.title);
 
-							newCard.appendChild(createCardText);
-							document.getElementById('list' + cardId).appendChild(
-									newCard);
+					newCard.appendChild(createCardText);
+					document.getElementById('list' + cardId).appendChild(
+							newCard);
 
-							var cardHtml = $('#list' + cardId)[0].innerHTML;
-							send('cardCreate', 'cardCreate', '${sessionScope.id}',
-									'${sessionScope.b_num}', '0', '0');
-							$('#addCardContainer' + cardId).toggle();
-							$('#addCardTitle' + cardId).val('');
-						});
+					var cardHtml = $('#list' + cardId)[0].innerHTML;
+					send('cardCreate', 'cardCreate', '${sessionScope.id}',
+							'${sessionScope.b_num}', '0', '0');
+					$('#addCardContainer' + cardId).toggle();
+					$('#addCardTitle' + cardId).val('');
+				});
 			}
 			
 		}
@@ -636,6 +635,7 @@ body::-webkit-scrollbar-thumb
 	function cardView(b_num, l_num, c_num) {
 		$('#cardReply').empty();
 		$('#commentArea').val('');
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/selectCardDetail',
@@ -644,92 +644,90 @@ body::-webkit-scrollbar-thumb
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(
-				function(msg) {
-					console.log('msg: '+msg);
-					var detail = JSON.parse(msg);
-					console.log(detail[0]);
+		}).done(function(msg) {
+			console.log('msg: '+msg);
+			var detail = JSON.parse(msg);
+			
+			var cardInfo = detail[0];
 
-					var cardInfo = detail[0];
+			var cardReply = detail[1];
+			//hs
+			var cardLink = detail[2];
+			// console.log('cardLink=' + cardLink[0]);
 
-					var cardReply = detail[1];
-					//hs
-					var cardLink = detail[2];
-					// 			console.log('cardLink=' + cardLink[0]);
+			handleDesc(0); // description textarea 숨기기
+			// console.log('detail: '+detail);
+			var content = cardInfo.content;
 
-					handleDesc(0); // description textarea 숨기기
-// 					console.log('detail: '+detail);
-					var content = cardInfo.content;
+			var label = cardInfo.label;
+			var labelName = cardInfo.labelname;
+			// console.log("view: " + labelName);
+			
+			var cardTitle = cardInfo.title;
+			
+			$('#card_title').text(cardTitle);
 
-					var label = cardInfo.label;
-					var labelName = cardInfo.labelname;
-// 					console.log("view: " + labelName);
-					
-					var cardTitle = cardInfo.title;
-					
-					$('#card_title').text(cardTitle);
+			
+			var dueDate = cardInfo.duedate;
+			$('#date').val(dueDate);
+			
+			
+			if(null!=dueDate){
+				
+				 var sday = "D-day"; 
+				 var today = new Date(); 
+				 var mday = new Date(dueDate); 
+				 var tmime = (mday.getTime() - today.getTime()); 
+				 var itime = 24 * 60 * 60 * 1000; 
+				 var fdday = tmime / itime; 
+				 var dday = Math.floor(fdday)+1; 
+				
+										
+				$('.nal_div').text("D-day  "+dueDate); 
+				$('.nal2_div').text("D-day 까지 "+dday+ " 일 남았습니다."); 
+			}else{
+				$('.nal_div').text(''); 
+				$('.nal2_div').text(''); 
+			}
+			
+			 
+			
+			labelShow(label);
+			labelNameShow(labelName);
 
-					
-					var dueDate = cardInfo.duedate;
-					$('#date').val(dueDate);
-					
-					
-					if(null!=dueDate){
-						
-						 var sday = "D-day"; 
-						 var today = new Date(); 
-						 var mday = new Date(dueDate); 
-						 var tmime = (mday.getTime() - today.getTime()); 
-						 var itime = 24 * 60 * 60 * 1000; 
-						 var fdday = tmime / itime; 
-						 var dday = Math.floor(fdday)+1; 
-						
-												
-						$('.nal_div').text("D-day  "+dueDate); 
-						$('.nal2_div').text("D-day 까지 "+dday+ " 일 남았습니다."); 
-					}else{
-						$('.nal_div').text(''); 
-						$('.nal2_div').text(''); 
-					}
-					
-					 
-					
-					labelShow(label);
-					labelNameShow(labelName);
+			if (null != content) {
+				$('.content_div').text(content);
+			} else {
+				$('.content_div').text('');
+			}
 
-					if (null != content) {
-						$('.content_div').text(content);
-					} else {
-						$('.content_div').text('');
-					}
+			$.each(cardReply, function(i) {
 
-					$.each(cardReply, function(i) {
+				createReplyDiv(cardReply[i].seq, cardReply[i].content,
+						cardReply[i].m_id);
 
-						createReplyDiv(cardReply[i].seq, cardReply[i].content,
-								cardReply[i].m_id);
+			});
 
-					});
+			//hs
+			$('#attachLink').children().empty();
+			$.each(cardLink, function(i) {
+				var node = document.createElement('div');
 
-					//hs
-					$('#attachLink').children().empty();
-					$.each(cardLink, function(i) {
-						var node = document.createElement('div');
+				var textNode = document
+						.createTextNode(cardLink[i].content);
+				var aTag = document.createElement('a');
+				aTag.href = cardLink[i].content;
+				aTag.appendChild(textNode);
+				aTag.target = '_blank';
+				node.appendChild(aTag);
 
-						var textNode = document
-								.createTextNode(cardLink[i].content);
-						var aTag = document.createElement('a');
-						aTag.href = cardLink[i].content;
-						aTag.appendChild(textNode);
-						aTag.target = '_blank';
-						node.appendChild(aTag);	
+				$('#attachLink').append(node);
+			});
 
-						$('#attachLink').append(node);
-					});
-
-					document.getElementById('cardNum').value = c_num;
-					dateC_num=c_num;
-					cardModal.style.display = "block";
-				});
+			document.getElementById('cardNum').value = c_num;
+			dateC_num=c_num;
+			cardModal.style.display = "block";
+		});
 
 	}
 
@@ -752,8 +750,8 @@ body::-webkit-scrollbar-thumb
 
 	function labelNameShow(labelName) {
 		var labelWidth = 0;
-		
-// 		console.log(labelName);
+
+		// 		console.log(labelName);
 		if (null == labelName) {
 			label = ",,,,,,";
 		}
@@ -762,10 +760,12 @@ body::-webkit-scrollbar-thumb
 		for (var i = 1; i <= 7; i++) {
 			if ('' != labelNameArr[i - 1]) {
 				labelWidth = byteCalc(labelNameArr[i - 1]);
-				if(labelWidth <= 4) labelWidth = 4;
-				else if(labelWidth >= 18) labelWidth = 18;
+				if (labelWidth <= 4)
+					labelWidth = 4;
+				else if (labelWidth >= 18)
+					labelWidth = 18;
 				$('#label_name' + i).text(labelNameArr[i - 1]);
-				$('#selected_label' + i).css('width', labelWidth*10);
+				$('#selected_label' + i).css('width', labelWidth * 10);
 				$('#selected_label' + i).val(labelNameArr[i - 1]);
 			}
 		}
@@ -777,7 +777,7 @@ body::-webkit-scrollbar-thumb
 		
 		if('' == content) {
 			alert('댓글을 입력하세요');
-		} else {
+		} else {	sessionChk();
 			$.ajax({
 				method : 'post',
 				url : '/main/addCardReply',
@@ -824,7 +824,7 @@ body::-webkit-scrollbar-thumb
 		$('.content_area').hide();
 
 		var content = $('.content_textarea').val();
-
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/updateContent',
@@ -877,6 +877,7 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function getHistory() {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/selectHistory',
@@ -906,7 +907,7 @@ body::-webkit-scrollbar-thumb
 		var viewList = document.createElement('div');
 		viewList.id = 'viewList' + id;
 		viewList.className = 'viewList';
-		
+
 		var listBorder = document.createElement('div');
 		listBorder.id = id;
 		listBorder.className = 'listBorder';
@@ -957,10 +958,11 @@ body::-webkit-scrollbar-thumb
 		aDelList.className = 'listDelBtn';
 		var aDelListText = document.createTextNode('x');
 		aDelList.appendChild(aDelListText);
-		aDelList.setAttribute('href','#');
-		aDelList.setAttribute('onclick', 'deleteList('+b_num+','+l_num+');');
+		aDelList.setAttribute('href', '#');
+		aDelList.setAttribute('onclick', 'deleteList(' + b_num + ',' + l_num
+				+ ');');
 		viewList.appendChild(aDelList);
-		
+
 		viewList.appendChild(list_title);
 
 		viewList.appendChild(div);
@@ -975,6 +977,7 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function listSearch(b_num) {
+		sessionChk();
 		$.ajax({
 			url : '/main/searchList',
 			method : 'post',
@@ -992,8 +995,6 @@ body::-webkit-scrollbar-thumb
 				var l_title = listArr[i].title;
 
 				listView(id, l_title, l_num);
-				
-				
 
 				/*
 				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
@@ -1013,6 +1014,7 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function labelSet(b_num, l_num, c_num) {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/selectCardDetail',
@@ -1021,35 +1023,35 @@ body::-webkit-scrollbar-thumb
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(
-				function(msg) {
+		}).done(function(msg) {
 
-					var detail = JSON.parse(msg);
-					var cardInfo = detail[0];
-					var cardReply = detail[1];
+			var detail = JSON.parse(msg);
+			var cardInfo = detail[0];
+			var cardReply = detail[1];
 
-					var label = cardInfo.label;
+			var label = cardInfo.label;
 
-					if (label == null) {
-						label = "0,0,0,0,0,0,0";
-					}
+			if (label == null) {
+				label = "0,0,0,0,0,0,0";
+			}
 
-					var labelArr = label.split(',');
+			var labelArr = label.split(',');
 
-					for (var i = 1; i <= 7; i++) {
-						if ('0' != labelArr[i - 1]) {
-							$('#labelDiv' + c_num + '_' + i).css(
-									'background-color',
-									rgb2hex($('#label' + i).css(
-											"background-color")));
-							$('#labelDiv' + c_num + '_' + i).show();
-						}
-					}
-				});
+			for (var i = 1; i <= 7; i++) {
+				if ('0' != labelArr[i - 1]) {
+					$('#labelDiv' + c_num + '_' + i).css(
+							'background-color',
+							rgb2hex($('#label' + i).css(
+									"background-color")));
+					$('#labelDiv' + c_num + '_' + i).show();
+				}
+			}
+		});
 
 	}
 
 	function cardSearch(b_num, l_num, id) {
+		sessionChk();
 		$.ajax({
 			url : '/main/searchCard',
 			method : 'post',
@@ -1069,7 +1071,7 @@ body::-webkit-scrollbar-thumb
 				cardDiv.onclick = function() {
 					cardView(b_num, l_num, c_num);
 				};
-				
+
 				labelSet(b_num, l_num, c_num);
 
 				// 카드 내부의 label div 생성!!!
@@ -1093,48 +1095,46 @@ body::-webkit-scrollbar-thumb
 	}
 	function listSortable(id) {
 
-		$('#list' + id).sortable(
-				{
-					connectWith : '.list',
-					update : function(ev, ui) {
-						var result1 = $('#list' + id).sortable('toArray');
-						var targetId = ev.target.id;
-						var parentId = ev.toElement.parentElement.id;
-						var cardArr = '';
+		$('#list' + id).sortable({
+			connectWith : '.list',
+			update : function(ev, ui) {
+				var result1 = $('#list' + id).sortable('toArray');
+				var targetId = ev.target.id;
+				var parentId = ev.toElement.parentElement.id;
+				var cardArr = '';
 
-						if (targetId == parentId) {
+				if (targetId == parentId) {
 
-							for (var i = 0; i < result1.length; i++) {
-								if (i < (result1.length - 1)) {
-									cardArr += result1[i] + ',';
-								} else {
-									cardArr += result1[i];
-								}
-
-							}
-
-							$.ajax({
-								url : '/main/moveCard',
-								method : 'post',
-								data : {
-
-									b_num : b_num,
-									l_num : id,
-									c_num : ev.toElement.id,
-									msg : cardArr,
-									length : result1.length
-								}
-
-							}).done(
-									function(msg) {
-										send('cardMove', 'cardMove',
-												'${sessionScope.id}',
-												'${sessionScope.b_num}', '0',
-												'0');
-									});
+					for (var i = 0; i < result1.length; i++) {
+						if (i < (result1.length - 1)) {
+							cardArr += result1[i] + ',';
+						} else {
+							cardArr += result1[i];
 						}
+
 					}
-				});
+					sessionChk();
+					$.ajax({
+						url : '/main/moveCard',
+						method : 'post',
+						data : {
+
+							b_num : b_num,
+							l_num : id,
+							c_num : ev.toElement.id,
+							msg : cardArr,
+							length : result1.length
+						}
+
+					}).done(function(msg) {
+						send('cardMove', 'cardMove',
+								'${sessionScope.id}',
+								'${sessionScope.b_num}', '0',
+								'0');
+					});
+				}
+			}
+		});
 	}
 	function openChat() {
 		chatOnOff = true;
@@ -1148,6 +1148,7 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function unConnect() {
+		sessionChk();
 		$.ajax({
 			url : '/chat/ucConnection',
 			method : 'post',
@@ -1156,12 +1157,11 @@ body::-webkit-scrollbar-thumb
 				b_num : '${sessionScope.b_num}'
 			}
 
-		}).done(
-				function(msg) {
-					send('${sessionScope.id}', 'unConnec',
-							'${sessionScope.id}', '${sessionScope.b_num}', '0',
-							'0');
-				});
+		}).done(function(msg) {
+			send('${sessionScope.id}', 'unConnec',
+					'${sessionScope.id}', '${sessionScope.b_num}', '0',
+					'0');
+		});
 
 	}
 
@@ -1200,6 +1200,7 @@ body::-webkit-scrollbar-thumb
 		});
 		$('#linkSubmit').click(function() {
 			if ($('#insertLinkInput').val()) {
+				sessionChk();
 				$.ajax({
 					method : 'post',
 					url : '/main/insertLink',
@@ -1228,7 +1229,7 @@ body::-webkit-scrollbar-thumb
 		});
 		
 		$('#deleteCard').click(function(){
-			
+			sessionChk();
 			var result = confirm('카드를 삭제 하시겠습니까?'); 
 			
 			if(result) { //yes 
@@ -1275,6 +1276,7 @@ body::-webkit-scrollbar-thumb
 				}
 			}).done(function(msg){
 				//카드 삭제 시 리스트 뷰 재구성
+				$('#cardModal').css('display', 'none');
 				var listArr = JSON.parse(msg);
 				$('#mainList').children().remove();
 				$.each(listArr, function(i) {
@@ -1282,7 +1284,7 @@ body::-webkit-scrollbar-thumb
 					var l_num = listArr[i].l_num;
 					var id = l_num;
 					var l_title = listArr[i].title;
-					
+
 					listView(id, l_title, l_num);
 					cardSearch(b_num, l_num, id);
 	
@@ -1311,38 +1313,39 @@ body::-webkit-scrollbar-thumb
 			$('#user').append(div);
 		});
 	}
-	
+
 	function byteCalc(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
 	{
-	      var len = 0;
-// 	      var newStr = '';
-	  
-	      for (var i=0;i<str.length; i++) 
-	      {
-	        var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
-	        // 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
-	        
-	       var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
-	        
+		var len = 0;
+		// 	      var newStr = '';
 
-	        if ((n>= 0)&&(n<256)) len ++; // ASCII 문자코드 set.
-	        else len += 2; // 한글이면 2byte로 계산한다.
-	        
-// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
-// 	        else newStr = newStr + nv;
-	      }
-	      return len;
+		for (var i = 0; i < str.length; i++) {
+			var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
+			// 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
+
+			var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
+
+			if ((n >= 0) && (n < 256))
+				len++; // ASCII 문자코드 set.
+			else
+				len += 2; // 한글이면 2byte로 계산한다.
+
+			// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
+			// 	        else newStr = newStr + nv;
+		}
+		return len;
 	}
 
 	function changeLabelName(num) {
 		var inputLabelName = $('#label_name').val();
-		
+
 		var labelWidth = byteCalc(inputLabelName);
-		
-		if(labelWidth > 20) {
+
+		if (labelWidth > 20) {
 			alert('라벨 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
 			$('#label_name').val('');
 		} else {
+			sessionChk();
 			$.ajax({
 				method : 'post',
 				url : '/main/selectLabelName',
@@ -1354,24 +1357,26 @@ body::-webkit-scrollbar-thumb
 				console.log(detail);
 				var labelName = detail.labelName;
 
-//	 			alert(labelWidth);
-				
-				if(labelWidth <= 4) labelWidth = 4;
-				else if(labelWidth >= 18) labelWidth = 18;
-				
-				$('#selected_label' + num).css('width', labelWidth*10);
-				
-				if('' == inputLabelName) {
-					$('#selected_label'+num).val(" ");
-					$('#selected_label'+num).append("&nbsp;");
-					
+				//	 			alert(labelWidth);
+
+				if (labelWidth <= 4)
+					labelWidth = 4;
+				else if (labelWidth >= 18)
+					labelWidth = 18;
+
+				$('#selected_label' + num).css('width', labelWidth * 10);
+
+				if ('' == inputLabelName) {
+					$('#selected_label' + num).val(" ");
+					$('#selected_label' + num).append("&nbsp;");
+
 					$('#label_name' + num).text(' ');
 					$('#label_name' + num).append("&nbsp;");
 				} else {
 					$('#selected_label' + num).val(inputLabelName);
 					$('#label_name' + num).text(inputLabelName);
 				}
-				
+
 				console.log("asdfasfd: " + inputLabelName);
 
 				$('#label_name').text('');
@@ -1380,6 +1385,7 @@ body::-webkit-scrollbar-thumb
 
 				var tempArr = labelNameArr.toString();
 
+				sessionChk();
 				$.ajax({
 					method : 'post',
 					url : '/main/updateLabelName',
@@ -1393,7 +1399,7 @@ body::-webkit-scrollbar-thumb
 				});
 
 			});
-		}		
+		}
 	}
 
 	function makeLabelNameArr(labelName, num) {
@@ -1410,51 +1416,52 @@ body::-webkit-scrollbar-thumb
 	function label(num) {
 		var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
 		$('#selected_label' + num).css('background-color', backgroundColor);
-		
+
 		var isNone = $('#selected_label' + num).css('display');
 
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/selectLabel',
 			data : {
 				c_key : $('#cardNum')[0].value
 			}
-		}).done(
-				function(msg) {
-					var detail = JSON.parse(msg);
+		}).done(function(msg) {
+			var detail = JSON.parse(msg);
 
-					var label = detail.label;
-					console.log(detail);
+			var label = detail.label;
+			console.log(detail);
 
-					var c_num = $('#cardNum')[0].value;
+			var c_num = $('#cardNum')[0].value;
 
-					var labelArr;
-					$('#labelDiv' + c_num + '_' + num).css('background-color',
-							backgroundColor);
-					if ('none' != isNone) {
-						labelArr = makeLabelArr(label, num, 'del');
-						$('#selected_label' + num).hide();
-						$('#labelDiv' + c_num + '_' + num).hide();
-					} else {
-						labelArr = makeLabelArr(label, num, 'ins');
-						$('#selected_label' + num).show();
-						$('#labelDiv' + c_num + '_' + num).show();
-					}
+			var labelArr;
+			$('#labelDiv' + c_num + '_' + num).css('background-color',
+					backgroundColor);
+			if ('none' != isNone) {
+				labelArr = makeLabelArr(label, num, 'del');
+				$('#selected_label' + num).hide();
+				$('#labelDiv' + c_num + '_' + num).hide();
+			} else {
+				labelArr = makeLabelArr(label, num, 'ins');
+				$('#selected_label' + num).show();
+				$('#labelDiv' + c_num + '_' + num).show();
+			}
 
-					var tempArr = labelArr.toString();
+			var tempArr = labelArr.toString();
 
-					$.ajax({
-						method : 'post',
-						url : '/main/updateLabel',
-						data : {
-							c_key : $('#cardNum')[0].value,
-							label : tempArr
-						}
-					}).done(function(msg) {
+			sessionChk();
+			$.ajax({
+				method : 'post',
+				url : '/main/updateLabel',
+				data : {
+					c_key : $('#cardNum')[0].value,
+					label : tempArr
+				}
+			}).done(function(msg) {
 
-					});
+			});
 
-				});
+		});
 	}
 
 	function makeLabelArr(label, num, action) {
@@ -1576,10 +1583,27 @@ body::-webkit-scrollbar-thumb
 		$('#wow').hide();
 	});   
 		    
-		    
-		    
+	function sessionChk() {
+		$.ajax({
+			url : '/main/sessionChk',
+			method : 'post'
+		}).done(function(msg) {
+			if ('1' == msg) {
+				alert('다른 아이피로 접속되었습니다.');
+				location.href = '/';
+			}
 
-	 
+		});
+	}
+
+	// 	function signOut() {
+	// 		$.ajax({
+	// 			method: 'post'
+	// 			, url: '/main/logOut'
+	// 		}).done(function(){
+	// 			alert('로그아웃 완료');
+	// 		});
+	// 	}
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -1591,9 +1615,7 @@ body::-webkit-scrollbar-thumb
 	</div>
 
 	<header id="header" class="clearfix">
-		<a href="/main/board"><h1 style="top: -10px;"
-				onclick="unConnect();">PROJECT 321</h1></a> <a href="#"
-			class="btn_board"> <span>Boards</span>
+		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> <a href="#" class="btn_board"> <span>Boards</span>
 		</a>
 		<form action="#" method="post" id="sch_main_wrap">
 			<fieldset>
@@ -1603,8 +1625,7 @@ body::-webkit-scrollbar-thumb
 		</form>
 		<a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
-	<div
-		style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;">${title}</div>
+	<div style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;" onclick="alert('aef')">${title}</div>
 	<div id="content">
 		<div class="g3-container" canvas="container" align="right">
 			<div class="content">
@@ -1626,17 +1647,12 @@ body::-webkit-scrollbar-thumb
 				<a class="menu-icon" href="#"><i class="icon-reorder"></i></a>
 				<ul class="side-menu">
 					<h2 class="title">Menu</h2>
-					<li class="link"><a href="#"
-						class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
-					<li class="link" onclick="getHistory();"><a href="#"
-						class="link_tag2" id="myBtn">History</a></li>
-					<li class="link"><a href="#" onclick="openChat();"
-						class="link_tag3 js-close-right-slidebar">Chatting</a></li>
+					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
+					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
+					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
 					<li class="link"><a href="#" class="link_tag4">File</a></li>
-					<li class="link"><a href="#" onclick="inviteMember()"
-						class="link_tag5 js-close-right-slidebar">Members</a></li>
-					<li class="link"><a href="#" onclick="logout()"
-						class="link_tag6 js-close-right-slidebar">SignOut</a></li>
+					<li class="link"><a href="#" onclick="inviteMember()" class="link_tag5 js-close-right-slidebar">Members</a></li>
+					<li class="link"><a href="#" onclick="logout()" class="link_tag6 js-close-right-slidebar">SignOut</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -1670,40 +1686,33 @@ body::-webkit-scrollbar-thumb
 
 						<h1 id="card_title">card title</h1>
 						<div class="label_div">
-							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;">
-							<input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;">
-							<input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;">
-							<input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;">
-							<input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;">
-							<input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;">
-							<input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
+							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;"> <input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;"> <input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;"> <input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;"> <input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;"> <input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;"> <input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
 						</div>
 						<br>
-						<div class="nal_div" ></div>
-						<div class="nal2_div" ></div>
+						<div class="nal_div"></div>
+						<div class="nal2_div"></div>
 						<br>
 						<div id="contentId">
-							<a href="#" class="	 glyphicon-pencil content_tag"
-								onclick="handleDesc(1);">&nbsp;content...</a>
+							<a href="#" class="	 glyphicon-pencil content_tag" onclick="handleDesc(1);">&nbsp;content...</a>
+							<!-- 					<div class="card-desc"> -->
+							<!-- 							<a href="#" class="	 glyphicon-pencil content_tag"	onclick="createDescriptionDiv();">&nbsp;description...</a> -->
 							<div class="content_div"></div>
 							<div class="content_area" id="content_area">
 								<div class="content_text">
 									<textarea rows="10" cols="80" class="content_textarea"></textarea>
 								</div>
 								<div>
-									<button value="SAVE" style="width: 40px; height: 30px;"
-										onclick="sendDesc();">
+									<button value="SAVE" style="width: 40px; height: 30px;" onclick="sendDesc();">
 										<img alt="send" src="/resources/images/btn_send.png">
 									</button>
-									<button value="X" style="width: 40px; height: 30px;"
-										onclick="handleDesc(0);">
+									<button value="X" style="width: 40px; height: 30px;" onclick="handleDesc(0);">
 										<img alt="send" src="/resources/images/btn_cancel.png">
 									</button>
 								</div>
 							</div>
 						</div>
-			 				
-												
+
+
 						<h3>Add Comment</h3>
 						<textarea rows="10" cols="80" id="commentArea" required="required"></textarea>
 						<input type="button" value="SAVE" onclick="comment();" id="btn_comment">
@@ -1713,76 +1722,50 @@ body::-webkit-scrollbar-thumb
 
 					<div class="card-detail-sidebar">
 						<button onclick="labelView();" class="btn-label-view dropdown">
-							<span class="btn_label_toggle"><img alt="label"
-								src="/resources/images/btn_label.png" width="20px" height="20px"
-								class="btn-label">&nbsp;Label</span>
+							<!-- 						<input type="button" onclick="labelView();" class="btn-label-view dropdown"> -->
+							<span class="btn_label_toggle"><img alt="label" src="/resources/images/btn_label.png" width="20px" height="20px" class="btn-label">&nbsp;Label</span>
 						</button>
 						<div class="submenu_hidden">
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
+
 								<input type="text" id="label_name" placeholder=" Input label name...">
-								<li id="label1" onclick="label('1');">&nbsp; <span
-									id="label_name1">&nbsp;</span>
-								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('1')">
+								<li id="label1" onclick="label('1');">&nbsp; <span id="label_name1">&nbsp;</span> <a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('1')">
 								</a>
-								<li id="label2" onclick="label('2');">&nbsp; <span
-									id="label_name2">&nbsp;</span>
+								<li id="label2" onclick="label('2');">&nbsp; <span id="label_name2">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('2')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('2')">
 								</a>
-								<li id="label3" onclick="label('3');">&nbsp; <span
-									id="label_name3">&nbsp;</span>
+								<li id="label3" onclick="label('3');">&nbsp; <span id="label_name3">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('3')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('3')">
 								</a>
-								<li id="label4" onclick="label('4');">&nbsp; <span
-									id="label_name4">&nbsp;</span>
+								<li id="label4" onclick="label('4');">&nbsp; <span id="label_name4">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('4')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('4')">
 								</a>
-								<li id="label5" onclick="label('5');">&nbsp; <span
-									id="label_name5">&nbsp;</span>
+								<li id="label5" onclick="label('5');">&nbsp; <span id="label_name5">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('5')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('5')">
 								</a>
-								<li id="label6" onclick="label('6');">&nbsp; <span
-									id="label_name6">&nbsp;</span>
+								<li id="label6" onclick="label('6');">&nbsp; <span id="label_name6">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('6')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('6')">
 								</a>
-								<li id="label7" onclick="label('7');">&nbsp; <span
-									id="label_name7">&nbsp;</span>
+								<li id="label7" onclick="label('7');">&nbsp; <span id="label_name7">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('7')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('7')">
 								</a>
 							</ul>
 						</div>
 
 						<br> <br>
 						<button id="insertLink">
-							<span><img alt="label"
-								src="/resources/images/btn_attachment.png" width="20px"
-								height="20px" class="btn-attachment">&nbsp;Attachment</span>
+							<span><img alt="label" src="/resources/images/btn_attachment.png" width="20px" height="20px" class="btn-attachment">&nbsp;Attachment</span>
 							<div id="overlay_t"></div>
 							<div id="popup_layer">
-								<input type="text" id="insertLinkInput"
-									placeholder="attach link"> <input type="button"
-									id="linkSubmit" class="close" value="save">
+								<input type="text" id="insertLinkInput" placeholder="attach link"> <input type="button" id="linkSubmit" class="close" value="save">
+
 							</div>
 						</button>
 						<br> <br>
@@ -1793,24 +1776,18 @@ body::-webkit-scrollbar-thumb
 						<br> <br>
 
 						<button id="calBtn" onclick="showCal()">
-							<span><img alt="label"
-								src="/resources/images/calendar.jpg" width="25px" height="25px"
-								class="btn-delete">&nbsp;Calendar</span>
+							<span><img alt="label" src="/resources/images/calendar.jpg" width="25px" height="25px" class="btn-delete">&nbsp;Calendar</span>
 						</button>
-						<div id="wow" style="display:none;"></div>
+						<div id="wow" style="display: none;"></div>
 						<br> <br>
 
 
 						<button>
-							<span><img alt="label"
-								src="/resources/images/btn_calendar.png" width="20px"
-								height="20px" class="btn-calendar"/>&nbsp;&nbsp;&nbsp;empty1</span>
+							<span><img alt="label" src="/resources/images/btn_calendar.png" width="20px" height="20px" class="btn-calendar" />&nbsp;&nbsp;&nbsp;empty1</span>
 						</button>
 						<br> <br>
 						<button>
-							<span><img alt="label"
-								src="/resources/images/btn_delete.png" width="20px"
-								height="20px" class="btn-delete">&nbsp;empty2</span>
+							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;empty2</span>
 						</button>
 						<br> <br>
 					</div>
@@ -1824,8 +1801,7 @@ body::-webkit-scrollbar-thumb
 	</div>
 
 </body>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/slidebars.js"></script>
 <script src="/resources/js/scripts.js"></script>

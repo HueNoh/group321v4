@@ -77,7 +77,7 @@
 				}
 			} else if ("cardCreate" == access) {
 				if (id != '${sessionScope.id}') {
-					$('#list'+msg).html('');
+					$('#list' + msg).html('');
 					cardSearch(b_num, l_num, msg);
 				}
 			} else if ("connec" == access) {
@@ -126,6 +126,7 @@
 	}
 
 	function send(message, acc, id, b_num, l_num, c_num) {
+		sessionChk();
 		var msg = {
 			"userId" : id,
 			"msg" : message,

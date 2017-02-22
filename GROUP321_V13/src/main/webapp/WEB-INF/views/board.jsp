@@ -14,10 +14,12 @@
 .board {
 	position: relative;
 }
-.board_name{
+
+.board_name {
 	overflow: hidden;
 	word-break: break-all;
 }
+
 .boardDelBtn {
 	display: block;
 	position: absolute;
@@ -33,7 +35,7 @@
 
 	var sessionId = '${sessionScope.id}';
 	var createDiv = '';
-	var webSocket = new WebSocket('ws://211.183.8.20/board');
+	var webSocket = new WebSocket('ws://211.183.8.14/board');
 	webSocket.onopen = function(event) {
 		onOpen(event)
 
@@ -61,19 +63,6 @@
 				createDiv += msg;
 				$('#' + id).html(createDiv);
 			}
-		} else if ("dupLog" == access) {
-			console.log('dup1');
-			if (msg == '${sessionScope.ip}') {
-				$.ajax({
-					url : '/main/dupLog',
-					method : 'post',
-					dataType : 'json'
-										
-				}).done(function(msg){
-					alert(msg);
-					location.href = '/';
-				});
-			}
 		}
 	}
 	function onOpen(event) {
@@ -99,63 +88,52 @@
 		if ("boardCreate" == acc) {
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
-		}else if ("dupLog" == acc) {
-			var jsonStr = JSON.stringify(msg);
-			webSocket.send(jsonStr);
 		}
 	}
 	window.onload = function() {
 		console.log('${sessionScope.ip}');
-		var err = '${err}';
-		if ('001' == err) {
-			var dupLogIp = '${dupLogIp}';
-			send(dupLogIp, 'dupLog', '${sessionScope.id}');
-
-		}
-
 		$.ajax({
 			url : '/main/searchBoard',
 			method : 'post',
-		}).done(
-				function(msg) {
-					var jArr = JSON.parse(msg);
-					$.each(jArr, function(i) {
-						var b_num = jArr[i].b_num;
-						var div = document.createElement('div');
-						var text = '';
-						div.id = 'board' + b_num;
-						div.className = 'board';
+		}).done(function(msg) {
+			sessionChk();
+			var jArr = JSON.parse(msg);
+			$.each(jArr, function(i) {
+				var b_num = jArr[i].b_num;
+				var div = document.createElement('div');
+				var text = '';
+				div.id = 'board' + b_num;
+				div.className = 'board';
 
-						var aTag = document.createElement('a');
-						var createAText = document.createTextNode(jArr[i].title
-								+ '_' + b_num);
-						
-						aTag.className = 'board_name';
+				var aTag = document.createElement('a');
+				var createAText = document
+						.createTextNode(jArr[i].title);
 
-						aTag.setAttribute('href', '/main/list?b_num=' + b_num);
-						aTag.appendChild(createAText);
-						div.appendChild(aTag);
+				aTag.setAttribute('href', '/main/list?b_num=' + b_num);
+				aTag.appendChild(createAText);
+				div.appendChild(aTag);
 
-						//hs
-						var aTagDelBtn = document.createElement('a');
-						aTagDelBtn.className = 'boardDelBtn';
-						var aTagDelBtnText = document.createTextNode('x');
-						aTagDelBtn.appendChild(aTagDelBtnText);
-						//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
-						aTagDelBtn.setAttribute('href', '#');
-						aTagDelBtn.setAttribute('onclick', 'deleteBoard('
-								+ b_num + ');');
-						div.appendChild(aTagDelBtn);
+				//hs
+				var aTagDelBtn = document.createElement('a');
+				aTagDelBtn.className = 'boardDelBtn';
+				var aTagDelBtnText = document.createTextNode('x');
+				aTagDelBtn.appendChild(aTagDelBtnText);
+				//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
+				aTagDelBtn.setAttribute('href', '#');
+				aTagDelBtn.setAttribute('onclick', 'deleteBoard('
+						+ b_num + ');');
+				div.appendChild(aTagDelBtn);
 
-						document.getElementById('viewBoard').appendChild(div);
+				document.getElementById('viewBoard').appendChild(div);
 
-					});
+			});
 
-				});
+		});
 
 	};
 
 	function addBoard(title) {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/createBoard',
@@ -164,32 +142,29 @@
 				title : title
 			}
 
-		}).done(
-				function(msg) {
+		}).done(function(msg) {
 
-					var arrBoard = JSON.parse(msg);
+			var arrBoard = JSON.parse(msg);
 
-					var div = document.createElement('div');
-					div.id = 'board' + arrBoard.b_num;
-					div.className = 'board';
+			var div = document.createElement('div');
+			div.id = 'board' + arrBoard.b_num;
+			div.className = 'board';
 
-					var aTag = document.createElement('a');
-					var createAText = document.createTextNode(arrBoard.title
-							+ '_' + arrBoard.b_num);
-					
-					aTag.className = 'board_name';
+			var aTag = document.createElement('a');
+			var createAText = document.createTextNode(arrBoard.title);
 
-					aTag.setAttribute('href', '/main/list?b_num='
-							+ arrBoard.b_num);
-					aTag.appendChild(createAText);
-					div.appendChild(aTag);
-					
-					document.getElementById('createBoard').appendChild(div);
+			aTag.className = 'board_name';
 
-					var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
-					send(boardHtml, 'boardCreate', 'createBoard');
+			aTag.setAttribute('href', '/main/list?b_num=' + arrBoard.b_num);
+			aTag.appendChild(createAText);
+			div.appendChild(aTag);
 
-				});
+			document.getElementById('createBoard').appendChild(div);
+
+			var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
+			send(boardHtml, 'boardCreate', 'createBoard');
+
+		});
 	};
 
 	//hs
@@ -197,19 +172,21 @@
 		$('#CBContainer').css('display', 'none');
 
 		$('#addBoard').click(function() {
+			sessionChk();
 			$('#CBContainer').toggle();
 			$('#CBTitle').focus();
 			$('#CBTitle').val('');
 		});
-//70 35
+		//70 35
 		$('#CBSubmit').click(function() {
 			var boardTitle = $('#CBTitle').val();
 			var lengthOfBoardTitle = byteCalc(boardTitle);
-			console.log('boardLength: '+lengthOfBoardTitle);
-			if(lengthOfBoardTitle > 70) {
+			console.log('boardLength: ' + lengthOfBoardTitle);
+			if (lengthOfBoardTitle > 70) {
 				alert('보드 이름은 영문 70자, 한글 35자를 넘을 수 없습니다');
 				$('#CBTitle').val('');
 			} else {
+				sessionChk();
 				if ($('#CBTitle').val()) {
 					addBoard($('#CBTitle').val());
 				}
@@ -219,9 +196,10 @@
 	});
 
 	function deleteBoard(b_num) {
-		var result = confirm('보드를 삭제 하시겠습니까?'); 
-		
-		if(result) {
+		var result = confirm('보드를 삭제 하시겠습니까?');
+
+		if (result) {
+			sessionChk();
 			$.ajax({
 				method : 'post',
 				url : '/main/deleteBoard',
@@ -231,36 +209,48 @@
 			}).done(function(msg) {
 				//alert(msg);
 				var tmp = '#board' + b_num;
-	
+
 				if (msg == 0) {
 					$(tmp).remove();
 				}
 			});
 		}
 	};
-	
+
 	function byteCalc(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
 	{
-	      var len = 0;
-// 	      var newStr = '';
-	  
-	      for (var i=0;i<str.length; i++) 
-	      {
-	        var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
-	        // 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
-	        
-	       var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
-	        
+		var len = 0;
+		// 	      var newStr = '';
 
-	        if ((n>= 0)&&(n<256)) len ++; // ASCII 문자코드 set.
-	        else len += 2; // 한글이면 2byte로 계산한다.
-	        
-// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
-// 	        else newStr = newStr + nv;
-	      }
-	      return len;
+		for (var i = 0; i < str.length; i++) {
+			var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
+			// 값의 범위는 0과 65535사이이여 첫 128 unicode값은 ascii문자set과 일치한다.지정한 인덱스에 문자가 없다면 NaN을 리턴한다.
+
+			var nv = str.charAt(i); // charAt : string 개체로부터 지정한 위치에 있는 문자를 꺼낸다.
+
+			if ((n >= 0) && (n < 256))
+				len++; // ASCII 문자코드 set.
+			else
+				len += 2; // 한글이면 2byte로 계산한다.
+
+			// 	        if (len>lengths) break; // 제한 문자수를 넘길경우.
+			// 	        else newStr = newStr + nv;
+		}
+		return len;
 	}
-	
+
+	function sessionChk() {
+		$.ajax({
+			url : '/main/sessionChk',
+			method : 'post'
+		}).done(function(msg) {
+			if ('1' == msg) {
+				alert('다른 아이피로 접속되었습니다.');
+				location.href = '/';
+			}
+
+		});
+	}
 </script>
 </head>
 <body>

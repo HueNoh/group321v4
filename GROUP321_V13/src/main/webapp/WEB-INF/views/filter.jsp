@@ -4,6 +4,7 @@
 <script>
 	// 라벨 카드 필터
 	function searchFilter() {
+		sessionChk();
 		var result = '%' + $('#FilterSearch').val() + '%';
 		if ($('#FilterSearch').val() == '') {
 			$('.mainList').html('');
@@ -58,74 +59,72 @@
 
 	$(function() {
 
-		$('.check').click(
-				function() {
-					var labelOk = false;
-					var result = '';
-					var count = 0;
-					$('.list').html('');
-					$.each($('.check'), function(i) {
-						if ($('.check')[i].checked) {
-							labelOk = true;
-							if (count == 0) {
-								result += $('.check')[i].value;
-							} else {
-								result += '|' + $('.check')[i].value;
-
-							}
-							count++;
-
-						}
-					});
-					if (labelOk) {
-						$.ajax({
-							url : "/main/searchLabel",
-							method : "post",
-							dataType : "json",
-							data : {
-								b_num : b_num,
-								result : result
-							}
-						}).done(
-								function(msg) {
-									$.each(msg, function(i) {
-										var cardDiv = document
-												.createElement('div');
-										var b_num = msg[i].b_num;
-										var l_num = msg[i].l_num;
-										var c_num = msg[i].c_num;
-
-										cardDiv.id = c_num;
-										cardDiv.className = 'list-card';
-										cardDiv.onclick = function() {
-											cardView(b_num, l_num, c_num);
-										};
-
-										labelSet(b_num, l_num, c_num);
-
-										// 카드 내부의 label div 생성!!!
-										for (var j = 1; j <= 7; j++) {
-											var labelDiv = document
-													.createElement('div');
-											labelDiv.id = 'labelDiv' + c_num
-													+ '_' + j;
-											cardDiv.append(labelDiv);
-										}
-
-										var createCardText = document
-												.createTextNode(msg[i].title);
-
-										cardDiv.appendChild(createCardText);
-
-										$('#list' + l_num).append(cardDiv);
-									});
-								});
-						console.log(result);
+		$('.check').click(function() {
+			sessionChk();
+			var labelOk = false;
+			var result = '';
+			var count = 0;
+			$('.list').html('');
+			$.each($('.check'), function(i) {
+				if ($('.check')[i].checked) {
+					labelOk = true;
+					if (count == 0) {
+						result += $('.check')[i].value;
 					} else {
-						$('.mainList').html('');
-						listSearch(b_num);
+						result += '|' + $('.check')[i].value;
+
 					}
+					count++;
+
+				}
+			});
+			if (labelOk) {
+				$.ajax({
+					url : "/main/searchLabel",
+					method : "post",
+					dataType : "json",
+					data : {
+						b_num : b_num,
+						result : result
+					}
+				}).done(function(msg) {
+					$.each(msg, function(i) {
+						var cardDiv = document
+								.createElement('div');
+						var b_num = msg[i].b_num;
+						var l_num = msg[i].l_num;
+						var c_num = msg[i].c_num;
+
+						cardDiv.id = c_num;
+						cardDiv.className = 'list-card';
+						cardDiv.onclick = function() {
+							cardView(b_num, l_num, c_num);
+						};
+
+						labelSet(b_num, l_num, c_num);
+
+						// 카드 내부의 label div 생성!!!
+						for (var j = 1; j <= 7; j++) {
+							var labelDiv = document
+									.createElement('div');
+							labelDiv.id = 'labelDiv' + c_num
+									+ '_' + j;
+							cardDiv.append(labelDiv);
+						}
+
+						var createCardText = document
+								.createTextNode(msg[i].title);
+
+						cardDiv.appendChild(createCardText);
+
+						$('#list' + l_num).append(cardDiv);
+					});
 				});
+			} else {
+				$('.mainList').html('');
+				listSearch(b_num);
+			}
+		});
 	});
 </script>
 

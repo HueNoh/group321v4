@@ -35,18 +35,12 @@ public class MainController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
 
-		return loginChk(map, request, session, "board");
+		return "board";
 	}
 
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public String board(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
-		String err = request.getParameter("err");
-
-		String ip = request.getParameter("dupLogIp");
-		System.out.println("dupLog: " + ip);
-		model.addAttribute("err", err);
-		model.addAttribute("dupLogIp", ip);
-		return loginChk(map, request, session, "board");
+		return "board";
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -91,26 +85,21 @@ public class MainController {
 
 		List list = memberService.selectBoardMember(map);
 
-		if (0 < list.size()) {
-
-			return loginChk(map, request, session, "list");
-		} else {
-			return loginChk(map, request, session, "list");
-		}
+		return "list";
 
 	}
-	@RequestMapping(value = "/deleteCard", method = {RequestMethod.GET, RequestMethod.POST})
+
+	@RequestMapping(value = "/deleteCard", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String deleteCard(@RequestParam Map map){
+	public String deleteCard(@RequestParam Map map) {
 		System.out.println(map);
 		int result = memberService.deleteCard(map);
 		List list = memberService.searchList(map);
 
-		
 		return new Gson().toJson(list);
 	}
-	
-	@RequestMapping(value = "/deleteList", method = {RequestMethod.GET, RequestMethod.POST})
+
+	@RequestMapping(value = "/deleteList", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String deleteList(@RequestParam Map map) {
 		int result = memberService.deleteList(map);
@@ -338,26 +327,13 @@ public class MainController {
 		return new Gson().toJson(list);
 	}
 
-	public String loginChk(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
-		session = request.getSession(false);
-		String id = (String) session.getAttribute("id");
-		String loginChk = null;
-		if (null == id) {
-			loginChk = "home";
-
-		} else {
-			loginChk = route;
-		}
-		return loginChk;
-	}
-	
 	@RequestMapping(value = "/logOut")
 	public String logOut(@RequestParam Map map, HttpServletRequest request, HttpSession session, String route) {
 		session = request.getSession(false);
-		if(session != null) {
+		if (session != null) {
 			session.invalidate();
 		}
-		
+
 		return "home";
 	}
 
@@ -369,12 +345,12 @@ public class MainController {
 		List list = memberService.selectHistory(map);
 		return new Gson().toJson(list);
 	}
+
 	@RequestMapping(value = "/dupLog", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
-	public String dupLog(Model model, @RequestParam Map map,HttpSession session, HttpServletRequest request) {
-		session.invalidate();
-		
+	public String dupLog(Model model, @RequestParam Map map, HttpSession session, HttpServletRequest request) {
+
 		return new Gson().toJson("다른 아이피로 접속되었습니다.");
 	}
 
@@ -413,6 +389,13 @@ public class MainController {
 
 		int result = memberService.removeMembers(map);
 		return new Gson().toJson(result);
+	}
+	@RequestMapping(value = "/sessionChk", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String sessionChk(Model model, @RequestParam Map map) {
+		
+		return "";
 	}
 
 	@RequestMapping(value = "/profile", method = { RequestMethod.POST,
