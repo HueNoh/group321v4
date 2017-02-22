@@ -54,10 +54,16 @@ body::-webkit-scrollbar-thumb
 
 #addList {
 	width: 250px;
-	height: 50px;
+	height: 35px;
 	float: left;
 	background-color: #006aa8;
 	margin: 10px 5px;
+}
+
+#addListText {
+	color: #ccc;
+	margin-right: 10px;
+	font-size: medium;
 }
 
 #CBContainer {
@@ -65,6 +71,7 @@ body::-webkit-scrollbar-thumb
 	float: left;
 	background-color: #e2e4e6;
 	margin: 10px 5px;
+	border-radius: 5px;
 }
 
 .viewList {
@@ -432,6 +439,21 @@ body::-webkit-scrollbar-thumb
 .cardDelBtn {
 	top: 0px;
 	display: block;
+}
+
+#CBTitle {
+	width: 90%;
+	height: 90%;
+	float: left;
+	margin: 10px;
+}
+
+#CBTitle_btn {
+	width: 100%;
+}
+
+#CBSubmit, #CBCancel {
+	margin: 5px;
 }
 </style>
 <script>
@@ -1727,12 +1749,14 @@ body::-webkit-scrollbar-thumb
 				<div id="mainList" class="mainList"></div>
 				<div class="addListBorder">
 					<div id="addList">
-						<div>Create</div>
+						<span id="addListText">Add List..</span>
 					</div>
 					<div id="CBContainer">
-						<textarea id="CBTitle" style="width: 95%;"></textarea>
-						<button id="CBSubmit">SAVE</button>
-						<button id="CBCancel">cancel</button>
+						<textarea id="CBTitle"></textarea>
+						<div id="CBTitle_btn">
+							<button id="CBSubmit">SAVE</button>
+							<button id="CBCancel">cancel</button>
+						</div>
 					</div>
 				</div>
 			</div>
