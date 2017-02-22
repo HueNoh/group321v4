@@ -343,4 +343,10 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		return memberDao.updateList(map);
 	}
 
+	@Override
+	public int updateBoard(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.updateBoard(map);
+	}
+
 }

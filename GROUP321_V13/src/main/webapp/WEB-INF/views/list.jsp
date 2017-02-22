@@ -81,7 +81,6 @@ body::-webkit-scrollbar-thumb
 
 .viewList {
 	width: 250px;
-	border: 1px solid #777575;
 	float: left;
 }
 
@@ -472,6 +471,16 @@ body::-webkit-scrollbar-thumb
 #up_title_input {
 	z-index: 999;
 }
+
+#up_board_Title {
+	width: 100%;
+}
+
+#up_board_input {
+	background: #4286af;
+	border-radius: 5px;
+	border: 1px solid #4286af;
+}
 </style>
 <script>
 	document.onkeydown = refl;
@@ -511,11 +520,7 @@ body::-webkit-scrollbar-thumb
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = $
-		{
-			users
-		}
-		;
+		var users = ${users};
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -1733,6 +1738,40 @@ body::-webkit-scrollbar-thumb
 		});
 	}
 
+	function updateBoardTitle(choice) {
+		if (1 == choice) {
+			$('#board_Title').hide();
+			$('#up_board_Title').show();
+			$('#up_board_input').select();
+		} else if (2 == choice) {
+			var title = $('#up_board_input').val();
+
+			$.ajax({
+				url : '/main/boardTitleUpdate',
+				method : 'post',
+				data : {
+					b_num : b_num,
+					title : title
+				}
+
+			}).done(function(msg) {
+				var result = JSON.parse(msg);
+				if ('success' == result) {
+					$('#board_Title').html('');
+					$('#board_Title').html(title);
+					$('#board_Title').innerHTML = title;
+					$('#up_board_Title').hide();
+					$('#board_Title').show();
+				} else if ('fail' == result) {
+					alert('수정 실패');
+				}
+
+			});
+
+		}
+
+	}
+
 	// 	function signOut() {
 	// 		$.ajax({
 	// 			method: 'post'
@@ -1762,7 +1801,13 @@ body::-webkit-scrollbar-thumb
 		</form>
 		<a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
-	<div style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;">${title}</div>
+
+	<div style="position: fixed; height: 50px; margin-top: 50px; color: #e4e2e2; font-size: 40px;">
+		<div id="board_Title" onclick="updateBoardTitle(1)">${title}</div>
+		<div id="up_board_Title" onclick="updateBoardTitle(2)" style="display: none;">
+			<input type="text" id="up_board_input" value="${title}">
+		</div>
+	</div>
 
 	<div id="content">
 		<div class="g3-container" canvas="container" align="right">

@@ -443,4 +443,19 @@ public class MainController {
 
 		}
 	}
+	@RequestMapping(value = "/boardTitleUpdate", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String boardTitleUpdate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		int result = memberService.updateBoard(map);
+		
+		if (0 == result) {
+			System.out.println("success");
+			return new Gson().toJson("success");
+		} else {
+			return new Gson().toJson("fail");
+			
+		}
+	}
 }
