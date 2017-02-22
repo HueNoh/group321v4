@@ -82,4 +82,8 @@ public interface MemberServiceInterface {
 	public List searchLabel(Map map);
 
 	public List dueDate(Map map);
+
+	public List deleteCardReply(Map map);
+
+	public List selectCardReply(Map map);
 }

@@ -98,4 +98,6 @@ public interface MemberMapper {
 
 	public List dueDate(Map map);
 
+	public List deleteCardReply(Map map);
+
 }

@@ -88,7 +88,6 @@ public class HomeController {
 					loginChk = "home";
 
 				} else {
-					System.out.println(userOk);
 
 					loginChk = loginOper(session, request, map, model) + "?err=" + err;
 				}
@@ -97,7 +96,6 @@ public class HomeController {
 			}
 
 		}
-		System.out.println("loginChk" + loginChk);
 		return loginChk;
 	}
 
@@ -120,7 +118,6 @@ public class HomeController {
 			inUserIpMap.remove(map.get("id"));
 			inUserIpMap.put(map.get("id"), request.getRemoteHost());
 
-			System.out.println("inUserIpMap" + inUserIpMap);
 			return "redirect:/main/board";
 		} else {
 			model.addAttribute("err", "002");

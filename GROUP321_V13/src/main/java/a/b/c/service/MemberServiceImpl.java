@@ -333,4 +333,16 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		return memberDao.deleteCard(map);
 	}
 
+	@Override
+	public List deleteCardReply(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.deleteCardReply(map);
+	}
+
+	@Override
+	public List selectCardReply(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.selectCardReply(map);
+	}
+
 }
