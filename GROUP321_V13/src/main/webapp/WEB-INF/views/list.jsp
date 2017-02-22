@@ -419,6 +419,7 @@ body::-webkit-scrollbar-thumb
 	height: 20px;
 	padding-left: 5px;
 	padding-right: 45px;
+	cursor: pointer;
 }
 
 .listDelBtn {
@@ -952,6 +953,7 @@ body::-webkit-scrollbar-thumb
 					$('#list_title' + id).html('');
 					$('#list_title' + id).html(title);
 					$('#list_title' + id).innerHTML = title;
+					$('#list_title' + id).attr('title', title);
 					$('#up_list_title' + id).hide();
 					$('#list_title' + id).show();
 				} else if ('fail' == result) {
@@ -986,6 +988,7 @@ body::-webkit-scrollbar-thumb
 		list_title.className = 'list_title';
 		list_title.innerHTML = l_title;
 		list_title.setAttribute('onclick', 'updateListTitle(' + id + ', 1);');
+		list_title.setAttribute('title', l_title);
 
 		var up_list_title = document.createElement('div');
 		up_list_title.id = 'up_list_title' + id;
@@ -1672,10 +1675,12 @@ body::-webkit-scrollbar-thumb
 	function showCal() {
 		$("#wow").toggle();
 	}
-
-	$('#wow').datepicker().on('changeDate', function(day) {
-		$('#wow').hide();
-	});
+	
+	$(function(){
+		$('#wow').datepicker().on('changeDate', function(day) {
+			$('#wow').hide();
+		});	
+	});	
 
 	function sessionChk() {
 		$.ajax({
