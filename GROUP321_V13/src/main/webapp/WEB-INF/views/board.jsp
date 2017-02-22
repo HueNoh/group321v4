@@ -30,7 +30,7 @@
 
 	var sessionId = '${sessionScope.id}';
 	var createDiv = '';
-	var webSocket = new WebSocket('ws://211.183.8.20/board');
+	var webSocket = new WebSocket('ws://211.183.8.14/board');
 	webSocket.onopen = function(event) {
 		onOpen(event)
 
@@ -58,19 +58,6 @@
 				createDiv += msg;
 				$('#' + id).html(createDiv);
 			}
-		} else if ("dupLog" == access) {
-			console.log('dup1');
-			if (msg == '${sessionScope.ip}') {
-				$.ajax({
-					url : '/main/dupLog',
-					method : 'post',
-					dataType : 'json'
-										
-				}).done(function(msg){
-					alert(msg);
-					location.href = '/';
-				});
-			}
 		}
 	}
 	function onOpen(event) {
@@ -96,25 +83,16 @@
 		if ("boardCreate" == acc) {
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
-		}else if ("dupLog" == acc) {
-			var jsonStr = JSON.stringify(msg);
-			webSocket.send(jsonStr);
 		}
 	}
 	window.onload = function() {
 		console.log('${sessionScope.ip}');
-		var err = '${err}';
-		if ('001' == err) {
-			var dupLogIp = '${dupLogIp}';
-			send(dupLogIp, 'dupLog', '${sessionScope.id}');
-
-		}
-
 		$.ajax({
 			url : '/main/searchBoard',
 			method : 'post',
 		}).done(
 				function(msg) {
+					sessionChk();
 					var jArr = JSON.parse(msg);
 					$.each(jArr, function(i) {
 						var b_num = jArr[i].b_num;
@@ -124,8 +102,8 @@
 						div.className = 'board';
 
 						var aTag = document.createElement('a');
-						var createAText = document.createTextNode(jArr[i].title
-								+ '_' + b_num);
+						var createAText = document
+								.createTextNode(jArr[i].title);
 
 						aTag.setAttribute('href', '/main/list?b_num=' + b_num);
 						aTag.appendChild(createAText);
@@ -151,6 +129,7 @@
 	};
 
 	function addBoard(title) {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/createBoard',
@@ -161,7 +140,7 @@
 
 		}).done(
 				function(msg) {
-
+					
 					var arrBoard = JSON.parse(msg);
 
 					var div = document.createElement('div');
@@ -190,12 +169,14 @@
 		$('#CBContainer').css('display', 'none');
 
 		$('#addBoard').click(function() {
+			sessionChk();
 			$('#CBContainer').toggle();
 			$('#CBTitle').focus();
 			$('#CBTitle').val('');
 		});
 
 		$('#CBSubmit').click(function() {
+			sessionChk();
 			if ($('#CBTitle').val()) {
 				addBoard($('#CBTitle').val());
 			}
@@ -204,6 +185,7 @@
 	});
 
 	function deleteBoard(b_num) {
+		sessionChk();
 		$.ajax({
 			method : 'post',
 			url : '/main/deleteBoard',
@@ -219,6 +201,18 @@
 			}
 		});
 	};
+	function sessionChk() {
+		$.ajax({
+			url : '/main/sessionChk',
+			method : 'post'
+		}).done(function(msg) {
+			if ('1' == msg) {
+				alert('다른 아이피로 접속되었습니다.');
+				location.href = '/';
+			}
+
+		});
+	}
 </script>
 </head>
 <body>

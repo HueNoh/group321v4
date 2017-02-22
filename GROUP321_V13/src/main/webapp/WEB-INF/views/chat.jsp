@@ -5,12 +5,10 @@
 	<div id="dis">
 		<div class="display"></div>
 		<div class="inputMsg">
-			<textarea id="inputMessage" style="width: 100%; height: 100%;"
-				type="text"></textarea>
+			<textarea id="inputMessage" style="width: 100%; height: 100%;"></textarea>
 		</div>
 		<div class="dis sub">
-			<input type="button" style="width: 100%; height: 100%;" value="send"
-				onclick="send(inputMessage.value,'message','${sessionScope.id}','${sessionScope.b_num}', '0', '0')" />
+			<input type="button" id="sendMessage" style="width: 100%; height: 100%;" value="send" onclick="send(inputMessage.value,'message','${sessionScope.id}','${sessionScope.b_num}', '0', '0')" />
 		</div>
 	</div>
 </div>

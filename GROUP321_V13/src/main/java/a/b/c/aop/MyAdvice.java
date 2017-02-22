@@ -1,9 +1,11 @@
 package a.b.c.aop;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.JoinPoint;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import a.b.c.controller.InBoardMember;
 import a.b.c.service.MemberServiceInterface;
 
 @Component
@@ -24,6 +27,7 @@ public class MyAdvice {
 
 	@Autowired
 	MemberServiceInterface memberService;
+	InBoardMember inBoardMember;
 
 	/*
 	 * @Pointcut("execution(* createBoard(..)) or execution(* createList(..)) or execution(* createCard(..))"
@@ -36,7 +40,7 @@ public class MyAdvice {
 	public void advice() {
 	}
 
-	@Pointcut("execution(* a.b.c.controller.*.*(..))")
+	@Pointcut("execution(* a.b.c.controller.MainController.*(..))")
 	public void advice2() {
 	}
 	/*
@@ -59,19 +63,50 @@ public class MyAdvice {
 	 */
 
 	@Before("advice2()")
-	public String before() throws Throwable {
+	public void before(JoinPoint joinPoint) throws Throwable {
 		ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpServletRequest request = sra.getRequest();
-
 		HttpSession session = request.getSession(false);
+		HttpServletResponse response = sra.getResponse();
+		Map inUserIpMap = inBoardMember.getUserIpMap();
+
+		String methodName = joinPoint.getSignature().getName();
+
+		PrintWriter out = null;
 
 		if (null == session.getAttribute("id")) {
-			System.out.println("session:" + session.getAttribute("id"));
+			out = response.getWriter();
+			out.print("<script>");
+			out.print("alert('로그아웃되었습니다.');");
+			out.print("location.href='/';");
+			out.print("</script>");
+			out.flush();
+			out.close();
 
-			return "redirect:/login";
 		} else {
-			System.out.println("session:" + session.getAttribute("id"));
-			return null;
+			if (!request.getRemoteHost().equals(inUserIpMap.get(session.getAttribute("id")))) {
+				System.out.println("세션 아웃");
+				if ("list".equals(methodName)) {
+					System.out.println("list");
+					out = response.getWriter();
+					out.print("<script>");
+					out.print("alert('다른아이피에서 로그인했습니다.');");
+					out.print("location.href='/';");
+					out.print("</script>");
+					out.flush();
+					out.close();
+					session.invalidate();
+				} else {
+					out = response.getWriter();
+					out.print("1");
+					out.flush();
+					out.close();
+					session.invalidate();
+				}
+			} else {
+				System.out.println("skip");
+			}
+
 		}
 	}
 

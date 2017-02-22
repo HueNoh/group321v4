@@ -37,14 +37,7 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model, HttpSession session, HttpServletRequest request) {
-		String route = null;
-		if (null != session) {
-			route = "redirect:/main/board";
-		} else {
-			route = "/";
-		}
-
-		return route;
+		return "home";
 	}
 
 	@RequestMapping(value = "/login", method = { RequestMethod.POST, RequestMethod.GET })
@@ -58,11 +51,9 @@ public class HomeController {
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		Map inUserIpMap = inBoardMember.getUserIpMap();
 
-		System.out.println("map" + map);
-		String err = "000";
 		if (null != session.getAttribute("id")) {
 
-			loginChk = "redirect:/main/board?err=" + err;
+			loginChk = "redirect:/main/board";
 
 		} else {
 
@@ -90,10 +81,10 @@ public class HomeController {
 				} else {
 					System.out.println(userOk);
 
-					loginChk = loginOper(session, request, map, model) + "?err=" + err;
+					loginChk = loginOper(session, request, map, model);
 				}
 			} else {
-				loginChk = loginOper(session, request, map, model) + "?err=" + err;
+				loginChk = loginOper(session, request, map, model);
 			}
 
 		}
@@ -164,12 +155,8 @@ public class HomeController {
 
 	@RequestMapping(value = "/logDup", method = { RequestMethod.POST, RequestMethod.GET })
 	public String logDup(Model model, @RequestParam Map map, HttpSession session, HttpServletRequest request) {
-		System.out.println("logDup");
-		String err = "001";
-		Map inUserIpMap = inBoardMember.getUserIpMap();
 
-		String ip = (String) inUserIpMap.get(map.get("id"));
-		return loginOper(session, request, map, model) + "?err=" + err + "&dupLogIp=" + ip;
+		return loginOper(session, request, map, model);
 	}
 
 }

@@ -31,6 +31,7 @@
 	function log() {
 		$('#log').submit();
 	}
+	
 </script>
 
 </head>

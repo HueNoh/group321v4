@@ -4,6 +4,7 @@
 <script>
 	// 라벨 카드 필터
 	function searchFilter() {
+		sessionChk();
 		var result = '%' + $('#FilterSearch').val() + '%';
 		if ($('#FilterSearch').val() == '') {
 			$('.mainList').html('');
@@ -60,6 +61,7 @@
 
 		$('.check').click(
 				function() {
+					sessionChk();
 					var labelOk = false;
 					var result = '';
 					var count = 0;

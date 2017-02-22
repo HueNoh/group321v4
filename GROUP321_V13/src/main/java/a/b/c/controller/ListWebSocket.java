@@ -84,7 +84,7 @@ public class ListWebSocket {
 						client.getBasicRemote()
 								.sendText(id + "::" + msg + "::" + access + "::" + b_num + "::" + l_num + "::" + c_num);
 					}
-				}
+				} 
 			}
 
 		} catch (IOException e) {
