@@ -413,6 +413,12 @@ body::-webkit-scrollbar-thumb
 .list_title {
 	font-weight: bold;
 	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 20px;
+	padding-left: 5px;
+	padding-right: 45px;
 }
 
 .listDelBtn {
@@ -942,7 +948,6 @@ body::-webkit-scrollbar-thumb
 
 			}).done(function(msg) {
 				var result = JSON.parse(msg);
-				alert(msg);
 				if ('success' == result) {
 					$('#list_title' + id).html('');
 					$('#list_title' + id).html(title);
