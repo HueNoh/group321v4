@@ -61,8 +61,6 @@ public interface MemberDaoInterface {
 
 	public List maxCard_Reply(Map map);
 
-	public List selectCardReply(Map map);
-
 	public List updateContent(Map map);
 
 	public List memberConnection(Map map);
@@ -96,4 +94,8 @@ public interface MemberDaoInterface {
 	public List searchFilter(Map map);
 
 	public List searchLabel(Map map);
+
+	public List deleteCardReply(Map map);
+	
+	public List selectCardReply(Map map);
 }

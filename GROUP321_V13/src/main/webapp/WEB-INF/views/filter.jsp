@@ -5,8 +5,9 @@
 	// 라벨 카드 필터
 	function searchFilter() {
 		sessionChk();
-		var result = '%' + $('#FilterSearch').val() + '%';
-		if ($('#FilterSearch').val() == '') {
+		
+		var result = '%' + $('#sch_main').val() + '%';
+		if ($('#sch_main').val() == '') {
 			$('.mainList').html('');
 			listSearch(b_num);
 		} else {
@@ -20,8 +21,7 @@
 					result : result
 				}
 			}).done(function(msg) {
-				$('#FilterSearch').val('');
-
+				$('#sch_main').val('');
 				$('.list').html('');
 				$.each(msg, function(i) {
 					console.log(msg[i]);
@@ -30,7 +30,7 @@
 					var b_num = msg[i].b_num;
 					var l_num = msg[i].l_num;
 					var c_num = msg[i].c_num;
-
+					
 					cardDiv.id = c_num;
 					cardDiv.className = 'list-card';
 					cardDiv.onclick = function() {
@@ -128,9 +128,9 @@
 	});
 </script>
 
-<div id="searchFilter">
-	<input type="text" id="FilterSearch" /> <input type="button" onclick="searchFilter();" value="검색">
-</div>
+<!-- <div id="searchFilter"> -->
+<!-- 	<input type="text" id="FilterSearch" /> <input type="button" onclick="searchFilter();" value="검색"> -->
+<!-- </div> -->
 <div id="searchLabel">
 	<div class='filterDiv'>
 		<input type="checkbox" id="check1" class="check" value="#CD3861">

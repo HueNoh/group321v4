@@ -45,7 +45,6 @@ public class MainController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
-
 		Map inBoardMemberMap = inBoardMember.getInstanceMap();
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		String userId = (String) session.getAttribute("id");
@@ -129,7 +128,7 @@ public class MainController {
 	@ResponseBody
 	public String searchList(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-
+		System.out.println("searchList");
 		List list = memberService.searchList(map);
 		return new Gson().toJson(list);
 	}
@@ -241,6 +240,37 @@ public class MainController {
 		obj.addProperty("seq", (int) map.get("seq"));
 
 		return new Gson().toJson(obj);
+	}
+	/*
+	@RequestMapping(value = "/updateCardReply", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String updateCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+//		int result = memberService.updateCardReply(map);
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("m_id", (String) map.get("m_id"));
+		obj.addProperty("content", (String) map.get("content"));
+		obj.addProperty("seq", (int) map.get("seq"));
+
+		return new Gson().toJson(obj);
+	}
+	*/
+	@RequestMapping(value = "/deleteCardReply", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String deleteCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		List list = null;
+		List cardReplyInfo = memberService.selectCardReply(map);
+		Map getCardReplyMap = (Map) cardReplyInfo.get(0);
+		if(map.get("m_id").equals(getCardReplyMap.get("m_id"))) {
+			list = memberService.deleteCardReply(map);
+			cardReplyInfo = memberService.selectCardReply(map);
+		}
+
+		return new Gson().toJson(cardReplyInfo);
 	}
 
 	@RequestMapping(value = "/updateContent", method = { RequestMethod.POST,

@@ -95,6 +95,7 @@ body::-webkit-scrollbar-thumb
 }
 
 #cardReply {
+	width: 90%;
 	overflow-y: auto;
 }
 
@@ -405,12 +406,9 @@ body::-webkit-scrollbar-thumb
 .comment_writer:hover {
 	cursor: pointer;
 }
-/* 
-.comment_content {
-	border: 1px solid gray;
-    border-radius: 5px;
+.update_delete {
+	float: right;
 }
- */
 #popup_layer {
 	width: 400px;
 	height: 100px;
@@ -935,17 +933,46 @@ body::-webkit-scrollbar-thumb
 	function createReplyDiv(seq, cnt, m_id) {
 
 		var reply = document.createElement('div');
-		var line = document.createElement('hr');
 
 		reply.id = 'reply_' + seq;
 		reply.className = 'card_reply';
+		
 
 		var content = document.createElement('div');
 		var writer = document.createElement('div');
 
 		var contentText = document.createTextNode(cnt);
 		var writerText = document.createTextNode(m_id);
-
+		var updateText = document.createTextNode('수정');
+		var wallText = document.createTextNode('|');
+		var deleteText = document.createTextNode('삭제');
+// 		var cancleText = document.createTextNode('수정취소');
+		
+		var updateDelete = document.createElement('div');
+		var updateTag = document.createElement('a');
+		var wallSpan = document.createElement('span');
+		var deleteTag = document.createElement('a');
+// 		var cancleUpdate = document.createElement('div');
+		
+// 		cancleUpdate.id = 'cancle_update'+seq;
+// 		cancleUpdate.setAttribute('onclick','cancleUpdate()');
+		
+		updateDelete.id = 'update_delete'+seq;
+		updateDelete.className = 'update_delete';
+		
+		updateTag.id = 'update_comment'+seq;
+		updateTag.setAttribute('onclick','updateComment()');
+		updateTag.setAttribute('href','#');
+		updateTag.append(updateText);
+		
+		wallSpan.id = 'wall'+seq;
+		wallSpan.append(wallText);
+		
+		deleteTag.id = 'delete_comment'+seq;
+		deleteTag.setAttribute('onclick','deleteComment('+seq+')');
+		deleteTag.setAttribute('href','#');
+		deleteTag.append(deleteText);
+		
 		writer.className = 'comment_writer';
 		content.className = 'comment_content';
 
@@ -954,10 +981,54 @@ body::-webkit-scrollbar-thumb
 
 		reply.appendChild(writer);
 		reply.appendChild(content);
-		reply.appendChild(line);
+		
+		content.id = 'comment_content'+seq;
+		
+		updateDelete.append(updateTag);
+		updateDelete.append(wallSpan);
+		updateDelete.append(deleteTag);
+				
+		writer.append(writerText);
+		content.append(contentText);
+		content.append(updateDelete);
+		
+		reply.append(writer);
+		reply.append(content);
 
 		$('#cardReply').prepend(reply);
 
+	}
+	
+	function updateComment(){
+		var reply = $('#comment_content').text();
+// 		$('#comment_content').append('<textarea')
+	}
+	function deleteComment(getSeq){
+		var result = confirm('댓글을 삭제 하시겠습니까?');
+		
+		if(result) {
+			$.ajax({
+				method: 'post'
+				, url: '/main/deleteCardReply'
+				, data: {
+					c_key : $('#cardNum')[0].value
+					, seq: getSeq
+					, m_id : '${sessionScope.id}'
+				}
+			}).done(function(msg){
+				var replyInfo = JSON.parse(msg);
+				
+				$('#cardReply').empty();
+				
+				console.log(replyInfo);
+				
+				$.each(replyInfo, function(i) {
+					createReplyDiv(replyInfo[i].seq, replyInfo[i].content,
+							replyInfo[i].m_id);
+
+				});
+			});
+		}
 	}
 
 	function labelView() {
@@ -1418,6 +1489,13 @@ body::-webkit-scrollbar-thumb
 				});
 			}
 		});
+		$("#sch_main").keydown(function(e) { 
+
+		    if (e.keyCode == 13){
+// 		    	$('#btn_search').click();
+				searchFilter();
+			}
+		});
 
 	});
 
@@ -1737,25 +1815,16 @@ body::-webkit-scrollbar-thumb
 	function showCal() {
 		$("#wow").toggle();
 	}
-
-	
 		
 	function showCal(){
 		$( "#wow" ).toggle();
 	} 
 	 
-	$('#wow').datepicker().on('changeDate', function (day) {
-		$('#wow').hide();
-	});   
-		    
-		    
-	function logout() {
-		var result = confirm('로그아웃 하시겠습니까?'); 
-		
-		if(result) { //yes 
-			location.replace('/main/logOut');
-		}
-	}
+	$(function(){
+		$('#wow').datepicker().on('changeDate', function (day) {
+			$('#wow').hide();
+		}); 
+	});  
 	
 	$('#id').text(id);
 
@@ -1813,14 +1882,9 @@ body::-webkit-scrollbar-thumb
 
 	}
 
-	// 	function signOut() {
-	// 		$.ajax({
-	// 			method: 'post'
-	// 			, url: '/main/logOut'
-	// 		}).done(function(){
-	// 			alert('로그아웃 완료');
-	// 		});
-	// 	}
+	
+	
+	
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -1833,15 +1897,17 @@ body::-webkit-scrollbar-thumb
 
 	<header id="header" class="clearfix">
 
-		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> 
 		<a href="#" onclick="profile('${id}')"  class="btn_board"><span>${id}</span></a>
 		<a href="#"	onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
-		<form action="#" method="post" id="sch_main_wrap">
-			<fieldset>
-				<input type="text" name="sch_main" id="sch_main">
+		<div id="sch_main_wrap">
+			<fieldset class="sch_field">
+				<input type="text" id="sch_main">
 			</fieldset>
-			<a href="#"><span class="btn_ico_sch"></span></a>
-		</form>
+			<a href="#" onclick="searchFilter();" id="btn_search"><span class="btn_ico_sch"></span></a>
+		</div>
+		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> 
+			
+			
 		<a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
 
@@ -1940,7 +2006,6 @@ body::-webkit-scrollbar-thumb
 								</div>
 							</div>
 						</div>
-
 
 						<h3>Add Comment</h3>
 						<textarea rows="10" cols="80" id="commentArea" required="required"></textarea>
