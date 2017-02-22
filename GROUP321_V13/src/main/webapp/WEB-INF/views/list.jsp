@@ -485,12 +485,17 @@ body::-webkit-scrollbar-thumb
 #up_board_Title {
 	width: 100%;
 }
+#board_Title:hover{
+	background: #1f6086;
+	border-radius: 5px;
+}
 
 #up_board_input {
 	background: #4286af;
 	border-radius: 5px;
 	border: 1px solid #4286af;
 }
+
 </style>
 <script>
 	document.onkeydown = refl;
