@@ -60,6 +60,11 @@ body::-webkit-scrollbar-thumb
 	margin: 10px 5px;
 }
 
+#addList:hover {
+	background: #064569;
+	border-radius: 5px;
+}
+
 #addListText {
 	color: #ccc;
 	margin-right: 10px;
@@ -76,7 +81,7 @@ body::-webkit-scrollbar-thumb
 
 .viewList {
 	width: 250px;
-	border: 1px solid black;
+	border: 1px solid #777575;
 	float: left;
 }
 
@@ -101,6 +106,7 @@ body::-webkit-scrollbar-thumb
 }
 
 .list-card:hover {
+	background: #969696;
 	cursor: pointer;
 }
 
@@ -130,6 +136,12 @@ body::-webkit-scrollbar-thumb
 	margin-right: 20px;
 	word-break: break-all;
 	overflow: hidden;
+	border-radius: 5px;
+}
+
+.list_title:hover {
+	background: #969696;
+	border-radius: 5px;
 }
 
 #mainList {
@@ -442,7 +454,7 @@ body::-webkit-scrollbar-thumb
 	display: block;
 }
 
-#CBTitle {
+#CBTitle, .addCardTitle {
 	width: 90%;
 	height: 90%;
 	float: left;
@@ -455,6 +467,10 @@ body::-webkit-scrollbar-thumb
 
 #CBSubmit, #CBCancel {
 	margin: 5px;
+}
+
+#up_title_input {
+	z-index: 999;
 }
 </style>
 <script>
@@ -957,6 +973,7 @@ body::-webkit-scrollbar-thumb
 		if (1 == choice) {
 			$('#list_title' + id).hide();
 			$('#up_list_title' + id).show();
+			$('#up_title_input' + id).select();
 		} else if (2 == choice) {
 			var title = $('#up_title_input' + id).val();
 
@@ -1038,7 +1055,6 @@ body::-webkit-scrollbar-thumb
 		var addCardTextarea = document.createElement('textarea');
 		addCardTextarea.id = 'addCardTitle' + id;
 		addCardTextarea.className = 'addCardTitle';
-		addCardTextarea.setAttribute('style', 'width: 95%;');
 
 		var addCardSubmit = document.createElement('input');
 		addCardSubmit.id = 'addCardSubmit' + id;
@@ -1697,12 +1713,12 @@ body::-webkit-scrollbar-thumb
 	function showCal() {
 		$("#wow").toggle();
 	}
-	
-	$(function(){
+
+	$(function() {
 		$('#wow').datepicker().on('changeDate', function(day) {
 			$('#wow').hide();
-		});	
-	});	
+		});
+	});
 
 	function sessionChk() {
 		$.ajax({
