@@ -388,6 +388,12 @@ body::-webkit-scrollbar-thumb
 	text-align: left;
 	text-indent: 1em;
 	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 20px;
+	padding-left: 5px;
+	padding-right: 45px;
 }
 
 .listDelBtn {
