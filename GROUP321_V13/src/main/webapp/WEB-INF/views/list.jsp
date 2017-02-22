@@ -25,6 +25,16 @@
 a:hover, #addList>div {
 	cursor: pointer
 }
+
+.history {
+	color: #555;
+	font-weight: bold;
+}
+
+#selectHistory {
+	padding: 1.5em;
+}
+
 /* 
 body::-webkit-scrollbar-track
 {
@@ -968,7 +978,7 @@ body::-webkit-scrollbar-thumb
 			var history = JSON.parse(msg);
 			var msg = '';
 			for (i = 0; i < history.length; i++) {
-				msg += history[i].content + ' ' + history[i].regdate + '<br>'
+				msg += '<p class="history">'+history[i].content + ' ' + history[i].regdate + '</p>'
 				$('#selectHistory').html(msg);
 			}
 
