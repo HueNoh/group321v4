@@ -52,7 +52,22 @@ body::-webkit-scrollbar-thumb
 	float: left;
 }
 
-.viewList, #addList {
+#addList {
+	width: 250px;
+	height: 50px;
+	float: left;
+	background-color: #006aa8;
+	margin: 10px 5px;
+}
+
+#CBContainer {
+	width: 250px;
+	float: left;
+	background-color: #e2e4e6;
+	margin: 10px 5px;
+}
+
+.viewList {
 	width: 250px;
 	border: 1px solid black;
 	float: left;
@@ -86,7 +101,7 @@ body::-webkit-scrollbar-thumb
 	cursor: pointer;
 }
 
-.viewList .list_foot, .viewList .addCard, .viewList .list_title {
+.viewList .list_foot, .viewList .addCard, .viewList {
 	width: 100%;
 }
 
@@ -94,9 +109,20 @@ body::-webkit-scrollbar-thumb
 	overflow-y: auto;
 }
 
-.list_title {
-	overflow: hidden;
+.up_list_title {
+	display: none;
+}
+
+.up_title_input, .up_list_title {
+	float: left;
+}
+
+.list_title, .up_title_input {
+	margin-top: 5px;
+	margin-left: 10px;
+	margin-right: 20px;
 	word-break: break-all;
+	overflow: hidden;
 }
 
 #mainList {
@@ -385,9 +411,8 @@ body::-webkit-scrollbar-thumb
 }
 
 .list_title {
-	text-align: left;
-	text-indent: 1em;
 	font-weight: bold;
+	text-align: left;
 }
 
 .listDelBtn {
@@ -441,7 +466,11 @@ body::-webkit-scrollbar-thumb
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = ${users};
+		var users = $
+		{
+			users
+		}
+		;
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -495,6 +524,7 @@ body::-webkit-scrollbar-thumb
 				$("#sendMessage").click();
 			}
 		});
+
 	};
 
 	function setWidthOnload(num) {
@@ -541,26 +571,27 @@ body::-webkit-scrollbar-thumb
 
 			}
 
-		}).done(function(msg) {
+		}).done(
+				function(msg) {
 
-			var arrList = JSON.parse(msg);
-			var id = arrList.l_num;
-			//nhs
-			var l_title = arrList.title;
+					var arrList = JSON.parse(msg);
+					var id = arrList.l_num;
+					//nhs
+					var l_title = arrList.title;
 
-			listView(id, l_title, arrList.l_num);
+					listView(id, l_title, arrList.l_num);
 
-			numOfList = $('.viewList').length;
-			setWidthAddList(numOfList);
+					numOfList = $('.viewList').length;
+					setWidthAddList(numOfList);
 
-			/* 각 리스트들의 카드들을 쇼터블 하는 function */
-			listSortable(id);
+					/* 각 리스트들의 카드들을 쇼터블 하는 function */
+					listSortable(id);
 
-			var listHtml = $('#mainList')[0].innerHTML;
-			send('mainList', 'listCreate', '${sessionScope.id}',
-					'${sessionScope.b_num}', '0', '0');
+					var listHtml = $('#mainList')[0].innerHTML;
+					send('mainList', 'listCreate', '${sessionScope.id}',
+							'${sessionScope.b_num}', '0', '0');
 
-		});
+				});
 
 	}
 
@@ -575,10 +606,10 @@ body::-webkit-scrollbar-thumb
 	function addCardDetail() {
 		if ($('#addCardTitle' + cardId).val()) {
 			var title = $('#addCardTitle' + cardId).val();
-			
-			var LengthOfTitle = byteCalc(title); 
-			
-			if(LengthOfTitle > 30) {
+
+			var LengthOfTitle = byteCalc(title);
+
+			if (LengthOfTitle > 30) {
 				alert('카드 이름은 영문 30자, 한글 15자를 넘을 수 없습니다');
 				$('#addCardTitle' + cardId).val('');
 			} else {
@@ -593,45 +624,47 @@ body::-webkit-scrollbar-thumb
 						l_num : cardl_num
 
 					}
-				}).done(function(msg) {
-					console.log(msg);
-					var cardArr = JSON.parse(msg);
+				}).done(
+						function(msg) {
+							console.log(msg);
+							var cardArr = JSON.parse(msg);
 
-					var newCard = document.createElement('div');
-					var c_num = cardArr.c_num;
+							var newCard = document.createElement('div');
+							var c_num = cardArr.c_num;
 
-					newCard.id = c_num;
-					newCard.className = 'list-card';
-					newCard.onclick = function() {
+							newCard.id = c_num;
+							newCard.className = 'list-card';
+							newCard.onclick = function() {
 
-						cardView(b_num, cardl_num, c_num)
+								cardView(b_num, cardl_num, c_num)
 
-					};
-					// 카드 내부의 label div 생성!!!
-					for (var j = 1; j <= 7; j++) {
-						var labelDiv = document.createElement('div');
-						labelDiv.id = 'labelDiv' + c_num + '_' + j;
-						newCard.append(labelDiv);
-					}
+							};
+							// 카드 내부의 label div 생성!!!
+							for (var j = 1; j <= 7; j++) {
+								var labelDiv = document.createElement('div');
+								labelDiv.id = 'labelDiv' + c_num + '_' + j;
+								newCard.append(labelDiv);
+							}
 
-					var createCardText = document
-							.createTextNode(cardArr.title);
+							var createCardText = document
+									.createTextNode(cardArr.title);
 
-					newCard.appendChild(createCardText);
-					document.getElementById('list' + cardId).appendChild(
-							newCard);
+							newCard.appendChild(createCardText);
+							document.getElementById('list' + cardId)
+									.appendChild(newCard);
 
-					var cardHtml = $('#list' + cardId)[0].innerHTML;
-					send('cardCreate', 'cardCreate', '${sessionScope.id}',
-							'${sessionScope.b_num}', '0', '0');
-					$('#addCardContainer' + cardId).toggle();
-					$('#addCardTitle' + cardId).val('');
-				});
+							var cardHtml = $('#list' + cardId)[0].innerHTML;
+							send('cardCreate', 'cardCreate',
+									'${sessionScope.id}',
+									'${sessionScope.b_num}', '0', '0');
+							$('#addCardContainer' + cardId).toggle();
+							$('#addCardTitle' + cardId).val('');
+						});
 			}
-			
+
 		}
 	}
-	var dateC_num=0;
+	var dateC_num = 0;
 	function cardView(b_num, l_num, c_num) {
 		$('#cardReply').empty();
 		$('#commentArea').val('');
@@ -644,90 +677,86 @@ body::-webkit-scrollbar-thumb
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(function(msg) {
-			console.log('msg: '+msg);
-			var detail = JSON.parse(msg);
-			
-			var cardInfo = detail[0];
+		}).done(
+				function(msg) {
+					console.log('msg: ' + msg);
+					var detail = JSON.parse(msg);
 
-			var cardReply = detail[1];
-			//hs
-			var cardLink = detail[2];
-			// console.log('cardLink=' + cardLink[0]);
+					var cardInfo = detail[0];
 
-			handleDesc(0); // description textarea 숨기기
-			// console.log('detail: '+detail);
-			var content = cardInfo.content;
+					var cardReply = detail[1];
+					//hs
+					var cardLink = detail[2];
+					// console.log('cardLink=' + cardLink[0]);
 
-			var label = cardInfo.label;
-			var labelName = cardInfo.labelname;
-			// console.log("view: " + labelName);
-			
-			var cardTitle = cardInfo.title;
-			
-			$('#card_title').text(cardTitle);
+					handleDesc(0); // description textarea 숨기기
+					// console.log('detail: '+detail);
+					var content = cardInfo.content;
 
-			
-			var dueDate = cardInfo.duedate;
-			$('#date').val(dueDate);
-			
-			
-			if(null!=dueDate){
-				
-				 var sday = "D-day"; 
-				 var today = new Date(); 
-				 var mday = new Date(dueDate); 
-				 var tmime = (mday.getTime() - today.getTime()); 
-				 var itime = 24 * 60 * 60 * 1000; 
-				 var fdday = tmime / itime; 
-				 var dday = Math.floor(fdday)+1; 
-				
-										
-				$('.nal_div').text("D-day  "+dueDate); 
-				$('.nal2_div').text("D-day 까지 "+dday+ " 일 남았습니다."); 
-			}else{
-				$('.nal_div').text(''); 
-				$('.nal2_div').text(''); 
-			}
-			
-			 
-			
-			labelShow(label);
-			labelNameShow(labelName);
+					var label = cardInfo.label;
+					var labelName = cardInfo.labelname;
+					// console.log("view: " + labelName);
 
-			if (null != content) {
-				$('.content_div').text(content);
-			} else {
-				$('.content_div').text('');
-			}
+					var cardTitle = cardInfo.title;
 
-			$.each(cardReply, function(i) {
+					$('#card_title').text(cardTitle);
 
-				createReplyDiv(cardReply[i].seq, cardReply[i].content,
-						cardReply[i].m_id);
+					var dueDate = cardInfo.duedate;
+					$('#date').val(dueDate);
 
-			});
+					if (null != dueDate) {
 
-			//hs
-			$('#attachLink').children().empty();
-			$.each(cardLink, function(i) {
-				var node = document.createElement('div');
+						var sday = "D-day";
+						var today = new Date();
+						var mday = new Date(dueDate);
+						var tmime = (mday.getTime() - today.getTime());
+						var itime = 24 * 60 * 60 * 1000;
+						var fdday = tmime / itime;
+						var dday = Math.floor(fdday) + 1;
 
-				var textNode = document
-						.createTextNode(cardLink[i].content);
-				var aTag = document.createElement('a');
-				aTag.href = cardLink[i].content;
-				aTag.appendChild(textNode);
-				aTag.target = '_blank';
-				node.appendChild(aTag);
+						$('.nal_div').text("D-day  " + dueDate);
+						$('.nal2_div').text("D-day 까지 " + dday + " 일 남았습니다.");
+					} else {
+						$('.nal_div').text('');
+						$('.nal2_div').text('');
+					}
 
-				$('#attachLink').append(node);
-			});
+					labelShow(label);
+					labelNameShow(labelName);
 
-			document.getElementById('cardNum').value = c_num;
-			dateC_num=c_num;
-			cardModal.style.display = "block";
-		});
+					if (null != content) {
+						$('.content_div').text(content);
+					} else {
+						$('.content_div').text('');
+					}
+
+					$.each(cardReply, function(i) {
+
+						createReplyDiv(cardReply[i].seq, cardReply[i].content,
+								cardReply[i].m_id);
+
+					});
+
+					//hs
+					$('#attachLink').children().empty();
+					$.each(cardLink, function(i) {
+						var node = document.createElement('div');
+
+						var textNode = document
+								.createTextNode(cardLink[i].content);
+						var aTag = document.createElement('a');
+						aTag.href = cardLink[i].content;
+						aTag.appendChild(textNode);
+						aTag.target = '_blank';
+						node.appendChild(aTag);
+
+						$('#attachLink').append(node);
+					});
+
+					document.getElementById('cardNum').value = c_num;
+					dateC_num = c_num;
+					cardModal.style.display = "block";
+				});
 
 	}
 
@@ -756,7 +785,7 @@ body::-webkit-scrollbar-thumb
 			label = ",,,,,,";
 		}
 		var labelNameArr = labelName.split(',');
-// 		console.log('show: ' + labelNameArr);
+		// 		console.log('show: ' + labelNameArr);
 		for (var i = 1; i <= 7; i++) {
 			if ('' != labelNameArr[i - 1]) {
 				labelWidth = byteCalc(labelNameArr[i - 1]);
@@ -772,12 +801,13 @@ body::-webkit-scrollbar-thumb
 	}
 
 	function comment() {
-		
+
 		var content = $('#commentArea')[0].value;
-		
-		if('' == content) {
+
+		if ('' == content) {
 			alert('댓글을 입력하세요');
-		} else {	sessionChk();
+		} else {
+			sessionChk();
 			$.ajax({
 				method : 'post',
 				url : '/main/addCardReply',
@@ -787,16 +817,18 @@ body::-webkit-scrollbar-thumb
 					m_id : '${sessionScope.id}',
 					content : content
 				}
-			}).done(function(msg) {
+			}).done(
+					function(msg) {
 
-				var replyInfo = JSON.parse(msg);
-				var contentSize = byteCalc(content);
+						var replyInfo = JSON.parse(msg);
+						var contentSize = byteCalc(content);
 
-				createReplyDiv(replyInfo.seq, replyInfo.content, replyInfo.m_id);
+						createReplyDiv(replyInfo.seq, replyInfo.content,
+								replyInfo.m_id);
 
-				$('#commentArea').val('');
+						$('#commentArea').val('');
 
-			});
+					});
 		}
 
 	}
@@ -814,10 +846,7 @@ body::-webkit-scrollbar-thumb
 			$('.content_area').hide();
 		}
 	}
-	
 
- 	
- 	
 	function sendDesc() {
 		$('.content_tag').show();
 		$('.content_div').show();
@@ -851,13 +880,13 @@ body::-webkit-scrollbar-thumb
 
 		var contentText = document.createTextNode(cnt);
 		var writerText = document.createTextNode(m_id);
-		
+
 		writer.className = 'comment_writer';
 		content.className = 'comment_content';
-		
+
 		writer.appendChild(writerText);
 		content.appendChild(contentText);
-		
+
 		reply.appendChild(writer);
 		reply.appendChild(content);
 		reply.appendChild(line);
@@ -895,6 +924,40 @@ body::-webkit-scrollbar-thumb
 
 		});
 	}
+	function updateListTitle(id, choice) {
+		if (1 == choice) {
+			$('#list_title' + id).hide();
+			$('#up_list_title' + id).show();
+		} else if (2 == choice) {
+			var title = $('#up_title_input' + id).val();
+
+			$.ajax({
+				url : '/main/listTitleUpdate',
+				method : 'post',
+				data : {
+					b_num : b_num,
+					l_num : id,
+					title : title
+				}
+
+			}).done(function(msg) {
+				var result = JSON.parse(msg);
+				alert(msg);
+				if ('success' == result) {
+					$('#list_title' + id).html('');
+					$('#list_title' + id).html(title);
+					$('#list_title' + id).innerHTML = title;
+					$('#up_list_title' + id).hide();
+					$('#list_title' + id).show();
+				} else if ('fail' == result) {
+					alert('수정 실패');
+				}
+
+			});
+
+		}
+
+	}
 
 	function listView(id, l_title, l_num) {
 		var div = document.createElement('div');
@@ -914,8 +977,23 @@ body::-webkit-scrollbar-thumb
 
 		//hs
 		var list_title = document.createElement('div');
+		list_title.id = 'list_title' + id;
 		list_title.className = 'list_title';
 		list_title.innerHTML = l_title;
+		list_title.setAttribute('onclick', 'updateListTitle(' + id + ', 1);');
+
+		var up_list_title = document.createElement('div');
+		up_list_title.id = 'up_list_title' + id;
+		up_list_title.className = 'up_list_title';
+		up_list_title
+				.setAttribute('onclick', 'updateListTitle(' + id + ', 2);');
+
+		var up_title_input = document.createElement('input');
+		up_title_input.id = 'up_title_input' + id;
+		up_title_input.className = 'up_title_input';
+		up_title_input.setAttribute('type', 'text');
+		up_title_input.setAttribute('value', l_title);
+		up_list_title.append(up_title_input);
 
 		var list_foot = document.createElement('div');
 		list_foot.className = 'list_foot';
@@ -964,6 +1042,7 @@ body::-webkit-scrollbar-thumb
 		viewList.appendChild(aDelList);
 
 		viewList.appendChild(list_title);
+		viewList.appendChild(up_list_title);
 
 		viewList.appendChild(div);
 
@@ -1005,7 +1084,7 @@ body::-webkit-scrollbar-thumb
 
 			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
 
-// 			console.log('length_onload: ' + numOfList);
+			// 			console.log('length_onload: ' + numOfList);
 
 			setWidthOnload(numOfList); // Onload 시 전체 width 설정
 
@@ -1023,30 +1102,31 @@ body::-webkit-scrollbar-thumb
 				l_num : l_num,
 				c_num : c_num
 			}
-		}).done(function(msg) {
+		}).done(
+				function(msg) {
 
-			var detail = JSON.parse(msg);
-			var cardInfo = detail[0];
-			var cardReply = detail[1];
+					var detail = JSON.parse(msg);
+					var cardInfo = detail[0];
+					var cardReply = detail[1];
 
-			var label = cardInfo.label;
+					var label = cardInfo.label;
 
-			if (label == null) {
-				label = "0,0,0,0,0,0,0";
-			}
+					if (label == null) {
+						label = "0,0,0,0,0,0,0";
+					}
 
-			var labelArr = label.split(',');
+					var labelArr = label.split(',');
 
-			for (var i = 1; i <= 7; i++) {
-				if ('0' != labelArr[i - 1]) {
-					$('#labelDiv' + c_num + '_' + i).css(
-							'background-color',
-							rgb2hex($('#label' + i).css(
-									"background-color")));
-					$('#labelDiv' + c_num + '_' + i).show();
-				}
-			}
-		});
+					for (var i = 1; i <= 7; i++) {
+						if ('0' != labelArr[i - 1]) {
+							$('#labelDiv' + c_num + '_' + i).css(
+									'background-color',
+									rgb2hex($('#label' + i).css(
+											"background-color")));
+							$('#labelDiv' + c_num + '_' + i).show();
+						}
+					}
+				});
 
 	}
 
@@ -1095,46 +1175,48 @@ body::-webkit-scrollbar-thumb
 	}
 	function listSortable(id) {
 
-		$('#list' + id).sortable({
-			connectWith : '.list',
-			update : function(ev, ui) {
-				var result1 = $('#list' + id).sortable('toArray');
-				var targetId = ev.target.id;
-				var parentId = ev.toElement.parentElement.id;
-				var cardArr = '';
+		$('#list' + id).sortable(
+				{
+					connectWith : '.list',
+					update : function(ev, ui) {
+						var result1 = $('#list' + id).sortable('toArray');
+						var targetId = ev.target.id;
+						var parentId = ev.toElement.parentElement.id;
+						var cardArr = '';
 
-				if (targetId == parentId) {
+						if (targetId == parentId) {
 
-					for (var i = 0; i < result1.length; i++) {
-						if (i < (result1.length - 1)) {
-							cardArr += result1[i] + ',';
-						} else {
-							cardArr += result1[i];
+							for (var i = 0; i < result1.length; i++) {
+								if (i < (result1.length - 1)) {
+									cardArr += result1[i] + ',';
+								} else {
+									cardArr += result1[i];
+								}
+
+							}
+							sessionChk();
+							$.ajax({
+								url : '/main/moveCard',
+								method : 'post',
+								data : {
+
+									b_num : b_num,
+									l_num : id,
+									c_num : ev.toElement.id,
+									msg : cardArr,
+									length : result1.length
+								}
+
+							}).done(
+									function(msg) {
+										send('cardMove', 'cardMove',
+												'${sessionScope.id}',
+												'${sessionScope.b_num}', '0',
+												'0');
+									});
 						}
-
 					}
-					sessionChk();
-					$.ajax({
-						url : '/main/moveCard',
-						method : 'post',
-						data : {
-
-							b_num : b_num,
-							l_num : id,
-							c_num : ev.toElement.id,
-							msg : cardArr,
-							length : result1.length
-						}
-
-					}).done(function(msg) {
-						send('cardMove', 'cardMove',
-								'${sessionScope.id}',
-								'${sessionScope.b_num}', '0',
-								'0');
-					});
-				}
-			}
-		});
+				});
 	}
 	function openChat() {
 		chatOnOff = true;
@@ -1157,11 +1239,12 @@ body::-webkit-scrollbar-thumb
 				b_num : '${sessionScope.b_num}'
 			}
 
-		}).done(function(msg) {
-			send('${sessionScope.id}', 'unConnec',
-					'${sessionScope.id}', '${sessionScope.b_num}', '0',
-					'0');
-		});
+		}).done(
+				function(msg) {
+					send('${sessionScope.id}', 'unConnec',
+							'${sessionScope.id}', '${sessionScope.b_num}', '0',
+							'0');
+				});
 
 	}
 
@@ -1170,15 +1253,17 @@ body::-webkit-scrollbar-thumb
 		//리스트 타이틀
 		$('#CBContainer').css('display', 'none');
 		$('#addList').click(function() {
-// 			console.log('b');
+			// 			console.log('b');
 			$('#CBContainer').toggle();
 			$('#CBTitle').focus();
 			$('#CBTitle').val('');
+			$('#addList').hide();
 		});
+
 		$('#CBSubmit').click(function() {
 			var listTitle = $('#CBTitle').val();
 			var lengthOfListTitle = byteCalc(listTitle);
-			if(lengthOfListTitle > 20) {
+			if (lengthOfListTitle > 20) {
 				alert('리스트 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
 				$('#CBTitle').val('');
 			} else {
@@ -1186,6 +1271,14 @@ body::-webkit-scrollbar-thumb
 					addList($('#CBTitle').val());
 				}
 			}
+			$('#CBContainer').toggle();
+			$('#CBTitle').val('');
+			$('#addList').show();
+		});
+		$('#CBCancel').click(function() {
+			$('#CBContainer').toggle();
+			$('#CBTitle').val('');
+			$('#addList').show();
 		});
 
 		//링크 등록
@@ -1227,21 +1320,21 @@ body::-webkit-scrollbar-thumb
 				$('#popup_layer, #overlay_t').hide();
 			}
 		});
-		
-		$('#deleteCard').click(function(){
+
+		$('#deleteCard').click(function() {
 			sessionChk();
-			var result = confirm('카드를 삭제 하시겠습니까?'); 
-			
-			if(result) { //yes 
+			var result = confirm('카드를 삭제 하시겠습니까?');
+
+			if (result) { //yes 
 				$.ajax({
-					method: 'post',
-					url: '/main/deleteCard',
-					data: {
+					method : 'post',
+					url : '/main/deleteCard',
+					data : {
 						b_num : b_num,
 						c_key : $('#cardNum')[0].value
 					}
-				}).done(function(msg){
-					$('#cardModal').css('display','none');
+				}).done(function(msg) {
+					$('#cardModal').css('display', 'none');
 					var listArr = JSON.parse(msg);
 					$('#mainList').children().remove();
 					$.each(listArr, function(i) {
@@ -1249,7 +1342,7 @@ body::-webkit-scrollbar-thumb
 						var l_num = listArr[i].l_num;
 						var id = l_num;
 						var l_title = listArr[i].title;
-						
+
 						listView(id, l_title, l_num);
 						cardSearch(b_num, l_num, id);
 
@@ -1261,33 +1354,33 @@ body::-webkit-scrollbar-thumb
 		});
 
 	});
-	
+
 	function deleteList(b_num, l_num) {
-		
-		var result = confirm('리스트를 삭제 하시겠습니까?'); 
-		
-		if(result) {
+
+		var result = confirm('리스트를 삭제 하시겠습니까?');
+
+		if (result) {
 			$.ajax({
-				method: 'post',
-				url: '/main/deleteList',
-				data: {
-					b_num: b_num,
-					l_num: l_num
+				method : 'post',
+				url : '/main/deleteList',
+				data : {
+					b_num : b_num,
+					l_num : l_num
 				}
-			}).done(function(msg){
+			}).done(function(msg) {
 				//카드 삭제 시 리스트 뷰 재구성
 				$('#cardModal').css('display', 'none');
 				var listArr = JSON.parse(msg);
 				$('#mainList').children().remove();
 				$.each(listArr, function(i) {
-	
+
 					var l_num = listArr[i].l_num;
 					var id = l_num;
 					var l_title = listArr[i].title;
 
 					listView(id, l_title, l_num);
 					cardSearch(b_num, l_num, id);
-	
+
 				});
 				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
 				setWidthOnload(numOfList); // Onload 시 전체 width 설정
@@ -1426,42 +1519,43 @@ body::-webkit-scrollbar-thumb
 			data : {
 				c_key : $('#cardNum')[0].value
 			}
-		}).done(function(msg) {
-			var detail = JSON.parse(msg);
+		}).done(
+				function(msg) {
+					var detail = JSON.parse(msg);
 
-			var label = detail.label;
-			console.log(detail);
+					var label = detail.label;
+					console.log(detail);
 
-			var c_num = $('#cardNum')[0].value;
+					var c_num = $('#cardNum')[0].value;
 
-			var labelArr;
-			$('#labelDiv' + c_num + '_' + num).css('background-color',
-					backgroundColor);
-			if ('none' != isNone) {
-				labelArr = makeLabelArr(label, num, 'del');
-				$('#selected_label' + num).hide();
-				$('#labelDiv' + c_num + '_' + num).hide();
-			} else {
-				labelArr = makeLabelArr(label, num, 'ins');
-				$('#selected_label' + num).show();
-				$('#labelDiv' + c_num + '_' + num).show();
-			}
+					var labelArr;
+					$('#labelDiv' + c_num + '_' + num).css('background-color',
+							backgroundColor);
+					if ('none' != isNone) {
+						labelArr = makeLabelArr(label, num, 'del');
+						$('#selected_label' + num).hide();
+						$('#labelDiv' + c_num + '_' + num).hide();
+					} else {
+						labelArr = makeLabelArr(label, num, 'ins');
+						$('#selected_label' + num).show();
+						$('#labelDiv' + c_num + '_' + num).show();
+					}
 
-			var tempArr = labelArr.toString();
+					var tempArr = labelArr.toString();
 
-			sessionChk();
-			$.ajax({
-				method : 'post',
-				url : '/main/updateLabel',
-				data : {
-					c_key : $('#cardNum')[0].value,
-					label : tempArr
-				}
-			}).done(function(msg) {
+					sessionChk();
+					$.ajax({
+						method : 'post',
+						url : '/main/updateLabel',
+						data : {
+							c_key : $('#cardNum')[0].value,
+							label : tempArr
+						}
+					}).done(function(msg) {
 
-			});
+					});
 
-		});
+				});
 	}
 
 	function makeLabelArr(label, num, action) {
@@ -1514,75 +1608,70 @@ body::-webkit-scrollbar-thumb
 		window.open('profile?profileId=' + id, '',
 				'width=400, height=300, left=500, top=400');
 	}
-	
 
-	$(function(){
+	$(function() {
 		$("#wow").datepicker({
-				
-				
-			changeMonth: true,
-			closeText: 'close',
-			dateFormat: 'yy-mm-dd',
-			autoclose: true,
-	        changeYear: true,
-			onSelect : function(day){
-				
+
+			changeMonth : true,
+			closeText : 'close',
+			dateFormat : 'yy-mm-dd',
+			autoclose : true,
+			changeYear : true,
+			onSelect : function(day) {
+
 				$.ajax({
 					method : 'post',
 					url : '/main/dueDate',
 					data : {
 						c_key : dateC_num,
 						day : day
-						
+
 					}
 				}).done(function(msg) {
-					
+
 					$('#date').val(day);
 					var detail = JSON.parse(msg);
-					console.log('date:'+msg);
-					
-			 
-				   $('.nal_div').text("D-day     :"+day)
-				   
-					  
-					 var sday = "D-day"; 
-					 var today = new Date(); 
-					 var mday = new Date(day); 
-					 var tmime = (mday.getTime() - today.getTime()); 
-					 var itime = 24 * 60 * 60 * 1000; 
-					 var fdday = tmime / itime; 
-					 var dday = Math.floor(fdday)+1; 
-					 if (dday == 0) 
-						 $('.nal2_div').text("오늘입니다."); 
-					 else if (dday > 0) 
-						 $('.nal2_div').text(sday + "까지 " + dday + "일 남았습니다."); 
-					 else if (dday < 0) 
-						 $('.nal2_div').text(sday + "로부터 " + dday + "일 지났습니다.");  
-					
-					 $("#wow").css('display','none');
+					console.log('date:' + msg);
+
+					$('.nal_div').text("D-day     :" + day)
+
+					var sday = "D-day";
+					var today = new Date();
+					var mday = new Date(day);
+					var tmime = (mday.getTime() - today.getTime());
+					var itime = 24 * 60 * 60 * 1000;
+					var fdday = tmime / itime;
+					var dday = Math.floor(fdday) + 1;
+					if (dday == 0)
+						$('.nal2_div').text("오늘입니다.");
+					else if (dday > 0)
+						$('.nal2_div').text(sday + "까지 " + dday + "일 남았습니다.");
+					else if (dday < 0)
+						$('.nal2_div').text(sday + "로부터 " + dday + "일 지났습니다.");
+
+					$("#wow").css('display', 'none');
 				});
 			}
-		
+
 		});
 	});
-	
+
 	function logout() {
-		var result = confirm('로그아웃 하시겠습니까?'); 
-		
-		if(result) { //yes 
+		var result = confirm('로그아웃 하시겠습니까?');
+
+		if (result) { //yes 
 			location.replace('/main/logOut');
 		}
 	}
 
-		
-	function showCal(){
-		$( "#wow" ).toggle();
-	} 
-	 
-	$('#wow').datepicker().on('changeDate', function (day) {
+	function showCal() {
+		$("#wow").toggle();
+	}
+
+	$('#wow').datepicker().on('changeDate', function(day) {
 		$('#wow').hide();
-	});   
-		    
+	});
+
 	function sessionChk() {
 		$.ajax({
 			url : '/main/sessionChk',
@@ -1625,7 +1714,8 @@ body::-webkit-scrollbar-thumb
 		</form>
 		<a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
-	<div style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;" onclick="alert('aef')">${title}</div>
+	<div style="position: fixed; height: 50px; margin-top: 50px; font-size: 40px;">${title}</div>
+
 	<div id="content">
 		<div class="g3-container" canvas="container" align="right">
 			<div class="content">
@@ -1633,10 +1723,11 @@ body::-webkit-scrollbar-thumb
 				<div class="addListBorder">
 					<div id="addList">
 						<div>Create</div>
-						<div id="CBContainer">
-							<textarea id="CBTitle" style="width: 95%;"></textarea>
-							<button id="CBSubmit">SAVE</button>
-						</div>
+					</div>
+					<div id="CBContainer">
+						<textarea id="CBTitle" style="width: 95%;"></textarea>
+						<button id="CBSubmit">SAVE</button>
+						<button id="CBCancel">cancel</button>
 					</div>
 				</div>
 			</div>

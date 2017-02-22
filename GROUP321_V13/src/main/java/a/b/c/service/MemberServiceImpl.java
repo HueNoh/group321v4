@@ -305,20 +305,24 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	public List updateLabelName(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.updateLabelName(map);
-	}	@Override
+	}
+
+	@Override
 	public List searchFilter(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.searchFilter(map);
 	}
+
 	@Override
 	public List searchLabel(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.searchLabel(map);
 	}
+
 	@Override
 	public List dueDate(Map map) {
 		// TODO Auto-generated method stub
-		return  memberDao.dueDate(map);
+		return memberDao.dueDate(map);
 	}
 
 	@Override
@@ -331,6 +335,12 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	public int deleteCard(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.deleteCard(map);
+	}
+
+	@Override
+	public int updateList(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.updateList(map);
 	}
 
 }

@@ -315,11 +315,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		and b.label regexp #{result}
 		order by a.seq
 
-	</select><select id="dueDate" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	</select>
+	<select id="dueDate" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		update tb_card
 		set dueDate = #{day}
 		where c_key = #{c_key}
-		
+
 	</select>
 
 </mapper>

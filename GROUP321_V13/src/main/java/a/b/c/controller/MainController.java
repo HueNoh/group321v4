@@ -390,11 +390,12 @@ public class MainController {
 		int result = memberService.removeMembers(map);
 		return new Gson().toJson(result);
 	}
+
 	@RequestMapping(value = "/sessionChk", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String sessionChk(Model model, @RequestParam Map map) {
-		
+
 		return "";
 	}
 
@@ -415,7 +416,6 @@ public class MainController {
 		return "profile";
 
 	}
-	
 
 	@RequestMapping(value = "/dueDate", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
@@ -426,5 +426,21 @@ public class MainController {
 		List result = memberService.dueDate(map);
 		System.out.println(result);
 		return new Gson().toJson(map.get("day"));
+	}
+
+	@RequestMapping(value = "/listTitleUpdate", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String listTitleUpdate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		int result = memberService.updateList(map);
+
+		if (0 == result) {
+			System.out.println("success");
+			return new Gson().toJson("success");
+		} else {
+			return new Gson().toJson("fail");
+
+		}
 	}
 }
