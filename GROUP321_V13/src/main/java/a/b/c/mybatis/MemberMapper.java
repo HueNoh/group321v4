@@ -100,4 +100,6 @@ public interface MemberMapper {
 
 	public List deleteCardReply(Map map);
 
+	public List updateCardReply(Map map);
+
 }

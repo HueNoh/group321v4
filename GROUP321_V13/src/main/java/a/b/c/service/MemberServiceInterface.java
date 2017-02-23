@@ -89,4 +89,6 @@ public interface MemberServiceInterface {
 	public List deleteCardReply(Map map);
 
 	public List selectCardReply(Map map);
+
+	public List updateCardReply(Map map);
 }

@@ -241,22 +241,19 @@ public class MainController {
 
 		return new Gson().toJson(obj);
 	}
-	/*
+	
 	@RequestMapping(value = "/updateCardReply", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String updateCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-//		int result = memberService.updateCardReply(map);
-		JsonObject obj = new JsonObject();
-
-		obj.addProperty("m_id", (String) map.get("m_id"));
-		obj.addProperty("content", (String) map.get("content"));
-		obj.addProperty("seq", (int) map.get("seq"));
-
-		return new Gson().toJson(obj);
+		List list = memberService.updateCardReply(map);
+		
+		List cardReplyInfo = memberService.selectCardReply(map);
+		
+		return new Gson().toJson(cardReplyInfo);
 	}
-	*/
+	
 	@RequestMapping(value = "/deleteCardReply", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
