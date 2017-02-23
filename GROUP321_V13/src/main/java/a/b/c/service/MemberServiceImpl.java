@@ -359,4 +359,10 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		return memberDao.selectCardReply(map);
 	}
 
+	@Override
+	public List updateCardReply(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.updateCardReply(map);
+	}
+
 }

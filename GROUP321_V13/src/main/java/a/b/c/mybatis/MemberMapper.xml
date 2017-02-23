@@ -328,5 +328,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where c_key = #{c_key}
 		AND seq = #{seq}
 	</select>
+	
+	<select id="updateCardReply" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		update tb_card_reply
+		set content = #{content}
+		where c_key = #{c_key}
+		AND seq = #{seq}
+	</select>
 
 </mapper>

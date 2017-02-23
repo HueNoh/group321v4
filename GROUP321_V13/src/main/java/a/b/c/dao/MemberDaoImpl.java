@@ -297,4 +297,11 @@ public class MemberDaoImpl implements MemberDaoInterface {
 		return mapper.deleteCardReply(map);
 	}
 
+	@Override
+	public List updateCardReply(Map map) {
+		// TODO Auto-generated method stub
+		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
+		return mapper.updateCardReply(map);
+	}
+
 }
