@@ -59,12 +59,12 @@
 
 			} else if ('listMove' == access) {
 
-					$('#' + msg).html('');
-					listSearch(b_num);
+				$('#' + msg).html('');
+				listSearch(b_num);
 
 			} else if ("cardMove" == access) {
-					$('#mainList').html('');
-					listSearch(b_num);
+				$('#mainList').html('');
+				listSearch(b_num);
 			} else if ('listCreate' == access) {
 				if (id != '${sessionScope.id}') {
 
@@ -98,6 +98,10 @@
 
 			} else if ("unConnec" == access) {
 				$('#' + id).remove();
+			} else if ("memberAdd" == access) {
+
+				$('#inUser').empty();
+				inUsers();
 			}
 			/* else if ("reply" == access) {
 								if (id != '${sessionScope.id}'
@@ -165,6 +169,9 @@
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
 		} else if ('unConnec' == acc) {
+			var jsonStr = JSON.stringify(msg);
+			webSocket.send(jsonStr);
+		} else if ('memberAdd' == acc) {
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
 		}

@@ -84,6 +84,12 @@ public class ListWebSocket {
 						client.getBasicRemote()
 								.sendText(id + "::" + msg + "::" + access + "::" + b_num + "::" + l_num + "::" + c_num);
 					}
+				} else if ("memberAdd".equals(access)) {
+					for (int i = 0; i < clients.size(); i++) {
+						Session client = clients.get(i);
+						client.getBasicRemote()
+								.sendText(id + "::" + msg + "::" + access + "::" + b_num + "::" + l_num + "::" + c_num);
+					}
 				} 
 			}
 

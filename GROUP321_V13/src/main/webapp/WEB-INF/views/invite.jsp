@@ -9,48 +9,51 @@
 			data : {
 				b_num : b_num
 			}
-		}).done(function(msg) {
-			$.each(msg, function(i) {
+		}).done(
+				function(msg) {
+					$.each(msg, function(i) {
 
-				var userDiv = document.createElement('div');
-				userDiv.className = 'user-inUsers';
+						var userDiv = document.createElement('div');
+						userDiv.className = 'user-inUsers';
 
-				var div = document.createElement('div');
-				div.className = 'inUsers';
+						var div = document.createElement('div');
+						div.className = 'inUsers';
 
-				var aTag = document.createElement('a');
-				var content = document.createTextNode(msg[i].m_id);
+						var aTag = document.createElement('a');
+						var content = document.createTextNode(msg[i].m_id);
 
-				aTag.setAttribute('onclick', 'profile(\''+msg[i].m_id+'\')');
-				aTag.setAttribute('style', 'color: white; font-size: 20px');
+						aTag.setAttribute('onclick', 'profile(\'' + msg[i].m_id
+								+ '\')');
+						aTag.setAttribute('style',
+								'color: white; font-size: 20px');
 
-				aTag.appendChild(content);
-				div.appendChild(aTag);
-				userDiv.append(div);
+						aTag.appendChild(content);
+						div.appendChild(aTag);
+						userDiv.append(div);
 
-				if ('${sessionScope.id}' == msg[i].m_id) {
-					var buttonDiv = document.createElement('div');
-					buttonDiv.className = 'inUsersButton';
-					var button = document.createElement('input');
-					button.type = 'button';
-					button.value = '나가기';
-					button.onclick = function() {
+						if ('${sessionScope.id}' == msg[i].m_id) {
+							var buttonDiv = document.createElement('div');
+							buttonDiv.className = 'inUsersButton';
+							var button = document.createElement('input');
+							button.type = 'button';
+							button.value = '나가기';
+							button.onclick = function() {
 
-						var choice = confirm("나가시겠습니까?");
+								var choice = confirm("나가시겠습니까?");
 
-						if (choice) {
-							boardOut(msg[i].m_id);
-						} else {
-							console.log('취소');
+								if (choice) {
+									boardOut(msg[i].m_id);
+								} else {
+									console.log('취소');
+								}
+
+							};
+
+							userDiv.append(button);
 						}
-
-					};
-
-					userDiv.append(button);
-				}
-				$('#inUser').append(userDiv);
-			})
-		});
+						$('#inUser').append(userDiv);
+					})
+				});
 
 	}
 	function searchUser() {
@@ -81,7 +84,9 @@
 						} else {
 
 							$.each(msg, function(i) {
+								console.log(i);
 								var userDiv = document.createElement('div');
+								userDiv.id = 'user-searchUsers' + i;
 								userDiv.className = 'user-searchUsers';
 
 								var div = document.createElement('div');
@@ -91,7 +96,8 @@
 								var content = document
 										.createTextNode(msg[i].m_id);
 
-								aTag.setAttribute('onclick', 'profile(\''+msg[i].m_id+'\')');
+								aTag.setAttribute('onclick', 'profile(\''
+										+ msg[i].m_id + '\')');
 								aTag.setAttribute('style',
 										'color: white; font-size: 20px');
 
@@ -109,7 +115,7 @@
 											+ "님을 초대하시겠습니까?")
 
 									if (choice) {
-										invite(msg[i].m_id);
+										invite(msg[i].m_id, 'user-searchUsers' + i);
 									} else {
 										console.log('취소');
 									}
@@ -129,7 +135,7 @@
 					});
 		}
 	}
-	function invite(id) {
+	function invite(id, divId) {
 		$.ajax({
 			url : "/main/inviteUser",
 			method : "post",
@@ -141,7 +147,8 @@
 		}).done(function(msg) {
 			if (0 == msg) {
 				alert(id + '님을 추가하였습니다.')
-
+				send(divId, 'memberAdd', '${sessionScope.id}', b_num,'0','0');
+				$('#' + divId).remove();
 			} else {
 				alert(id + '님을 초대에 실패하였습니다.')
 			}
@@ -169,8 +176,7 @@
 </script>
 <p>유저 검색</p>
 <div id="searchUser">
-	<input type="text" id="userSearch" /> <input type="button"
-		onclick="searchUser();" value="검색">
+	<input type="text" id="userSearch" /> <input type="button" onclick="searchUser();" value="검색">
 </div>
 <p>프로젝트 멤버</p>
 <div id="inUser"></div>
