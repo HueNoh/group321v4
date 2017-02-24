@@ -182,6 +182,17 @@ public class MainController {
 		session.setAttribute("c_num", map.get("c_num"));
 
 		List list = memberService.selectCardDetail(map);
+		
+//		for(int i=0; i<list.size(); i++) {
+//			Map getMap = (Map) list.get(i);
+//		}
+//		
+//		Iterator iterator = list.iterator();
+//		while (iterator.hasNext()) {
+//			
+//			list.get(iterator.next());
+//		}
+		
 		return new Gson().toJson(list);
 	}
 
@@ -230,6 +241,7 @@ public class MainController {
 	@ResponseBody
 	public String addCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
+		
 		int result = memberService.addCardReply(map);
 		JsonObject obj = new JsonObject();
 
@@ -245,6 +257,7 @@ public class MainController {
 	@ResponseBody
 	public String updateCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
+		
 		List list = memberService.updateCardReply(map);
 
 		List cardReplyInfo = memberService.selectCardReply(map);
@@ -273,8 +286,12 @@ public class MainController {
 	@ResponseBody
 	public String updateContent(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
+		
+		String content = (String)map.get("content");
+		content = content.replace("\n", "<br>");
+		map.put("content", content);
 		List list = memberService.updateContent(map);
-
+		
 		return "";
 	}
 

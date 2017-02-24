@@ -203,6 +203,18 @@ body::-webkit-scrollbar-thumb {
 	padding-top: 100px;
 }
 
+.content_div {
+	border: 1px;
+}
+
+.content_textarea {
+	width: 600px;
+	height: 70px;
+	border-radius: 5px;
+    border: 2px solid #888;
+    box-shadow: 2px 2px 6px -2px lightslategrey;
+}
+
 .card-detail-main {
 	height: 700px;
 	max-width: 600px;
@@ -460,6 +472,7 @@ body::-webkit-scrollbar-thumb {
 
 .comment_content {
 	word-break: break-all;
+	width: 95%;
 }
 
 .update_delete {
@@ -890,7 +903,7 @@ body::-webkit-scrollbar-thumb {
 					labelNameShow(labelName);
 
 					if (null != content) {
-						$('.content_div').text(content);
+						$('.content_div').html(content);
 					} else {
 						$('.content_div').text('');
 					}
@@ -1001,7 +1014,7 @@ body::-webkit-scrollbar-thumb {
 	function handleDesc(num) {
 
 		$('.content_textarea').val('');
-
+		
 		if (num == 1) {
 			$('.content_tag').hide();
 			$('.content_area').show();
@@ -1033,13 +1046,13 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function createReplyDiv(seq, cnt, m_id) {
-
+		
 		var reply = document.createElement('div');
 
 		reply.id = 'reply_' + seq;
 		reply.className = 'card_reply';
 
-		var content = document.createElement('div');
+		var content = document.createElement('pre');
 		var writer = document.createElement('div');
 
 		var contentText = document.createTextNode(cnt);
@@ -2101,6 +2114,17 @@ body::-webkit-scrollbar-thumb {
 			$('#card_title_view').select();
 		}
 	}
+// 	function checkEnter() {
+// 		var key = window.event.keycode;
+// 		var desc = '';
+// 		if(key === 13) {
+// 			desc = $('.content_textarea').val();
+// 			desc = desc + '\n';
+// 			return false;
+// 		} else {
+// 			return true;
+// 		}
+// 	}
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>
@@ -2208,10 +2232,10 @@ body::-webkit-scrollbar-thumb {
 							<a href="#" class="	 glyphicon-pencil content_tag" onclick="handleDesc(1);">&nbsp;content...</a>
 							<!-- 					<div class="card-desc"> -->
 							<!-- 							<a href="#" class="	 glyphicon-pencil content_tag"	onclick="createDescriptionDiv();">&nbsp;description...</a> -->
-							<div class="content_div"></div>
+							<pre class="content_div"></pre>
 							<div class="content_area" id="content_area">
 								<div class="content_text">
-									<textarea rows="10" cols="80" class="content_textarea"></textarea>
+									<textarea class="content_textarea"></textarea>
 								</div>
 								<div>
 									<button value="SAVE" style="width: 40px; height: 30px;" onclick="sendDesc();">
