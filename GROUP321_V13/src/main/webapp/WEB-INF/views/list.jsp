@@ -456,7 +456,7 @@ body::-webkit-scrollbar-thumb {
 
 .comment_writer:hover {
 	cursor: pointer;
-} 
+}
 
 .comment_content {
 	word-break: break-all;
@@ -628,11 +628,7 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = $
-		{
-			users
-		}
-		;
+		var users = ${users};
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -681,9 +677,15 @@ body::-webkit-scrollbar-thumb {
 
 		viewMsg();
 		inUsers();
-		$("#inputMessage").keydown(function(key) {
+		$("#inputMessage").keyup(function(key) {
+
 			if (key.keyCode == 13) {
-				$("#sendMessage").click();
+				if (key.shiftKey) {
+					
+				} else {
+
+					$("#sendMessage").click();
+				}
 			}
 		});
 
@@ -1103,7 +1105,7 @@ body::-webkit-scrollbar-thumb {
 		inputCancleDiv.append(cancleTag);
 
 		writer.className = 'comment_writer';
-		writer.id = 'comment_writer'+seq;
+		writer.id = 'comment_writer' + seq;
 		content.className = 'comment_content';
 
 		writer.appendChild(writerText);
@@ -1132,12 +1134,12 @@ body::-webkit-scrollbar-thumb {
 		reply.append(inputCancleDiv);
 
 		$('#cardReply').prepend(reply);
-		
+
 		var midSize = byteCalc(m_id);
-		
-		$('#comment_writer'+seq).css('width',midSize*10);
-		
-		$('#comment_writer'+seq).click(function(){
+
+		$('#comment_writer' + seq).css('width', midSize * 10);
+
+		$('#comment_writer' + seq).click(function() {
 			profile(m_id);
 		});
 
