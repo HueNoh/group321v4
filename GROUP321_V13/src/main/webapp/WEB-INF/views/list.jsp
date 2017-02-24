@@ -401,10 +401,10 @@ body::-webkit-scrollbar-thumb {
 	font-weight: bold;
 	color: #D2691E;
 }
-/* 
+
 .comment_writer:hover {
 	cursor: pointer;
-} */
+}
 
 .comment_content {
 	word-break: break-all;
@@ -902,7 +902,6 @@ body::-webkit-scrollbar-thumb {
 					function(msg) {
 
 						var replyInfo = JSON.parse(msg);
-						var contentSize = byteCalc(content);
 
 						createReplyDiv(replyInfo.seq, replyInfo.content,
 								replyInfo.m_id);
@@ -1019,6 +1018,7 @@ body::-webkit-scrollbar-thumb {
 		inputCancleDiv.append(cancleTag);
 
 		writer.className = 'comment_writer';
+		writer.id = 'comment_writer'+seq;
 		content.className = 'comment_content';
 
 		writer.appendChild(writerText);
@@ -1049,6 +1049,14 @@ body::-webkit-scrollbar-thumb {
 		reply.append(inputCancleDiv);
 
 		$('#cardReply').prepend(reply);
+		
+		var midSize = byteCalc(m_id);
+		
+		$('#comment_writer'+seq).css('width',midSize*10);
+		
+		$('#comment_writer'+seq).click(function(){
+			profile(m_id);
+		});
 
 	}
 	
@@ -1836,7 +1844,7 @@ body::-webkit-scrollbar-thumb {
 
 	function profile(id) {
 		window.open('profile?profileId=' + id, '',
-				'width=400, height=300, left=500, top=400');
+				'width=600, height=300, left=500, top=400');
 	}
 
 	$(function() {
