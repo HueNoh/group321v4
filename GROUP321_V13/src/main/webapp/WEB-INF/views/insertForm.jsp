@@ -21,38 +21,45 @@
 		$('#dupBtn').click(function() {
 			// 1. 입력값 체크
 			var ID = $.trim($('#ID').val());
-			
-			if ('' == ID) {
-				alert('아이디를 입력해주세요.');
-				$('#ID').focus();
+			console.log('id: '+ID);
+			if(koreanCheck(ID)){
+				alert('아이디는 영문으로 작성해 주세요');
+				$('#ID').val('');
 			} else {
-				// 2. 중복 체크(AJAX)
-				$.ajax({
-					method : 'post',
-					url : '/chkIdDup',
-					data : {
-						id : ID
-					}
-				}).done(function(msg) {
-					
-					if('-1' == msg){
-						alert('사용중인 아이디입니다.');
-					}else{
-						// 3. 사용 여부 체크
-						var use = confirm('사용하시겠습니까?');
-						if(use){
-							$('#ID').attr('readonly','true');
-							$('#dupBtn').attr('disabled','true');
-							dupFlag = true;
-						}else{
-							
+				
+				if ('' == ID) {
+					alert('아이디를 입력해주세요.');
+					$('#ID').focus();
+				} else {
+					// 2. 중복 체크(AJAX)
+					$.ajax({
+						method : 'post',
+						url : '/chkIdDup',
+						data : {
+							id : ID
 						}
-					}
-				
-					console.log(msg);
-				
-				});
+					}).done(function(msg) {
+						
+						if('-1' == msg){
+							alert('사용중인 아이디입니다.');
+						}else{
+							// 3. 사용 여부 체크
+							var use = confirm('사용하시겠습니까?');
+							if(use){
+								$('#ID').attr('readonly','true');
+								$('#dupBtn').attr('disabled','true');
+								dupFlag = true;
+							}else{
+								
+							}
+						}
+					
+						console.log(msg);
+					
+					});
+				}
 			}
+			
 
 		});
 
@@ -86,6 +93,23 @@
 		});
 
 	});
+	
+	function koreanCheck(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
+	{
+		var isKorean = false;
+		// 	      var newStr = '';
+
+		for (var i = 0; i < str.length; i++) {
+			var n = str.charCodeAt(i); // charCodeAt : String개체에서 지정한 인덱스에 있는 문자의 unicode값을 나타내는 수를 리턴한다.
+
+			if ((n >= 0) && (n < 256))
+				isKorean = false;
+			else
+				isKorean = true;
+
+		}
+		return isKorean;
+	}
 </script>
 
 </head>

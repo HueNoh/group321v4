@@ -144,11 +144,11 @@ html, body {
 }
 
 .txt[type="text"] {
-	border: 1px solid #ccc;
-	margin: 5px 0;
-	padding: 4px 0 4px 5px;
-	border-radius: 5px;
-	width: 35%;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+    padding: 4px 0 4px 5px;
+	border-radius:5px;
+    width: 50%;
 }
 
 .txt[type="tit"] {
