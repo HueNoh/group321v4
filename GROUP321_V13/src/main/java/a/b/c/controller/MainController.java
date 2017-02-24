@@ -239,19 +239,19 @@ public class MainController {
 
 		return new Gson().toJson(obj);
 	}
-	
+
 	@RequestMapping(value = "/updateCardReply", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String updateCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		List list = memberService.updateCardReply(map);
-		
+
 		List cardReplyInfo = memberService.selectCardReply(map);
-		
+
 		return new Gson().toJson(cardReplyInfo);
 	}
-	
+
 	@RequestMapping(value = "/deleteCardReply", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
@@ -260,7 +260,7 @@ public class MainController {
 		List list = null;
 		List cardReplyInfo = memberService.selectCardReply(map);
 		Map getCardReplyMap = (Map) cardReplyInfo.get(0);
-		if(map.get("m_id").equals(getCardReplyMap.get("m_id"))) {
+		if (map.get("m_id").equals(getCardReplyMap.get("m_id"))) {
 			list = memberService.deleteCardReply(map);
 			cardReplyInfo = memberService.selectCardReply(map);
 		}
@@ -465,18 +465,36 @@ public class MainController {
 
 		}
 	}
+
 	@RequestMapping(value = "/boardTitleUpdate", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String boardTitleUpdate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		int result = memberService.updateBoard(map);
-		
+
 		if (0 == result) {
 			return new Gson().toJson("success");
 		} else {
 			return new Gson().toJson("fail");
-			
+
 		}
+	}
+
+	@RequestMapping(value = "/cardTitleUpdate", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String cardTitleUpdate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		System.out.println("cardUPdate:" + map);
+		int result = memberService.updateCard(map);
+		System.out.println("cardUPdate:" + result);
+
+		return new Gson().toJson("success");
+		/*
+		 * if (0 == result) { } else { return new Gson().toJson("fail");
+		 * 
+		 * }
+		 */
 	}
 }

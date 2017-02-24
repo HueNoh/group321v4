@@ -26,7 +26,10 @@ public interface MemberServiceInterface {
 	public List insertList(Map map);
 
 	public int updateBoard(Map map);
+
 	public int updateList(Map map);
+
+	public int updateCard(Map map);
 
 	public List insertCard(Map map);
 

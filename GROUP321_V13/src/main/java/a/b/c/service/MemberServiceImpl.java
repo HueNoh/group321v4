@@ -348,6 +348,11 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		// TODO Auto-generated method stub
 		return memberDao.updateBoard(map);
 	}
+	@Override
+	public int updateCard(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.updateCard(map);
+	}
 	public List deleteCardReply(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.deleteCardReply(map);

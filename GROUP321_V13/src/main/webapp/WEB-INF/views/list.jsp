@@ -131,9 +131,6 @@ body::-webkit-scrollbar-thumb {
 
 .list {
 	width: 100%;
-	max-height:;
-	min-height: 10px;
-	float: left;
 	min-height: 10px;
 	float: left;
 	overflow-y: auto;
@@ -416,7 +413,29 @@ body::-webkit-scrollbar-thumb {
 	width: 20%;
 }
 
-.list>.list-card>div {
+.list-card {
+	height: 30px;
+}
+
+.labelDiv {
+	height: 5px;
+	width: 100%;
+	float: left;
+	margin-bottom: -2px;
+	margin-top: -4px;
+}
+
+.cardTitle {
+	height: 20px;
+	width: 100%;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	float: right;
+}
+
+.list>.list-card>.labelDiv>div {
 	display: none;
 	float: left;
 	width: 18px;
@@ -608,7 +627,11 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = ${users};
+		var users = $
+		{
+			users
+		}
+		;
 
 		userConnection(users);
 		$('#mainList').sortable(
@@ -838,7 +861,9 @@ body::-webkit-scrollbar-thumb {
 
 					var cardTitle = cardInfo.title;
 
-					$('#card_title').text(cardTitle);
+					$('#card_title_view').text(cardTitle);
+
+					$('#card_title_input').val(cardTitle);
 
 					var dueDate = cardInfo.duedate;
 					$('#date').val(dueDate);
@@ -892,6 +917,7 @@ body::-webkit-scrollbar-thumb {
 						$('#attachLink').append(node);
 					});
 
+					document.getElementById('listNum').value = l_num;
 					document.getElementById('cardNum').value = c_num;
 					dateC_num = c_num;
 					cardModal.style.display = "block";
@@ -1434,17 +1460,25 @@ body::-webkit-scrollbar-thumb {
 				};
 
 				labelSet(b_num, l_num, c_num);
+				var labelArea = document.createElement('div');
+				labelArea.className = 'labelDiv';
 
 				// 카드 내부의 label div 생성!!!
 				for (var j = 1; j <= 7; j++) {
 					var labelDiv = document.createElement('div');
 					labelDiv.id = 'labelDiv' + c_num + '_' + j;
-					cardDiv.append(labelDiv);
+					labelArea.append(labelDiv);
 				}
+				var cardTitle = document.createElement('div');
+				cardTitle.id = 'cardTitle' + c_num;
+				cardTitle.className = 'cardTitle';
 
 				var createCardText = document.createTextNode(cardArr[i].title);
 
-				cardDiv.appendChild(createCardText);
+				cardTitle.appendChild(createCardText);
+
+				cardDiv.append(labelArea);
+				cardDiv.append(cardTitle);
 
 				$('#list' + id).append(cardDiv);
 
@@ -2007,7 +2041,6 @@ body::-webkit-scrollbar-thumb {
 				if ('success' == result) {
 					$('#board_Title').html('');
 					$('#board_Title').html(title);
-					$('#board_Title').innerHTML = title;
 					$('#up_board_Title').hide();
 					$('#board_Title').show();
 				} else if ('fail' == result) {
@@ -2018,6 +2051,45 @@ body::-webkit-scrollbar-thumb {
 
 		}
 
+	}
+	function updateCardTitle(choice) {
+
+		//카드 타이틀
+		if (1 == choice) {
+			$('#card_title_view').hide();
+			$('#card_title_update').show();
+			$('#card_title_input').select();
+		} else if (2 == choice) {
+			var title = $('#card_title_input').val();
+			var l_num = $('#listNum').val();
+			var c_num = $('#cardNum').val();
+
+			$.ajax({
+				url : '/main/cardTitleUpdate',
+				method : 'post',
+				data : {
+					b_num : b_num,
+					l_num : l_num,
+					c_num : c_num,
+					title : title
+				}
+			}).done(function(msg) {
+				var result = JSON.parse(msg);
+				if ('success' == result) {
+					$('#cardTitle' + c_num).html(title);
+					$('#card_title_view').html('');
+					$('#card_title_view').html(title);
+					$('#card_title_update').hide();
+					$('#card_title_view').show();
+				} else if ('fail' == result) {
+					alert('수정 실패');
+				}
+			});
+
+			$('#card_title_update').hide();
+			$('#card_title_view').show();
+			$('#card_title_view').select();
+		}
 	}
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
@@ -2107,9 +2179,14 @@ body::-webkit-scrollbar-thumb {
 				<div id="cardView" class="cardView">
 					<div class="card-detail-main">
 
-						<input type="hidden" id="cardNum">
+						<input type="hidden" id="listNum"> <input type="hidden" id="cardNum">
+						<div id="card_title" style="font-size: 40px;">
+							<div id="card_title_view" onclick="updateCardTitle(1)"></div>
+							<div id="card_title_update" onclick="updateCardTitle(2)" style="display: none;">
+								<input type="text" id="card_title_input">
+							</div>
 
-						<h1 id="card_title">card title</h1>
+						</div>
 						<div class="label_div">
 							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;"> <input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;"> <input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;"> <input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;"> <input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;"> <input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;"> <input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
 						</div>
