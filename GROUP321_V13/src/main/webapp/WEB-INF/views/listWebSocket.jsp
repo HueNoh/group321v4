@@ -184,7 +184,7 @@
 			var div = document.createElement('div');
 			div.className = 'myMsg';
 
-			var content = document.createElement('div');
+			var content = document.createElement('pre');
 			content.className = "myContent";
 
 			var date = document.createElement('div');
@@ -209,7 +209,7 @@
 			var box = document.createElement('div');
 			box.className = 'box';
 
-			var div = document.createElement('div');
+			var div = document.createElement('pre');
 			div.className = 'memberMsg';
 
 			var proImg = document.createElement('IMG');

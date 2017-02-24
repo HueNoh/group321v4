@@ -681,7 +681,7 @@ body::-webkit-scrollbar-thumb {
 
 			if (key.keyCode == 13) {
 				if (key.shiftKey) {
-					
+						
 				} else {
 
 					$("#sendMessage").click();
