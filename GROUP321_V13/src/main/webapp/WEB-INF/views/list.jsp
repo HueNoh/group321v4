@@ -7,11 +7,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>List</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
-<link rel="stylesheet"
-	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/resources/js/jquery-3.1.1.min.js"></script>
@@ -20,8 +18,7 @@
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="/resources/css/websocket.atj.css">
 <!-- <link rel="stylesheet" href="/resources/css/jquery-ui.css"> -->
 <style>
@@ -39,17 +36,33 @@ a:hover, #addList>div {
 }
 
 body::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-	background-color: #F5F5F5;
+	background-color: #257db1;
+	border-radius: 5px;
 }
 
 body::-webkit-scrollbar {
 	width: 6px;
-	background-color: #F5F5F5;
+	background-color: #257db1;
+	border-radius: 5px;
 }
 
 body::-webkit-scrollbar-thumb {
-	background-color: gray;
+	background-color: #193b50;
+	border-radius: 5px;
+	height: 5px;
+}
+
+.list::-webkit-scrollbar-track {
+	background-color: #dfdfdf;
+}
+
+.list::-webkit-scrollbar {
+	width: 6px;
+	background-color: #dfdfdf;
+}
+
+.list::-webkit-scrollbar-thumb {
+	background-color: #828181;
 	border-radius: 5px;
 	height: 5px;
 }
@@ -94,8 +107,26 @@ body::-webkit-scrollbar-thumb {
 }
 
 #cardReply {
-	width: 90%;
+	margin-top: 10px;
+	max-height: 150px;
+	width: 100%;
 	overflow-y: auto;
+	max-height: 150px;
+}
+
+#cardReply::-webkit-scrollbar-track {
+	background-color: #fff;
+}
+
+#cardReply::-webkit-scrollbar {
+	width: 6px;
+	background-color: #fff;
+}
+
+#cardReply::-webkit-scrollbar-thumb {
+	background-color: #c1c1c1;
+	border-radius: 5px;
+	height: 5px;
 }
 
 .list {
@@ -123,7 +154,7 @@ body::-webkit-scrollbar-thumb {
 	cursor: pointer;
 }
 
-.viewList .list_foot, .viewList .addCard, .viewList {
+.viewList .list_foot, .viewList .addCard, .viewList, .list_header {
 	width: 100%;
 }
 
@@ -139,7 +170,7 @@ body::-webkit-scrollbar-thumb {
 	float: left;
 }
 
-.list_title, .up_title_input {
+.list_title, .up_list_title {
 	margin-top: 5px;
 	margin-left: 10px;
 	margin-right: 20px;
@@ -176,6 +207,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .card-detail-main {
+	max-height: 700px;
+	max-width: 600px;
 	float: left;
 }
 
@@ -405,7 +438,6 @@ body::-webkit-scrollbar-thumb {
 .comment_writer:hover {
 	cursor: pointer;
 } */
-
 .comment_content {
 	word-break: break-all;
 }
@@ -439,14 +471,44 @@ body::-webkit-scrollbar-thumb {
 }
 
 #attachLink {
-	height: 10em;
+	height: 100px;
+	border-radius: 5px;
+	margin-top: 10px;
 	overflow-y: scroll;
 	border: 2px solid grey;
-	width: 90%;
+	width: 100%;
+}
+
+#attachLink::-webkit-scrollbar-track {
+	background-color: #fff;
+	border-radius: 5px;
+}
+
+#attachLink::-webkit-scrollbar {
+	width: 6px;
+	background-color: #fff;
+	border-radius: 5px;
+}
+
+#attachLink::-webkit-scrollbar-thumb {
+	background-color: #c1c1c1;
+	border-radius: 5px;
+	height: 5px;
 }
 
 .addCardContainer {
 	display: none;
+}
+
+.up_list_title {
+	font-weight: bold;
+	text-align: left;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	height: 20px;
+	padding-left: 5px;
+	padding-right: 45px;
 }
 
 .list_title {
@@ -745,7 +807,7 @@ body::-webkit-scrollbar-thumb {
 		}
 	}
 	var dateC_num = 0;
-	
+
 	function cardView(b_num, l_num, c_num) {
 		$('#cardReply').empty();
 		$('#commentArea').val('');
@@ -984,7 +1046,7 @@ body::-webkit-scrollbar-thumb {
 		updateTag.setAttribute('onclick', 'showUpdate(' + seq + ', 1)');
 		updateTag.setAttribute('href', '#');
 		updateTag.append(updateText);
-		
+
 		updateCheck.id = 'update_check' + seq;
 		updateCheck.setAttribute('onclick', 'updateComment(' + seq + ')');
 		updateCheck.setAttribute('href', '#');
@@ -992,7 +1054,7 @@ body::-webkit-scrollbar-thumb {
 
 		wallSpan.id = 'wall' + seq;
 		wallSpan.append(wallText);
-		
+
 		wallSpan2.id = 'wall2' + seq;
 		wallSpan2.append(wallText2);
 
@@ -1027,7 +1089,6 @@ body::-webkit-scrollbar-thumb {
 		reply.appendChild(writer);
 		reply.appendChild(content);
 
-
 		content.id = 'comment_content' + seq;
 
 		updateDelete.append(updateTag);
@@ -1036,14 +1097,13 @@ body::-webkit-scrollbar-thumb {
 
 		writer.append(writerText);
 		content.append(contentText);
-		
+
 		var sessionId = '${sessionScope.id}';
-		
- 		if(sessionId == m_id) {
- 			content.append(updateDelete);
- 		}
-		
-		
+
+		if (sessionId == m_id) {
+			content.append(updateDelete);
+		}
+
 		reply.append(writer);
 		reply.append(content);
 		reply.append(inputCancleDiv);
@@ -1051,42 +1111,43 @@ body::-webkit-scrollbar-thumb {
 		$('#cardReply').prepend(reply);
 
 	}
-	
+
 	function updateComment(getSeq) {
-		var newReply = $('#input_update'+getSeq).val();
-		
+		var newReply = $('#input_update' + getSeq).val();
+
 		$.ajax({
-			method: 'post'
-			, url: '/main/updateCardReply'
-			, data: {
-				c_key : $('#cardNum')[0].value
-				, seq : getSeq
-				, content: newReply
+			method : 'post',
+			url : '/main/updateCardReply',
+			data : {
+				c_key : $('#cardNum')[0].value,
+				seq : getSeq,
+				content : newReply
 			}
-		}).done(function(msg){
-			var replyInfo = JSON.parse(msg);
+		}).done(
+				function(msg) {
+					var replyInfo = JSON.parse(msg);
 
-			$('#cardReply').empty();
+					$('#cardReply').empty();
 
-			$.each(replyInfo, function(i) {
-				createReplyDiv(replyInfo[i].seq,
-						replyInfo[i].content, replyInfo[i].m_id);
+					$.each(replyInfo, function(i) {
+						createReplyDiv(replyInfo[i].seq, replyInfo[i].content,
+								replyInfo[i].m_id);
 
-			});
-		});
-		
+					});
+				});
+
 	}
 
 	function showUpdate(getSeq, action) {
-		if('1' == action) {
-			$('#input_cancle_div'+getSeq).show();
-			$('#update_delete'+getSeq).hide();
-		} else if('2' == action) {
+		if ('1' == action) {
+			$('#input_cancle_div' + getSeq).show();
+			$('#update_delete' + getSeq).hide();
+		} else if ('2' == action) {
 			$('#input_cancle_div' + getSeq).hide();
-			$('#update_delete'+getSeq).show();
+			$('#update_delete' + getSeq).show();
 		}
 	}
-	
+
 	function deleteComment(getSeq) {
 		var result = confirm('댓글을 삭제 하시겠습니까?');
 
@@ -1117,13 +1178,11 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function labelView() {
-
 		if ($('.btn-label-view').next("div").hasClass('submenu_hidden')) {
 			$('.btn-label-view').next("div").removeClass('submenu_hidden');
 		} else {
 			$('.btn-label-view').next("div").addClass('submenu_hidden');
 		}
-
 	}
 
 	function getHistory() {
@@ -1176,14 +1235,14 @@ body::-webkit-scrollbar-thumb {
 				} else if ('fail' == result) {
 					alert('수정 실패');
 				}
-
 			});
-
 		}
-
 	}
 
 	function listView(id, l_title, l_num) {
+		var list_header = document.createElement('div');
+		list_header.className = 'list_header';
+
 		var div = document.createElement('div');
 		div.id = 'list' + id;
 		div.className = 'list';
@@ -1263,11 +1322,13 @@ body::-webkit-scrollbar-thumb {
 		aDelList.setAttribute('href', '#');
 		aDelList.setAttribute('onclick', 'deleteList(' + b_num + ',' + l_num
 				+ ');');
-		viewList.appendChild(aDelList);
 
-		viewList.appendChild(list_title);
-		viewList.appendChild(up_list_title);
+		list_header.appendChild(aDelList);
 
+		list_header.appendChild(list_title);
+		list_header.appendChild(up_list_title);
+
+		viewList.appendChild(list_header);
 		viewList.appendChild(div);
 
 		viewList.appendChild(list_foot);
@@ -1974,25 +2035,19 @@ body::-webkit-scrollbar-thumb {
 
 	<header id="header" class="clearfix">
 
-		<a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a>
-		<a href="#" onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
+		<a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a> <a href="#" onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
 		<div id="sch_main_wrap">
 			<fieldset class="sch_field">
 				<input type="text" id="sch_main">
 			</fieldset>
-			<a href="#" onclick="searchFilter();" id="btn_search"><span
-				class="btn_ico_sch"></span></a>
+			<a href="#" onclick="searchFilter();" id="btn_search"><span class="btn_ico_sch"></span></a>
 		</div>
-		<a href="/main/board"><h1 style="top: -10px;"
-				onclick="unConnect();">PROJECT 321</h1></a> <a href="#"
-			class="js-toggle-right-slidebar">☰</a>
+		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> <a href="#" class="js-toggle-right-slidebar">☰</a>
 	</header>
 
-	<div
-		style="position: fixed; height: 50px; margin-top: 50px; color: #e4e2e2; font-size: 40px;">
+	<div style="position: fixed; height: 50px; margin-top: 50px; color: #e4e2e2; font-size: 40px;">
 		<div id="board_Title" onclick="updateBoardTitle(1)">${title}</div>
-		<div id="up_board_Title" onclick="updateBoardTitle(2)"
-			style="display: none;">
+		<div id="up_board_Title" onclick="updateBoardTitle(2)" style="display: none;">
 			<input type="text" id="up_board_input" value="${title}">
 		</div>
 	</div>
@@ -2021,17 +2076,12 @@ body::-webkit-scrollbar-thumb {
 				<a class="menu-icon" href="#"><i class="icon-reorder"></i></a>
 				<ul class="side-menu">
 					<h2 class="title">Menu</h2>
-					<li class="link"><a href="#"
-						class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
-					<li class="link" onclick="getHistory();"><a href="#"
-						class="link_tag2" id="myBtn">History</a></li>
-					<li class="link"><a href="#" onclick="openChat();"
-						class="link_tag3 js-close-right-slidebar">Chatting</a></li>
+					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
+					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
+					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
 					<li class="link"><a href="#" class="link_tag4">File</a></li>
-					<li class="link"><a href="#" onclick="inviteMember()"
-						class="link_tag5 js-close-right-slidebar">Members</a></li>
-					<li class="link"><a href="#" onclick="logout()"
-						class="link_tag6 js-close-right-slidebar">SignOut</a></li>
+					<li class="link"><a href="#" onclick="inviteMember()" class="link_tag5 js-close-right-slidebar">Members</a></li>
+					<li class="link"><a href="#" onclick="logout()" class="link_tag6 js-close-right-slidebar">SignOut</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -2065,25 +2115,14 @@ body::-webkit-scrollbar-thumb {
 
 						<h1 id="card_title">card title</h1>
 						<div class="label_div">
-							<input id="selected_label1" type="button" onclick="label('1')"
-								value="&nbsp;"> <input id="selected_label2"
-								type="button" onclick="label('2')" value="&nbsp;"> <input
-								id="selected_label3" type="button" onclick="label('3')"
-								value="&nbsp;"> <input id="selected_label4"
-								type="button" onclick="label('4')" value="&nbsp;"> <input
-								id="selected_label5" type="button" onclick="label('5')"
-								value="&nbsp;"> <input id="selected_label6"
-								type="button" onclick="label('6')" value="&nbsp;"> <input
-								id="selected_label7" type="button" onclick="label('7')"
-								value="&nbsp;">
+							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;"> <input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;"> <input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;"> <input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;"> <input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;"> <input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;"> <input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
 						</div>
 						<br>
 						<div class="nal_div"></div>
 						<div class="nal2_div"></div>
 						<br>
 						<div id="contentId">
-							<a href="#" class="	 glyphicon-pencil content_tag"
-								onclick="handleDesc(1);">&nbsp;content...</a>
+							<a href="#" class="	 glyphicon-pencil content_tag" onclick="handleDesc(1);">&nbsp;content...</a>
 							<!-- 					<div class="card-desc"> -->
 							<!-- 							<a href="#" class="	 glyphicon-pencil content_tag"	onclick="createDescriptionDiv();">&nbsp;description...</a> -->
 							<div class="content_div"></div>
@@ -2092,12 +2131,10 @@ body::-webkit-scrollbar-thumb {
 									<textarea rows="10" cols="80" class="content_textarea"></textarea>
 								</div>
 								<div>
-									<button value="SAVE" style="width: 40px; height: 30px;"
-										onclick="sendDesc();">
+									<button value="SAVE" style="width: 40px; height: 30px;" onclick="sendDesc();">
 										<img alt="send" src="/resources/images/btn_send.png">
 									</button>
-									<button value="X" style="width: 40px; height: 30px;"
-										onclick="handleDesc(0);">
+									<button value="X" style="width: 40px; height: 30px;" onclick="handleDesc(0);">
 										<img alt="send" src="/resources/images/btn_cancel.png">
 									</button>
 								</div>
@@ -2105,9 +2142,9 @@ body::-webkit-scrollbar-thumb {
 						</div>
 
 						<h3>Add Comment</h3>
-						<textarea rows="10" cols="80" id="commentArea" required="required"></textarea>
-						<input type="button" value="SAVE" onclick="comment();"
-							id="btn_comment">
+						<textarea id="commentArea" style="width: 600px; height: 100px;" required="required"></textarea>
+
+						<input type="button" value="SAVE" onclick="comment();" id="btn_comment">
 						<div id="attachLink"></div>
 						<div id="cardReply"></div>
 					</div>
@@ -2115,108 +2152,72 @@ body::-webkit-scrollbar-thumb {
 					<div class="card-detail-sidebar">
 						<button onclick="labelView();" class="btn-label-view dropdown">
 							<!-- 						<input type="button" onclick="labelView();" class="btn-label-view dropdown"> -->
-							<span class="btn_label_toggle"><img alt="label"
-								src="/resources/images/btn_label.png" width="20px" height="20px"
-								class="btn-label">&nbsp;Label</span>
+							<span class="btn_label_toggle"><img alt="label" src="/resources/images/btn_label.png" width="20px" height="20px" class="btn-label">&nbsp;Label</span>
 						</button>
 						<div class="submenu_hidden">
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
-								<input type="text" id="label_name"
-									placeholder=" Input label name...">
-								<li id="label1" onclick="label('1');">&nbsp; <span
-									id="label_name1">&nbsp;</span>
+								<input type="text" id="label_name" placeholder=" Input label name...">
+								<li id="label1" onclick="label('1');">&nbsp; <span id="label_name1">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('1')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('1')">
 								</a>
-								<li id="label2" onclick="label('2');">&nbsp; <span
-									id="label_name2">&nbsp;</span>
+								<li id="label2" onclick="label('2');">&nbsp; <span id="label_name2">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('2')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('2')">
 								</a>
-								<li id="label3" onclick="label('3');">&nbsp; <span
-									id="label_name3">&nbsp;</span>
+								<li id="label3" onclick="label('3');">&nbsp; <span id="label_name3">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('3')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('3')">
 								</a>
-								<li id="label4" onclick="label('4');">&nbsp; <span
-									id="label_name4">&nbsp;</span>
+								<li id="label4" onclick="label('4');">&nbsp; <span id="label_name4">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('4')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('4')">
 								</a>
-								<li id="label5" onclick="label('5');">&nbsp; <span
-									id="label_name5">&nbsp;</span>
+								<li id="label5" onclick="label('5');">&nbsp; <span id="label_name5">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('5')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('5')">
 								</a>
-								<li id="label6" onclick="label('6');">&nbsp; <span
-									id="label_name6">&nbsp;</span>
+								<li id="label6" onclick="label('6');">&nbsp; <span id="label_name6">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('6')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('6')">
 								</a>
-								<li id="label7" onclick="label('7');">&nbsp; <span
-									id="label_name7">&nbsp;</span>
+								<li id="label7" onclick="label('7');">&nbsp; <span id="label_name7">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting"
-									src="/resources/images/btn_label_setting.png"
-									class="btn_label_setting" onclick="changeLabelName('7')">
+								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('7')">
 								</a>
 							</ul>
 						</div>
 
 						<br> <br>
 						<button id="insertLink">
-							<span><img alt="label"
-								src="/resources/images/btn_attachment.png" width="20px"
-								height="20px" class="btn-attachment">&nbsp;Attachment</span>
+							<span><img alt="label" src="/resources/images/btn_attachment.png" width="20px" height="20px" class="btn-attachment">&nbsp;Attachment</span>
 							<div id="overlay_t"></div>
 							<div id="popup_layer">
-								<input type="text" id="insertLinkInput"
-									placeholder="attach link"> <input type="button"
-									id="linkSubmit" class="close" value="save">
+								<input type="text" id="insertLinkInput" placeholder="attach link"> <input type="button" id="linkSubmit" class="close" value="save">
 
 							</div>
 						</button>
 						<br> <br>
 
 						<button id="deleteCard">
-							<span><img alt="label"
-								src="/resources/images/btn_delete.png" width="20px"
-								height="20px" class="btn-delete">&nbsp;Delete</span>
+							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;Delete</span>
 						</button>
 						<br> <br>
 
 						<button id="calBtn" onclick="showCal()">
-							<span><img alt="label"
-								src="/resources/images/calendar.jpg" width="25px" height="25px"
-								class="btn-delete">&nbsp;Calendar</span>
+							<span><img alt="label" src="/resources/images/calendar.jpg" width="25px" height="25px" class="btn-delete">&nbsp;Calendar</span>
 						</button>
 						<div id="wow" style="display: none;"></div>
 						<br> <br>
 
 
 						<button>
-							<span><img alt="label"
-								src="/resources/images/btn_calendar.png" width="20px"
-								height="20px" class="btn-calendar" />&nbsp;&nbsp;&nbsp;empty1</span>
+							<span><img alt="label" src="/resources/images/btn_calendar.png" width="20px" height="20px" class="btn-calendar" />&nbsp;&nbsp;&nbsp;empty1</span>
 						</button>
 						<br> <br>
 						<button>
-							<span><img alt="label"
-								src="/resources/images/btn_delete.png" width="20px"
-								height="20px" class="btn-delete">&nbsp;empty2</span>
+							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;empty2</span>
 						</button>
 						<br> <br>
 					</div>
@@ -2230,8 +2231,7 @@ body::-webkit-scrollbar-thumb {
 	</div>
 
 </body>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/slidebars.js"></script>
 <script src="/resources/js/scripts.js"></script>

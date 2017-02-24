@@ -46,7 +46,6 @@ public class HomeController {
 
 		String loginChk = null;
 
-		System.out.println(request.getParameter("errChk"));
 		String errChk = request.getParameter("errChk");
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		Map inUserIpMap = inBoardMember.getUserIpMap();
@@ -152,9 +151,6 @@ public class HomeController {
 	@RequestMapping(value = "/logDup", method = { RequestMethod.POST, RequestMethod.GET })
 	public String logDup(Model model, @RequestParam Map map, HttpSession session, HttpServletRequest request) {
 
-
-
-		System.out.println("logDup");
 		String err = "001";
 		Map inUserIpMap = inBoardMember.getUserIpMap();
 		String ip = (String) inUserIpMap.get(map.get("id"));

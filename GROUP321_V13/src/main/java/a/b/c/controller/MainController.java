@@ -91,7 +91,6 @@ public class MainController {
 	@RequestMapping(value = "/deleteCard", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public String deleteCard(@RequestParam Map map) {
-		System.out.println(map);
 		int result = memberService.deleteCard(map);
 		List list = memberService.searchList(map);
 
@@ -128,7 +127,6 @@ public class MainController {
 	@ResponseBody
 	public String searchList(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		System.out.println("searchList");
 		List list = memberService.searchList(map);
 		return new Gson().toJson(list);
 	}
@@ -449,9 +447,7 @@ public class MainController {
 	@ResponseBody
 	public String dueDate(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		System.out.println(map);
 		List result = memberService.dueDate(map);
-		System.out.println(result);
 		return new Gson().toJson(map.get("day"));
 	}
 
@@ -463,7 +459,6 @@ public class MainController {
 		int result = memberService.updateList(map);
 
 		if (0 == result) {
-			System.out.println("success");
 			return new Gson().toJson("success");
 		} else {
 			return new Gson().toJson("fail");
@@ -478,7 +473,6 @@ public class MainController {
 		int result = memberService.updateBoard(map);
 		
 		if (0 == result) {
-			System.out.println("success");
 			return new Gson().toJson("success");
 		} else {
 			return new Gson().toJson("fail");

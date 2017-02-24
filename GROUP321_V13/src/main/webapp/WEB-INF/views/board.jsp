@@ -15,6 +15,10 @@
 	position: relative;
 }
 
+.board:hover {
+	background: #006071;
+}
+
 .board_name {
 	overflow: hidden;
 	word-break: break-all;
@@ -95,40 +99,41 @@
 		$.ajax({
 			url : '/main/searchBoard',
 			method : 'post',
-		}).done(function(msg) {
-			sessionChk();
-			var jArr = JSON.parse(msg);
-			$.each(jArr, function(i) {
-				var b_num = jArr[i].b_num;
-				var div = document.createElement('div');
-				var text = '';
-				div.id = 'board' + b_num;
-				div.className = 'board';
+		}).done(
+				function(msg) {
+					sessionChk();
+					var jArr = JSON.parse(msg);
+					$.each(jArr, function(i) {
+						var b_num = jArr[i].b_num;
+						var div = document.createElement('div');
+						var text = '';
+						div.id = 'board' + b_num;
+						div.className = 'board';
 
-				var aTag = document.createElement('a');
-				var createAText = document
-						.createTextNode(jArr[i].title);
+						var aTag = document.createElement('a');
+						var createAText = document
+								.createTextNode(jArr[i].title);
 
-				aTag.setAttribute('href', '/main/list?b_num=' + b_num);
-				aTag.appendChild(createAText);
-				div.appendChild(aTag);
+						aTag.setAttribute('href', '/main/list?b_num=' + b_num);
+						aTag.appendChild(createAText);
+						div.appendChild(aTag);
 
-				//hs
-				var aTagDelBtn = document.createElement('a');
-				aTagDelBtn.className = 'boardDelBtn';
-				var aTagDelBtnText = document.createTextNode('x');
-				aTagDelBtn.appendChild(aTagDelBtnText);
-				//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
-				aTagDelBtn.setAttribute('href', '#');
-				aTagDelBtn.setAttribute('onclick', 'deleteBoard('
-						+ b_num + ');');
-				div.appendChild(aTagDelBtn);
+						//hs
+						var aTagDelBtn = document.createElement('a');
+						aTagDelBtn.className = 'boardDelBtn';
+						var aTagDelBtnText = document.createTextNode('x');
+						aTagDelBtn.appendChild(aTagDelBtnText);
+						//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
+						aTagDelBtn.setAttribute('href', '#');
+						aTagDelBtn.setAttribute('onclick', 'deleteBoard('
+								+ b_num + ');');
+						div.appendChild(aTagDelBtn);
 
-				document.getElementById('viewBoard').appendChild(div);
+						document.getElementById('viewBoard').appendChild(div);
 
-			});
+					});
 
-		});
+				});
 
 	};
 
@@ -239,7 +244,6 @@
 		return len;
 	}
 
-
 	function sessionChk() {
 		$.ajax({
 			url : '/main/sessionChk',
@@ -253,31 +257,26 @@
 		});
 	}
 
-	
 	function logout() {
-		var result = confirm('로그아웃 하시겠습니까?'); 
-		
-		if(result) { //yes 
+		var result = confirm('로그아웃 하시겠습니까?');
+
+		if (result) { //yes 
 			location.replace('/main/logOut');
 		}
 	}
-	
-	 function profile(id) {
-			window.open('profile?profileId=' + id, '',
-					'width=400, height=300, left=500, top=300');
-		} 
-	
-	/* $('#id').text(id); */
-	
 
+	function profile(id) {
+		window.open('profile?profileId=' + id, '',
+				'width=400, height=300, left=500, top=300');
+	}
+
+	/* $('#id').text(id); */
 </script>
 </head>
 <body>
 	<!-- 상단바 -->
 	<header id="header" class="clearfix">
-		<a href="/main/board"><h1>PROJECT 321</h1></a>
-		 <a href="#" onclick="profile('${id}')"  class="btn_board"><span>${id}</span></a>
-		  <a href="#" onclick="logout()"  class="btn_logout"><span>LOGOUT</span></a>
+		<a href="/main/board"><h1>PROJECT 321</h1></a> <a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a> <a href="#" onclick="logout()" class="btn_logout"><span>LOGOUT</span></a>
 		<form action="#" method="post" id="sch_main_wrap">
 			<fieldset>
 				<input type="text" name="sch_main" id="sch_main">

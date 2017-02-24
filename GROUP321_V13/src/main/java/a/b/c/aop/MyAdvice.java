@@ -85,9 +85,7 @@ public class MyAdvice {
 
 		} else {
 			if (!request.getRemoteHost().equals(inUserIpMap.get(session.getAttribute("id")))) {
-				System.out.println("세션 아웃");
 				if ("list".equals(methodName)) {
-					System.out.println("list");
 					out = response.getWriter();
 					out.print("<script>");
 					out.print("alert('다른아이피에서 로그인했습니다.');");
@@ -104,7 +102,6 @@ public class MyAdvice {
 					session.invalidate();
 				}
 			} else {
-				System.out.println("skip");
 			}
 
 		}
