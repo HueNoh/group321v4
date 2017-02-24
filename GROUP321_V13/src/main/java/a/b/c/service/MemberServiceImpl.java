@@ -380,4 +380,10 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		return memberDao.updateCardReply(map);
 	}
 
+	@Override
+	public List myBoard(Map map) {
+		// TODO Auto-generated method stub
+		return memberDao.myBoard(map);
+	}
+
 }

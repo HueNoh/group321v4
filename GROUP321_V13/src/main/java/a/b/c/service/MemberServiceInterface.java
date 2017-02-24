@@ -94,4 +94,6 @@ public interface MemberServiceInterface {
 	public List selectCardReply(Map map);
 
 	public List updateCardReply(Map map);
+	
+	public List myBoard(Map map);
 }

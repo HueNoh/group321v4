@@ -60,7 +60,6 @@
 		var id = arrMsg[0];
 		var msg = arrMsg[1];
 		var access = arrMsg[2];
-		console.log(access);
 
 		if ("boardCreate" == access) {
 			if (id != sessionId) {
@@ -81,7 +80,6 @@
 	}
 
 	function send(message, acc, id) {
-		console.log('efsef: ' + message);
 		var msg = {
 			"userId" : id,
 			"msg" : message,
@@ -95,7 +93,7 @@
 		}
 	}
 	window.onload = function() {
-		console.log('${sessionScope.ip}');
+		myBoard();
 		$.ajax({
 			url : '/main/searchBoard',
 			method : 'post',
@@ -104,33 +102,7 @@
 					sessionChk();
 					var jArr = JSON.parse(msg);
 					$.each(jArr, function(i) {
-						var b_num = jArr[i].b_num;
-						var div = document.createElement('div');
-						var text = '';
-						div.id = 'board' + b_num;
-						div.className = 'board';
-
-						var aTag = document.createElement('a');
-						var createAText = document
-								.createTextNode(jArr[i].title);
-
-						aTag.setAttribute('href', '/main/list?b_num=' + b_num);
-						aTag.appendChild(createAText);
-						div.appendChild(aTag);
-
-						//hs
-						var aTagDelBtn = document.createElement('a');
-						aTagDelBtn.className = 'boardDelBtn';
-						var aTagDelBtnText = document.createTextNode('x');
-						aTagDelBtn.appendChild(aTagDelBtnText);
-						//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
-						aTagDelBtn.setAttribute('href', '#');
-						aTagDelBtn.setAttribute('onclick', 'deleteBoard('
-								+ b_num + ');');
-						div.appendChild(aTagDelBtn);
-
-						document.getElementById('viewBoard').appendChild(div);
-
+						searchBoard(jArr[i].b_num, jArr[i].title,'board','viewBoard');
 					});
 
 				});
@@ -165,6 +137,7 @@
 			div.appendChild(aTag);
 
 			document.getElementById('createBoard').appendChild(div);
+			document.getElementById('myBoard').appendChild(div);
 
 			var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
 			send(boardHtml, 'boardCreate', 'createBoard');
@@ -269,6 +242,53 @@
 		window.open('profile?profileId=' + id, '',
 				'width=400, height=300, left=500, top=300');
 	}
+	function myBoard() {
+		$.ajax({
+			url : '/main/myBoard',
+			method : 'post',
+			data : {
+				m_id : '${sessionScope.id}'
+			}
+
+		}).done(function(msg) {
+			var jArr = JSON.parse(msg);
+			console.log(jArr);
+			
+			$.each(jArr, function(i) {
+				searchBoard(jArr[i].b_num, jArr[i].title,'myBoard','myBoard');
+			});
+		});
+
+	}
+	
+	function searchBoard(b_num, title,divId, parentDiv) {
+		var div = document.createElement('div');
+		var text = '';
+		div.id = divId + b_num;
+		div.className = 'board';
+
+		var aTag = document.createElement('a');
+		var createAText = document
+				.createTextNode(title);
+
+		aTag.setAttribute('href', '/main/list?b_num=' + b_num);
+		aTag.appendChild(createAText);
+		div.appendChild(aTag);
+
+		//hs
+		var aTagDelBtn = document.createElement('a');
+		aTagDelBtn.className = 'boardDelBtn';
+		var aTagDelBtnText = document.createTextNode('x');
+		aTagDelBtn.appendChild(aTagDelBtnText);
+		//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
+		aTagDelBtn.setAttribute('href', '#');
+		aTagDelBtn.setAttribute('onclick', 'deleteBoard('
+				+ b_num + ');');
+		div.appendChild(aTagDelBtn);
+
+		document.getElementById(parentDiv).appendChild(div);
+
+	}
 
 	/* $('#id').text(id); */
 </script>
@@ -285,11 +305,13 @@
 		</form>
 	</header>
 	<!-- 타이틀바 -->
-	<div class="title-bar">
+	<!-- <div class="title-bar">
 		<span class="title-main">Board</span>
-	</div>
+	</div> -->
 	<!-- 보드 -->
-	<div id="content">
+	<div id="myBoard"></div>
+	<div id="allBoard">
+
 		<div id="viewBoard"></div>
 		<div id="createBoard"></div>
 		<div id="addBoard">

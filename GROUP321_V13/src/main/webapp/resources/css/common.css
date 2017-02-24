@@ -12,7 +12,6 @@
 /* html {
 	overflow-y: auto;
 } */
-
 html, body {
 	width: 100%;
 	height: 100%;
@@ -117,7 +116,7 @@ button, input[type=button], input[type=submit], input[type=reset] {
 }
 
 .btn_board {
- 	background: url(../images/id-card.png) 8px center no-repeat; 
+	background: url(../images/id-card.png) 8px center no-repeat;
 	padding: 0 10px 0 50px;
 	background-color: #4994c0;
 	margin-left: 10px;
@@ -130,7 +129,7 @@ button, input[type=button], input[type=submit], input[type=reset] {
 }
 
 .btn_logout {
- 	background: url(../images/btn_logout.png) 8px center no-repeat; 
+	background: url(../images/btn_logout.png) 8px center no-repeat;
 	padding: 0 10px 0 40px;
 	background-color: #4994c0;
 	margin-left: 10px;
@@ -266,12 +265,19 @@ button, input[type=button], input[type=submit], input[type=reset] {
 	font-size: 20px;
 }
 
-#content {
-	height: 100%;
-	padding-top: 100px;
+#myBoard {
+	width: 100%;
+	padding-top: 50px;
+	float: left;
 }
 
-#content .board {
+#allBoard {
+	margin-top: 20px;
+	width: 100%;
+	float: left;
+}
+
+.board {
 	border-radius: 5px;
 	background-color: #0094ae;
 	font-weight: bold;

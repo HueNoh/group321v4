@@ -389,6 +389,15 @@ public class MainController {
 
 		return new Gson().toJson(list);
 	}
+	@RequestMapping(value = "/myBoard", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String myBoard(Model model, @RequestParam Map map) {
+		
+		List list = memberService.myBoard(map);
+		System.out.println(list);
+		return new Gson().toJson(list);
+	}
 
 	@RequestMapping(value = "/searchUser", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
