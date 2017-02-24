@@ -119,7 +119,7 @@ strong {
 		myBoard();
 		$.ajax({
 			url : '/main/searchBoard',
-			method : 'post',
+			method : 'post'
 		}).done(
 				function(msg) {
 					sessionChk();
