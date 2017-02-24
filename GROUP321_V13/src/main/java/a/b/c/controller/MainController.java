@@ -32,18 +32,18 @@ public class MainController {
 	MemberServiceInterface memberService;
 	InBoardMember inBoardMember;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	public String home(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
 
 		return "board";
 	}
 
-	@RequestMapping(value = "/board", method = RequestMethod.GET)
+	@RequestMapping(value = "/board", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	public String board(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
 		return "board";
 	}
 
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	public String list(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
 		Map inBoardMemberMap = inBoardMember.getInstanceMap();
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
@@ -88,16 +88,16 @@ public class MainController {
 
 	}
 
-	@RequestMapping(value = "/deleteCard", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/deleteCard", method = { RequestMethod.GET,
+			RequestMethod.POST }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String deleteCard(@RequestParam Map map) {
-		int result = memberService.deleteCard(map);
-		List list = memberService.searchList(map);
-
-		return new Gson().toJson(list);
+		System.out.println("select : " + new Gson().toJson(memberService.deleteCard(map)));
+		return new Gson().toJson(memberService.deleteCard(map));
 	}
 
-	@RequestMapping(value = "/deleteList", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/deleteList", method = { RequestMethod.GET,
+			RequestMethod.POST }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String deleteList(@RequestParam Map map) {
 		int result = memberService.deleteList(map);
@@ -106,7 +106,8 @@ public class MainController {
 		return new Gson().toJson(list);
 	}
 
-	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET,
+			RequestMethod.POST }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public int deleteBoard(@RequestParam Map map) {
 		int result = memberService.deleteBoard(map);

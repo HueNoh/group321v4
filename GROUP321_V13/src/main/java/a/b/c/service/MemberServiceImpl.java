@@ -332,9 +332,17 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	}
 
 	@Override
-	public int deleteCard(Map map) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public List deleteCard(Map map) {
 		// TODO Auto-generated method stub
-		return memberDao.deleteCard(map);
+		int result = memberDao.deleteCard(map);
+		if (result == 0) {
+			return memberDao.selectList(map);
+		} else {
+
+			return null;
+		}
+
 	}
 
 	@Override
@@ -348,11 +356,13 @@ public class MemberServiceImpl implements MemberServiceInterface {
 		// TODO Auto-generated method stub
 		return memberDao.updateBoard(map);
 	}
+
 	@Override
 	public int updateCard(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.updateCard(map);
 	}
+
 	public List deleteCardReply(Map map) {
 		// TODO Auto-generated method stub
 		return memberDao.deleteCardReply(map);

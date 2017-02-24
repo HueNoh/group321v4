@@ -83,7 +83,7 @@ public interface MemberServiceInterface {
 
 	public int deleteList(Map map);
 
-	public int deleteCard(Map map);
+	public List deleteCard(Map map);
 
 	public List searchLabel(Map map);
 

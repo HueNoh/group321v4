@@ -1658,6 +1658,7 @@ body::-webkit-scrollbar-thumb {
 						c_key : $('#cardNum')[0].value
 					}
 				}).done(function(msg) {
+					console.log(msg);
 					$('#cardModal').css('display', 'none');
 					var listArr = JSON.parse(msg);
 					$('#mainList').children().remove();
