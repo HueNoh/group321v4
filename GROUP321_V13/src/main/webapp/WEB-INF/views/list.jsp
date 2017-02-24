@@ -207,7 +207,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .card-detail-main {
-	max-height: 700px;
+	height: 700px;
 	max-width: 600px;
 	float: left;
 }

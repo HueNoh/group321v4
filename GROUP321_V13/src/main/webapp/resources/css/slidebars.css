@@ -110,6 +110,7 @@ html, body {
 	position: absolute;
 	top: 0px;
 }
+
 .js-toggle-right-slidebar:hover {
 	text-decoration: none;
 	color: black;
@@ -146,18 +147,21 @@ html, body {
 	padding: 20px;
 	border: 1px solid #888;
 	width: 60%;
-	height: 90%;
-	overflow-y: auto; 
+	min-width: 700px;
+	height: 760px;
+	max-height: 760px;
+	overflow: auto;
 }
-
 
 .modal-content::-webkit-scrollbar-track {
 	background-color: #fff;
+	border-radius: 5px;
 }
 
 .modal-content::-webkit-scrollbar {
 	width: 6px;
 	background-color: #fff;
+	border-radius: 5px;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
@@ -179,8 +183,6 @@ html, body {
 	background-color: rgb(0, 0, 0); /* Fallback color */
 	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-
-
 
 /* Modal Content */
 .card-modal-content {
