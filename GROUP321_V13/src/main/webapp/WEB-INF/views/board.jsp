@@ -30,6 +30,27 @@
 	right: 5px;
 	top: 5px;
 }
+
+.heading {
+	border-bottom: 3px solid #749ab1;
+	padding-bottom: 9px;
+	position: relative;
+}
+
+.heading span {
+	background: #104e73 none repeat scroll 0 0;
+	bottom: -3px;
+	height: 8px;
+	left: 0;
+	position: absolute;
+	width: 100px;
+}
+
+strong {
+	font-size: medium;
+	color: white;
+	font-weight: bold;
+}
 </style>
 <script>
 	history.pushState(null, null, location.href);
@@ -102,7 +123,8 @@
 					sessionChk();
 					var jArr = JSON.parse(msg);
 					$.each(jArr, function(i) {
-						searchBoard(jArr[i].b_num, jArr[i].title,'board','viewBoard');
+						searchBoard(jArr[i].b_num, jArr[i].title, 'board',
+								'viewBoard');
 					});
 
 				});
@@ -250,26 +272,27 @@
 				m_id : '${sessionScope.id}'
 			}
 
-		}).done(function(msg) {
-			var jArr = JSON.parse(msg);
-			console.log(jArr);
-			
-			$.each(jArr, function(i) {
-				searchBoard(jArr[i].b_num, jArr[i].title,'myBoard','myBoard');
-			});
-		});
+		}).done(
+				function(msg) {
+					var jArr = JSON.parse(msg);
+					console.log(jArr);
+
+					$.each(jArr, function(i) {
+						searchBoard(jArr[i].b_num, jArr[i].title, 'myBoard',
+								'myBoard');
+					});
+				});
 
 	}
-	
-	function searchBoard(b_num, title,divId, parentDiv) {
+
+	function searchBoard(b_num, title, divId, parentDiv) {
 		var div = document.createElement('div');
 		var text = '';
 		div.id = divId + b_num;
 		div.className = 'board';
 
 		var aTag = document.createElement('a');
-		var createAText = document
-				.createTextNode(title);
+		var createAText = document.createTextNode(title);
 
 		aTag.setAttribute('href', '/main/list?b_num=' + b_num);
 		aTag.appendChild(createAText);
@@ -282,8 +305,7 @@
 		aTagDelBtn.appendChild(aTagDelBtnText);
 		//aTagDelBtn.setAttribute('href', '/main/deleteBoard?b_num=' + b_num);
 		aTagDelBtn.setAttribute('href', '#');
-		aTagDelBtn.setAttribute('onclick', 'deleteBoard('
-				+ b_num + ');');
+		aTagDelBtn.setAttribute('onclick', 'deleteBoard(' + b_num + ');');
 		div.appendChild(aTagDelBtn);
 
 		document.getElementById(parentDiv).appendChild(div);
@@ -309,8 +331,17 @@
 		<span class="title-main">Board</span>
 	</div> -->
 	<!-- 보드 -->
-	<div id="myBoard"></div>
+
+
+	<div id="myBoard">
+		<h4 class="heading">
+			<strong> 참여 중 프로젝트 </strong> <span></span>
+		</h4>
+	</div>
 	<div id="allBoard">
+		<h4 class="heading">
+			<strong> 전체 프로젝트 </strong> <span></span>
+		</h4>
 
 		<div id="viewBoard"></div>
 		<div id="createBoard"></div>

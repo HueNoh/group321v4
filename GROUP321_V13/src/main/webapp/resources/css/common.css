@@ -266,6 +266,7 @@ button, input[type=button], input[type=submit], input[type=reset] {
 }
 
 #myBoard {
+	margin-top: 10px;
 	width: 100%;
 	padding-top: 50px;
 	float: left;
