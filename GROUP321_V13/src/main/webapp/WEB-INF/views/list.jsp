@@ -608,11 +608,7 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		var users = $
-		{
-			users
-		}
-		;
+		var users = ${users};
 
 		userConnection(users);
 		$('#mainList').sortable(
