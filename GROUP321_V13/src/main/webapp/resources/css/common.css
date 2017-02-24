@@ -285,8 +285,9 @@ button, input[type=button], input[type=submit], input[type=reset] {
 	font-size: 14px;
 }
 
-.board a {
+.boardTitle a{
 	color: #ffffff;
+	
 }
 
 #addBoard, #addList {

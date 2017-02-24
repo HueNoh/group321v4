@@ -107,12 +107,11 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET,
-			RequestMethod.POST }, produces = "text/plain;charset=UTF-8")
+			RequestMethod.POST })
 	@ResponseBody
 	public int deleteBoard(@RequestParam Map map) {
 		int result = memberService.deleteBoard(map);
 		return result;
-
 	}
 
 	@RequestMapping(value = "/searchBoard", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
@@ -389,11 +388,12 @@ public class MainController {
 
 		return new Gson().toJson(list);
 	}
+
 	@RequestMapping(value = "/myBoard", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String myBoard(Model model, @RequestParam Map map) {
-		
+
 		List list = memberService.myBoard(map);
 		System.out.println(list);
 		return new Gson().toJson(list);

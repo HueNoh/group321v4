@@ -19,8 +19,10 @@
 	background: #006071;
 }
 
-.board_name {
+.board_name, .boardTitle {
 	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	word-break: break-all;
 }
 
@@ -142,21 +144,25 @@ strong {
 			}
 
 		}).done(function(msg) {
-
+			console.log(msg);
 			var arrBoard = JSON.parse(msg);
 
 			var div = document.createElement('div');
 			div.id = 'board' + arrBoard.b_num;
 			div.className = 'board';
 
-			var aTag = document.createElement('a');
-			var createAText = document.createTextNode(arrBoard.title);
+			var boardTitle = document.createElement('div');
+			boardTitle.className = "boardTitle";
 
-			aTag.className = 'board_name';
+			var aTag = document.createElement('a');
+			var createAText = document.createTextNode(title);
 
 			aTag.setAttribute('href', '/main/list?b_num=' + arrBoard.b_num);
 			aTag.appendChild(createAText);
-			div.appendChild(aTag);
+
+			boardTitle.appendChild(aTag);
+
+			div.appendChild(boardTitle);
 
 			document.getElementById('createBoard').appendChild(div);
 			document.getElementById('myBoard').appendChild(div);
@@ -199,6 +205,8 @@ strong {
 		var result = confirm('보드를 삭제 하시겠습니까?');
 
 		if (result) {
+
+			console.log('11');
 			sessionChk();
 			$.ajax({
 				method : 'post',
@@ -207,11 +215,12 @@ strong {
 					b_num : b_num
 				}
 			}).done(function(msg) {
-				//alert(msg);
-				var tmp = '#board' + b_num;
+
+				console.log(msg);
 
 				if (msg == 0) {
-					$(tmp).remove();
+					$('#board' + b_num).remove();
+					$('#myBoard' + b_num).remove();
 				}
 			});
 		}
@@ -291,12 +300,17 @@ strong {
 		div.id = divId + b_num;
 		div.className = 'board';
 
+		var boardTitle = document.createElement('div');
+		boardTitle.className = 'boardTitle';
+
 		var aTag = document.createElement('a');
 		var createAText = document.createTextNode(title);
 
 		aTag.setAttribute('href', '/main/list?b_num=' + b_num);
 		aTag.appendChild(createAText);
-		div.appendChild(aTag);
+
+		boardTitle.appendChild(aTag);
+		div.appendChild(boardTitle);
 
 		//hs
 		var aTagDelBtn = document.createElement('a');
