@@ -50,11 +50,9 @@
 
 					setInterval(closeMsg, 5000);
 				}
-
 				$('.display').scrollTop($('.display')[0].scrollHeight);
 
 			} else if ("open" == access) {
-
 			} else if ("close" == access) {
 
 			} else if ('listMove' == access) {
@@ -177,7 +175,6 @@
 		}
 
 	}
-
 	function chat(msg, id, regdate) {
 		if (id == '${sessionScope.id}') {
 
@@ -239,14 +236,12 @@
 			div.append(box);
 
 		}
-		$('#display${sessionScope.b_num}').append(div);
-		console.log($('#display${sessionScope.b_num}')[0].scrollHeight);
-		$('#display${sessionScope.b_num}').scrollTop(
-				$('#display${sessionScope.b_num}')[0].scrollHeight - $('#display${sessionScope.b_num}').scrollTop());
 
+		$('.display').append(div);
 	}
 
 	function viewMsg() {
+
 		$.ajax({
 			method : 'post',
 			url : '/chat/viewMsg',
@@ -256,18 +251,17 @@
 			}
 		}).done(function(msg) {
 			var data = JSON.parse(msg);
-			if('err'!=data){
-				
+			if ('err' != data) {
+
 				firstSeq = data[0].firstSeq;
-				console.log(data[0].firstSeq);
-				
+
 				$.each(data, function(i) {
 					var regdate = data[i].date;
 					chat(data[i].content, data[i].m_id, regdate);
-		
+					$('.display').scrollTop($('.display')[0].scrollHeight);
 				});
-		 		$('#display${sessionScope.b_num}').scrollTop = $('#display${sessionScope.b_num}')[0].scrollHeight;
 			}
+
 		});
 	}
 

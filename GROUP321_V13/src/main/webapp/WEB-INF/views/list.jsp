@@ -641,100 +641,10 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-
+		
 		var users = ${users};
 
-		$("#display${sessionScope.b_num}").scroll(function() {
-			var dis = $("#display${sessionScope.b_num}");
-			if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
-				var beHeight = dis[0].scrollHeight - dis.scrollTop(); 
-				console.log(dis[0].scrollHeight - dis.scrollTop());
-				$.ajax({
-					method : 'post',
-					url : '/chat/beforeMsg',
-					data : {
-						b_num : '${sessionScope.b_num}',
-						userId : '${sessionScope.id}',
-						seq : firstSeq
-					}
-				}).done(function(msg) {
-					var data = JSON.parse(msg);
-					$.each(data, function(i) {
-						var regdate = data[i].date;
-						var msg = data[i].content;
-						var id = data[i].m_id;
-						firstSeq = data[i].firstSeq;
-						
-						if (id == '${sessionScope.id}') {
-
-							var div = document.createElement('div');
-							div.className = 'myMsg';
-
-							var content = document.createElement('pre');
-							content.className = "myContent";
-
-							var date = document.createElement('div');
-							date.className = "myDate";
-
-							var b = document.createElement('div');
-							b.className = 'b';
-
-							var contentText = document.createTextNode(msg);
-							var dateText = document.createTextNode(regdate);
-
-							content.appendChild(contentText);
-
-							date.appendChild(dateText);
-
-							div.append(b);
-							div.append(content);
-							div.append(date);
-
-						} else {
-							var box = document.createElement('div');
-							box.className = 'box';
-
-							var div = document.createElement('div');
-							div.className = 'memberMsg';
-
-							var content = document.createElement('pre');
-							content.className = "memberContent";
-
-							var writer = document.createElement('div');
-							writer.className = "memberWriter";
-
-							var date = document.createElement('div');
-							date.className = "memberDate";
-
-							var b = document.createElement('div');
-							b.className = 'm';
-
-							var contentText = document.createTextNode(msg);
-							var writerText = document.createTextNode(id);
-							var dateText = document.createTextNode(regdate);
-
-							content.appendChild(contentText);
-							writer.appendChild(writerText);
-							date.appendChild(dateText);
-
-							box.append(writer);
-							box.append(b);
-							box.append(content);
-							box.append(date);
-
-							div.append(box);
-							
-
-						}
-						$('#display${sessionScope.b_num}').prepend(div);
-						
-					}); 
-					
-					$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
-				});
-			}
-
-		});
+		beforeMsg();
 		userConnection(users);
 		$('#mainList').sortable(
 				{
@@ -780,10 +690,10 @@ body::-webkit-scrollbar-thumb {
 
 		listSearch(b_num);
 
-		viewMsg();
+		
+	
 		inUsers();
 		$("#inputMessage").keyup(function(key) {
-
 			if (key.keyCode == 13) {
 				if (key.shiftKey) {
 
@@ -1651,6 +1561,7 @@ body::-webkit-scrollbar-thumb {
 
 	function openChat() {
 		chatOnOff = true;
+		viewMsg();
 		document.getElementById("mySidenavChat").style.width = "600px";
 		closeMsg();
 	}
@@ -2207,6 +2118,100 @@ body::-webkit-scrollbar-thumb {
 			$('#card_title_view').show();
 			$('#card_title_view').select();
 		}
+	}
+	
+	function beforeMsg(){
+		$("#display${sessionScope.b_num}").scroll(function() {
+			var dis = $("#display${sessionScope.b_num}");
+			if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
+				var beHeight = dis[0].scrollHeight - dis.scrollTop(); 
+				console.log(dis[0].scrollHeight - dis.scrollTop());
+				$.ajax({
+					method : 'post',
+					url : '/chat/beforeMsg',
+					data : {
+						b_num : '${sessionScope.b_num}',
+						userId : '${sessionScope.id}',
+						seq : firstSeq
+					}
+				}).done(function(msg) {
+					var data = JSON.parse(msg);
+					$.each(data, function(i) {
+						var regdate = data[i].date;
+						var msg = data[i].content;
+						var id = data[i].m_id;
+						firstSeq = data[i].firstSeq;
+						
+						if (id == '${sessionScope.id}') {
+
+							var div = document.createElement('div');
+							div.className = 'myMsg';
+
+							var content = document.createElement('pre');
+							content.className = "myContent";
+
+							var date = document.createElement('div');
+							date.className = "myDate";
+
+							var b = document.createElement('div');
+							b.className = 'b';
+
+							var contentText = document.createTextNode(msg);
+							var dateText = document.createTextNode(regdate);
+
+							content.appendChild(contentText);
+
+							date.appendChild(dateText);
+
+							div.append(b);
+							div.append(content);
+							div.append(date);
+
+						} else {
+							var box = document.createElement('div');
+							box.className = 'box';
+
+							var div = document.createElement('div');
+							div.className = 'memberMsg';
+
+							var content = document.createElement('pre');
+							content.className = "memberContent";
+
+							var writer = document.createElement('div');
+							writer.className = "memberWriter";
+
+							var date = document.createElement('div');
+							date.className = "memberDate";
+
+							var b = document.createElement('div');
+							b.className = 'm';
+
+							var contentText = document.createTextNode(msg);
+							var writerText = document.createTextNode(id);
+							var dateText = document.createTextNode(regdate);
+
+							content.appendChild(contentText);
+							writer.appendChild(writerText);
+							date.appendChild(dateText);
+
+							box.append(writer);
+							box.append(b);
+							box.append(content);
+							box.append(date);
+
+							div.append(box);
+							
+
+						}
+						$('#display${sessionScope.b_num}').prepend(div);
+						
+					}); 
+					
+					$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
+				});
+			}
+
+		});
 	}
 	// 	function checkEnter() {
 	// 		var key = window.event.keycode;

@@ -73,7 +73,7 @@ public class MyAdvice {
 		String methodName = joinPoint.getSignature().getName();
 
 		PrintWriter out = null;
-
+		System.out.println("methodName : "+methodName);
 		if (null == session.getAttribute("id")) {
 			out = response.getWriter();
 			out.print("<script>");
@@ -85,7 +85,7 @@ public class MyAdvice {
 
 		} else {
 			if (!request.getRemoteHost().equals(inUserIpMap.get(session.getAttribute("id")))) {
-				if ("list".equals(methodName)) {
+				if ("list".equals(methodName) || "board".equals(methodName)) {
 					out = response.getWriter();
 					out.print("<script>");
 					out.print("alert('다른아이피에서 로그인했습니다.');");
