@@ -113,10 +113,12 @@ public class ChatController {
 					amPm = "오후";
 					h = (String) dateList.get(0);
 				}
+				if (0 == i) {
+					obj.addProperty("firstSeq", (int) map2.get("seq"));
+				}
 				obj.addProperty("date", amPm + " " + h + ":" + m);
 				obj.addProperty("m_id", (String) map2.get("m_id"));
 				obj.addProperty("content", (String) map2.get("content"));
-				System.out.println("map2.get(content)"+map2.get("content"));
 				jarr.add(obj);
 			}
 		} catch (Exception e) {
@@ -150,6 +152,61 @@ public class ChatController {
 		model.addAttribute("users", new Gson().toJson(list2));
 
 		return new Gson().toJson(list2);
+	}
+
+	@RequestMapping(value = "/beforeMsg", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String beforeMsg(Locale locale, Model model, HttpSession session, HttpServletRequest request,
+			@RequestParam Map map) {
+		Map map2 = new HashMap<>();
+		JsonArray jarr = new JsonArray();
+		System.out.println(map.get("seq"));
+		List list = memberService.beforeMsg(map);
+		for (int i = list.size() - 1; i >= 0; i--) {
+			map2 = (Map) list.get(i);
+			JsonObject obj = new JsonObject();
+
+			Date s = (Date) map2.get("regdate");
+			String date = String.valueOf(s);
+
+			StringTokenizer st = new StringTokenizer(date);
+			List dateList = new ArrayList<>();
+			while (st.hasMoreTokens()) {
+				dateList.add(st.nextToken());
+			}
+
+			StringTokenizer dateToken = new StringTokenizer((String) dateList.get(1), ":");
+			dateList.clear();
+
+			while (dateToken.hasMoreTokens()) {
+				dateList.add((String) dateToken.nextToken());
+			}
+
+			String h = null;
+			String m = (String) dateList.get(1);
+			String amPm = null;
+			if (12 > Integer.valueOf((String) dateList.get(0))) {
+				amPm = "오전";
+				h = (String) dateList.get(0);
+			} else if (12 < Integer.valueOf((String) dateList.get(0))) {
+				amPm = "오후";
+				int temp = Integer.valueOf((String) dateList.get(0)) - 12;
+				h = temp + "";
+			} else {
+				amPm = "오후";
+				h = (String) dateList.get(0);
+			}
+			if (0 == i) {
+				System.out.println("seq : " + map2.get("seq"));
+				obj.addProperty("firstSeq", (int) map2.get("seq"));
+			}
+			obj.addProperty("date", amPm + " " + h + ":" + m);
+			obj.addProperty("m_id", (String) map2.get("m_id"));
+			obj.addProperty("content", (String) map2.get("content"));
+			jarr.add(obj);
+		}
+
+		return new Gson().toJson(jarr);
 	}
 
 }

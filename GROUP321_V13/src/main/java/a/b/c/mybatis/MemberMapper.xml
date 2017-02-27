@@ -186,6 +186,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM tb_chat
 		WHERE
 		b_num=#{b_num}
+		and
+		seq between 
+		(select count(seq) 
+		from tb_chat 
+		where 
+		b_num=#{b_num})-20 
+		and 
+		(select count(seq) 
+		from tb_chat 
+		where b_num=#{b_num})
+	</select>
+	<select id="beforeMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT *
+		FROM tb_chat
+		WHERE
+		b_num=#{b_num}
+		and
+		seq between 
+		#{seq}-10
+		and 
+		#{seq}-1
 	</select>
 
 	<select id="maxCh_num" resultType="java.util.HashMap" parameterType="java.util.HashMap">

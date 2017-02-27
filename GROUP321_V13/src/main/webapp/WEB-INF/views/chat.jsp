@@ -3,7 +3,7 @@
 <div class="chatBoard">
 	<div id="user"></div>
 	<div id="dis">
-		<div class="display"></div>
+		<div id="display${sessionScope.b_num }" class="display"></div>
 		<div class="inputMsg">
 			<textarea id="inputMessage" style="width: 100%; height: 100%;"></textarea>
 		</div>

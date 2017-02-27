@@ -51,6 +51,7 @@ public interface MemberMapper {
 	public int addCardReply(Map map);
 
 	public List msgSelect(Map map);
+	public List beforeMsg(Map map);
 
 	public List maxCh_num(Map map);
 
@@ -101,6 +102,7 @@ public interface MemberMapper {
 	public List deleteCardReply(Map map);
 
 	public List updateCardReply(Map map);
+
 	public List myBoard(Map map);
 
 }

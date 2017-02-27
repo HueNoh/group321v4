@@ -160,6 +160,12 @@ public class MemberDaoImpl implements MemberDaoInterface {
 	}
 
 	@Override
+	public List beforeMsg(Map map) {
+		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
+		return mapper.beforeMsg(map);
+	}
+
+	@Override
 	public List maxCh_num(Map map) {
 		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
 		return mapper.maxCh_num(map);
@@ -303,6 +309,7 @@ public class MemberDaoImpl implements MemberDaoInterface {
 		MemberMapper mapper = sqlSession.getMapper(MemberMapper.class);
 		return mapper.updateCardReply(map);
 	}
+
 	@Override
 	public List myBoard(Map map) {
 		// TODO Auto-generated method stub

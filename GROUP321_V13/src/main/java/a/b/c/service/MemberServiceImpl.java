@@ -164,6 +164,12 @@ public class MemberServiceImpl implements MemberServiceInterface {
 	}
 
 	@Override
+	public List beforeMsg(Map map) {
+
+		return memberDao.beforeMsg(map);
+	}
+
+	@Override
 	public void insertHistory(Map map) {
 		memberDao.insertHistory(map);
 

@@ -20,6 +20,7 @@ public interface MemberServiceInterface {
 	public int msgInsert(Map map) throws Exception;
 
 	public List msgSelect(Map map) throws Exception;
+	public List beforeMsg(Map map);
 
 	public List insertBoard(Map map);
 

@@ -53,6 +53,7 @@ public interface MemberDaoInterface {
 	public int addCardReply(Map map);
 
 	public List msgSelect(Map map);
+	public List beforeMsg(Map map);
 
 	public List maxCh_num(Map map);
 
