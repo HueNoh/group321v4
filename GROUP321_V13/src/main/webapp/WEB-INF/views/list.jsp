@@ -211,8 +211,8 @@ body::-webkit-scrollbar-thumb {
 	width: 600px;
 	height: 70px;
 	border-radius: 5px;
-    border: 2px solid #888;
-    box-shadow: 2px 2px 6px -2px lightslategrey;
+	border: 2px solid #888;
+	box-shadow: 2px 2px 6px -2px lightslategrey;
 }
 
 .card-detail-main {
@@ -694,16 +694,15 @@ body::-webkit-scrollbar-thumb {
 
 			if (key.keyCode == 13) {
 				if (key.shiftKey) {
-						
+					
 				} else {
-
 					$("#sendMessage").click();
 				}
 			}
 		});
 
 	};
-
+	var msgText = '';
 	function setWidthOnload(num) {
 
 		var margin = $(".listBorder").css("margin").replace('px', '');
@@ -1016,7 +1015,7 @@ body::-webkit-scrollbar-thumb {
 	function handleDesc(num) {
 
 		$('.content_textarea').val('');
-		
+
 		if (num == 1) {
 			$('.content_tag').hide();
 			$('.content_area').show();
@@ -1048,7 +1047,7 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function createReplyDiv(seq, cnt, m_id) {
-		
+
 		var reply = document.createElement('div');
 
 		reply.id = 'reply_' + seq;
@@ -2116,17 +2115,17 @@ body::-webkit-scrollbar-thumb {
 			$('#card_title_view').select();
 		}
 	}
-// 	function checkEnter() {
-// 		var key = window.event.keycode;
-// 		var desc = '';
-// 		if(key === 13) {
-// 			desc = $('.content_textarea').val();
-// 			desc = desc + '\n';
-// 			return false;
-// 		} else {
-// 			return true;
-// 		}
-// 	}
+	// 	function checkEnter() {
+	// 		var key = window.event.keycode;
+	// 		var desc = '';
+	// 		if(key === 13) {
+	// 			desc = $('.content_textarea').val();
+	// 			desc = desc + '\n';
+	// 			return false;
+	// 		} else {
+	// 			return true;
+	// 		}
+	// 	}
 </script>
 <jsp:include page="listWebSocket.jsp" flush="false"></jsp:include>
 </head>

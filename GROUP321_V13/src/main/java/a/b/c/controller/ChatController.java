@@ -45,7 +45,6 @@ public class ChatController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
 
-		
 		return "home";
 	}
 
@@ -56,7 +55,7 @@ public class ChatController {
 		String error = null;
 
 		try {
-
+			System.out.println(map);
 			int result = memberService.msgInsert(map);
 			if (0 != result) {
 				error = "001";
@@ -117,6 +116,7 @@ public class ChatController {
 				obj.addProperty("date", amPm + " " + h + ":" + m);
 				obj.addProperty("m_id", (String) map2.get("m_id"));
 				obj.addProperty("content", (String) map2.get("content"));
+				System.out.println("map2.get(content)"+map2.get("content"));
 				jarr.add(obj);
 			}
 		} catch (Exception e) {

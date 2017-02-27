@@ -209,13 +209,10 @@
 			var box = document.createElement('div');
 			box.className = 'box';
 
-			var div = document.createElement('pre');
+			var div = document.createElement('div');
 			div.className = 'memberMsg';
 
-			var proImg = document.createElement('IMG');
-			proImg.className = 'profileImg';
-
-			var content = document.createElement('div');
+			var content = document.createElement('pre');
 			content.className = "memberContent";
 
 			var writer = document.createElement('div');
