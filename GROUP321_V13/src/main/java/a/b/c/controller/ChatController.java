@@ -79,53 +79,58 @@ public class ChatController {
 		JsonArray jarr = new JsonArray();
 		try {
 			List list = memberService.msgSelect(map);
-			for (int i = 0; i < list.size(); i++) {
-				map2 = (Map) list.get(i);
-				JsonObject obj = new JsonObject();
+			System.out.println("list : " + list.size());
+			if (0 != list.size()) {
+				for (int i = 0; i < list.size(); i++) {
+					map2 = (Map) list.get(i);
+					JsonObject obj = new JsonObject();
 
-				Date s = (Date) map2.get("regdate");
-				String date = String.valueOf(s);
+					Date s = (Date) map2.get("regdate");
+					String date = String.valueOf(s);
 
-				StringTokenizer st = new StringTokenizer(date);
-				List dateList = new ArrayList<>();
-				while (st.hasMoreTokens()) {
-					dateList.add(st.nextToken());
+					StringTokenizer st = new StringTokenizer(date);
+					List dateList = new ArrayList<>();
+					while (st.hasMoreTokens()) {
+						dateList.add(st.nextToken());
+					}
+
+					StringTokenizer dateToken = new StringTokenizer((String) dateList.get(1), ":");
+					dateList.clear();
+
+					while (dateToken.hasMoreTokens()) {
+						dateList.add((String) dateToken.nextToken());
+					}
+
+					String h = null;
+					String m = (String) dateList.get(1);
+					String amPm = null;
+					if (12 > Integer.valueOf((String) dateList.get(0))) {
+						amPm = "오전";
+						h = (String) dateList.get(0);
+					} else if (12 < Integer.valueOf((String) dateList.get(0))) {
+						amPm = "오후";
+						int temp = Integer.valueOf((String) dateList.get(0)) - 12;
+						h = temp + "";
+					} else {
+						amPm = "오후";
+						h = (String) dateList.get(0);
+					}
+					if (0 == i) {
+						obj.addProperty("firstSeq", (int) map2.get("seq"));
+					}
+					obj.addProperty("date", amPm + " " + h + ":" + m);
+					obj.addProperty("m_id", (String) map2.get("m_id"));
+					obj.addProperty("content", (String) map2.get("content"));
+					jarr.add(obj);
 				}
+				return new Gson().toJson(jarr);
+			} else {
 
-				StringTokenizer dateToken = new StringTokenizer((String) dateList.get(1), ":");
-				dateList.clear();
-
-				while (dateToken.hasMoreTokens()) {
-					dateList.add((String) dateToken.nextToken());
-				}
-
-				String h = null;
-				String m = (String) dateList.get(1);
-				String amPm = null;
-				if (12 > Integer.valueOf((String) dateList.get(0))) {
-					amPm = "오전";
-					h = (String) dateList.get(0);
-				} else if (12 < Integer.valueOf((String) dateList.get(0))) {
-					amPm = "오후";
-					int temp = Integer.valueOf((String) dateList.get(0)) - 12;
-					h = temp + "";
-				} else {
-					amPm = "오후";
-					h = (String) dateList.get(0);
-				}
-				if (0 == i) {
-					obj.addProperty("firstSeq", (int) map2.get("seq"));
-				}
-				obj.addProperty("date", amPm + " " + h + ":" + m);
-				obj.addProperty("m_id", (String) map2.get("m_id"));
-				obj.addProperty("content", (String) map2.get("content"));
-				jarr.add(obj);
+				return new Gson().toJson("err");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new Gson().toJson("err");
 		}
-		return new Gson().toJson(jarr);
 	}
 
 	@RequestMapping(value = "/ucConnection", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")

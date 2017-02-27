@@ -729,6 +729,7 @@ body::-webkit-scrollbar-thumb {
 						$('#display${sessionScope.b_num}').prepend(div);
 						
 					}); 
+					
 					$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
 				});
 			}
@@ -1647,9 +1648,9 @@ body::-webkit-scrollbar-thumb {
 					}
 				});
 	}
+
 	function openChat() {
 		chatOnOff = true;
-		console.log($('.display'));
 		document.getElementById("mySidenavChat").style.width = "600px";
 		closeMsg();
 	}

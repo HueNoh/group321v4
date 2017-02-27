@@ -204,7 +204,6 @@
 			div.append(content);
 			div.append(date);
 
-			$('#display${sessionScope.b_num}').append(div);
 		} else {
 			var box = document.createElement('div');
 			box.className = 'box';
@@ -239,8 +238,9 @@
 
 			div.append(box);
 
-			$('#display${sessionScope.b_num}').append(div);
 		}
+		$('#display${sessionScope.b_num}').append(div);
+		console.log($('#display${sessionScope.b_num}')[0].scrollHeight);
 		$('#display${sessionScope.b_num}').scrollTop(
 				$('#display${sessionScope.b_num}')[0].scrollHeight - $('#display${sessionScope.b_num}').scrollTop());
 
@@ -255,18 +255,19 @@
 				userId : '${sessionScope.id}'
 			}
 		}).done(function(msg) {
-			console.log(msg);
 			var data = JSON.parse(msg);
-			firstSeq = data[0].firstSeq;
-			console.log(data[0].firstSeq);
-			$.each(data, function(i) {
-				var regdate = data[i].date;
-				chat(data[i].content, data[i].m_id, regdate);
-
-			});
-
-			$('#display${sessionScope.b_num}').scrollTop(
-					$('#display${sessionScope.b_num}')[0].scrollHeight);
+			if('err'!=data){
+				
+				firstSeq = data[0].firstSeq;
+				console.log(data[0].firstSeq);
+				
+				$.each(data, function(i) {
+					var regdate = data[i].date;
+					chat(data[i].content, data[i].m_id, regdate);
+		
+				});
+		 		$('#display${sessionScope.b_num}').scrollTop = $('#display${sessionScope.b_num}')[0].scrollHeight;
+			}
 		});
 	}
 
