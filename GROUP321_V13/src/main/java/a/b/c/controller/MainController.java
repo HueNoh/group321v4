@@ -447,7 +447,7 @@ public class MainController {
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String sessionChk(Model model, @RequestParam Map map) {
-
+		
 		return "";
 	}
 

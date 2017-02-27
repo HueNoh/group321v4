@@ -116,85 +116,105 @@ strong {
 		}
 	}
 	window.onload = function() {
-		myBoard();
-		$.ajax({
-			url : '/main/searchBoard',
-			method : 'post'
-		}).done(
-				function(msg) {
-					sessionChk();
-					var jArr = JSON.parse(msg);
-					$.each(jArr, function(i) {
-						searchBoard(jArr[i].b_num, jArr[i].title, 'board',
-								'viewBoard');
-					});
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			myBoard();
+			$.ajax({
+				url : '/main/searchBoard',
+				method : 'post'
+			}).done(function(msg) {
+				sessionChk();
+				var jArr = JSON.parse(msg);
+				$.each(jArr, function(i) {
+					searchBoard(jArr[i].b_num, jArr[i].title, 'board',
+							'viewBoard');
 				});
-
+	
+			});
+		}
 	};
 
 	function addBoard(title) {
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/createBoard',
-			data : {
-				id : '${sessionScope.id}',
-				title : title
-			}
-
-		}).done(function(msg) {
-			console.log(msg);
-			var arrBoard = JSON.parse(msg);
-
-			var div = document.createElement('div');
-			div.id = 'board' + arrBoard.b_num;
-			div.className = 'board';
-
-			var boardTitle = document.createElement('div');
-			boardTitle.className = "boardTitle";
-
-			var aTag = document.createElement('a');
-			var createAText = document.createTextNode(title);
-
-			aTag.setAttribute('href', '/main/list?b_num=' + arrBoard.b_num);
-			aTag.appendChild(createAText);
-
-			boardTitle.appendChild(aTag);
-
-			div.appendChild(boardTitle);
-
-			document.getElementById('createBoard').appendChild(div);
-			document.getElementById('myBoard').appendChild(div);
-
-			var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
-			send(boardHtml, 'boardCreate', 'createBoard');
-
-		});
-	};
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$.ajax({
+				method : 'post',
+				url : '/main/createBoard',
+				data : {
+					id : '${sessionScope.id}',
+					title : title
+				}
+	
+			}).done(function(msg) {
+				console.log(msg);
+				var arrBoard = JSON.parse(msg);
+	
+				var div = document.createElement('div');
+				div.id = 'board' + arrBoard.b_num;
+				div.className = 'board';
+	
+				var boardTitle = document.createElement('div');
+				boardTitle.className = "boardTitle";
+	
+				var aTag = document.createElement('a');
+				var createAText = document.createTextNode(title);
+	
+				aTag.setAttribute('href', '/main/list?b_num=' + arrBoard.b_num);
+				aTag.appendChild(createAText);
+	
+				boardTitle.appendChild(aTag);
+	
+				div.appendChild(boardTitle);
+	
+				document.getElementById('createBoard').appendChild(div);
+				document.getElementById('myBoard').appendChild(div);
+	
+				var boardHtml = $('#board' + arrBoard.b_num)[0].outerHTML;
+				send(boardHtml, 'boardCreate', 'createBoard');
+	
+			});
+		}
+	}
 
 	//hs
 	$(function() {
 		$('#CBContainer').css('display', 'none');
 
 		$('#addBoard').click(function() {
-			sessionChk();
-			$('#CBContainer').toggle();
-			$('#CBTitle').focus();
-			$('#CBTitle').val('');
+			if (sessionChk()) {
+				alert('로그아웃되었습니다.');
+				location.href = '/';
+			} else {
+				
+				$('#CBContainer').toggle();
+				$('#CBTitle').focus();
+				$('#CBTitle').val('');
+			}
 		});
 		//70 35
 		$('#CBSubmit').click(function() {
-			var boardTitle = $('#CBTitle').val();
-			var lengthOfBoardTitle = byteCalc(boardTitle);
-			console.log('boardLength: ' + lengthOfBoardTitle);
-			if (lengthOfBoardTitle > 70) {
-				alert('보드 이름은 영문 70자, 한글 35자를 넘을 수 없습니다');
-				$('#CBTitle').val('');
+			if (sessionChk()) {
+				alert('로그아웃되었습니다.');
+				location.href = '/';
 			} else {
-				sessionChk();
-				if ($('#CBTitle').val()) {
-					addBoard($('#CBTitle').val());
+				
+				var boardTitle = $('#CBTitle').val();
+				var lengthOfBoardTitle = byteCalc(boardTitle);
+				console.log('boardLength: ' + lengthOfBoardTitle);
+				if (lengthOfBoardTitle > 70) {
+					alert('보드 이름은 영문 70자, 한글 35자를 넘을 수 없습니다');
+					$('#CBTitle').val('');
+				} else {
+					sessionChk();
+					if ($('#CBTitle').val()) {
+						addBoard($('#CBTitle').val());
+					}
 				}
 			}
 		});
@@ -202,29 +222,41 @@ strong {
 	});
 
 	function deleteBoard(b_num) {
-		var result = confirm('보드를 삭제 하시겠습니까?');
-
-		if (result) {
-
-			console.log('11');
-			sessionChk();
-			$.ajax({
-				method : 'post',
-				url : '/main/deleteBoard',
-				data : {
-					b_num : b_num
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			var result = confirm('보드를 삭제 하시겠습니까?');
+	
+			if (result) {
+			
+				alert('삭제로직.');
+				 $.ajax({
+					method : 'post',
+					url : '/main/deleteBoard',
+					data : {
+						b_num : b_num
+					}
+				}).done(function(msg) {
+	
+					console.log(msg);
+	
+					if (msg == 0) {
+						$('#board' + b_num).remove();
+						$('#myBoard' + b_num).remove();
+					}
+				});
+				
+			}else{
+				if(sessionChk()){
+					alert('로그아웃되었습니다.');
+					location.href='/';
 				}
-			}).done(function(msg) {
-
-				console.log(msg);
-
-				if (msg == 0) {
-					$('#board' + b_num).remove();
-					$('#myBoard' + b_num).remove();
-				}
-			});
+			}
 		}
-	};
+	}
+	
 
 	function byteCalc(str) // str은 inputbox에 입력된 문자열이고,lengths는 제한할 문자수 이다.
 	{
@@ -249,16 +281,18 @@ strong {
 	}
 
 	function sessionChk() {
+		var result = false;
 		$.ajax({
-			url : '/main/sessionChk',
-			method : 'post'
+			url : '/main/sessionChk'
+			,method : 'post'
+			,async: false
 		}).done(function(msg) {
+			console.log('sessionChk : '+msg);
 			if ('1' == msg) {
-				alert('다른 아이피로 접속되었습니다.');
-				location.href = '/';
+				result = true;
 			}
-
 		});
+		return result;
 	}
 
 	function logout() {
@@ -270,28 +304,38 @@ strong {
 	}
 
 	function profile(id) {
-		window.open('profile?profileId=' + id, '',
-				'width=400, height=300, left=500, top=300');
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			window.open('profile?profileId=' + id, '',
+					'width=400, height=300, left=500, top=300');
+		}
 	}
 	function myBoard() {
-		$.ajax({
-			url : '/main/myBoard',
-			method : 'post',
-			data : {
-				m_id : '${sessionScope.id}'
-			}
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$.ajax({
+				url : '/main/myBoard',
+				method : 'post',
+				data : {
+					m_id : '${sessionScope.id}'
+				}
+	
+			}).done(function(msg) {
+				var jArr = JSON.parse(msg);
+				console.log(jArr);
 
-		}).done(
-				function(msg) {
-					var jArr = JSON.parse(msg);
-					console.log(jArr);
-
-					$.each(jArr, function(i) {
-						searchBoard(jArr[i].b_num, jArr[i].title, 'myBoard',
-								'myBoard');
-					});
+				$.each(jArr, function(i) {
+					searchBoard(jArr[i].b_num, jArr[i].title, 'myBoard',
+							'myBoard');
 				});
-
+			});
+		}
 	}
 
 	function searchBoard(b_num, title, divId, parentDiv) {

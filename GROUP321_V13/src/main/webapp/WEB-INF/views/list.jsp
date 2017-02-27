@@ -641,52 +641,60 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-		
-		var users = ${users};
-
+			
+			var users = ${users};
+	
 		beforeMsg();
 		userConnection(users);
-		$('#mainList').sortable(
-				{
-					update : function(ev, ui) {
-						console.log(ev);
-						var result = $('#mainList').sortable('toArray');
-						console.log(result);
-
-						var moveData = new Object();
-						var msg = '';
-						for (var i = 0; i < result.length; i++) {
-							if (i < (result.length - 1)) {
-								msg += result[i] + ',';
-							} else {
-								msg += result[i];
-							}
-
+		$('#mainList').sortable({
+			update : function(ev, ui) {
+				if (sessionChk()) {
+					alert('로그아웃되었습니다.');
+					location.href = '/';
+				} else {
+					
+					console.log(ev);
+					var result = $('#mainList').sortable('toArray');
+					console.log(result);
+	
+					var moveData = new Object();
+					var msg = '';
+					for (var i = 0; i < result.length; i++) {
+						if (i < (result.length - 1)) {
+							msg += result[i] + ',';
+						} else {
+							msg += result[i];
 						}
-
-						moveData = result;
-
-						var data = JSON.stringify(moveData);
-						sessionChk();
-						$.ajax({
-							url : '/main/moveList',
-							method : 'post',
-							data : {
-								data : msg,
-								length : result.length,
-								b_num : b_num
-							}
-
-						}).done(
-								function(msg) {
-									send('mainList', 'listMove',
-											'${sessionScope.id}',
-											'${sessionScope.b_num}', '0', '0');
-								});
-
+	
 					}
+	
+					moveData = result;
+	
+					var data = JSON.stringify(moveData);
+					if (sessionChk()) {
+						alert('로그아웃되었습니다.');
+						location.href = '/';
+					} else {
+							
+						$.ajax({
+						url : '/main/moveList',
+						method : 'post',
+						data : {
+							data : msg,
+							length : result.length,
+							b_num : b_num
+						}
+	
+						}).done(function(msg) {
+							send('mainList', 'listMove',
+									'${sessionScope.id}',
+									'${sessionScope.b_num}', '0', '0');
+						});
+					}
+				}
+			}
 
-				});
+		});
 
 		listSearch(b_num);
 
@@ -738,313 +746,353 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function addList(title) {
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/createList',
-			data : {
-				id : '${sessionScope.id}',
-				title : title,
-				b_num : b_num
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$.ajax({
+				method : 'post',
+				url : '/main/createList',
+				data : {
+					id : '${sessionScope.id}',
+					title : title,
+					b_num : b_num
+	
+				}
+	
+			}).done(function(msg) {
 
-			}
+				var arrList = JSON.parse(msg);
+				var id = arrList.l_num;
+				//nhs
+				var l_title = arrList.title;
 
-		}).done(
-				function(msg) {
+				listView(id, l_title, arrList.l_num);
 
-					var arrList = JSON.parse(msg);
-					var id = arrList.l_num;
-					//nhs
-					var l_title = arrList.title;
+				numOfList = $('.viewList').length;
+				setWidthAddList(numOfList);
 
-					listView(id, l_title, arrList.l_num);
+				/* 각 리스트들의 카드들을 쇼터블 하는 function */
+				listSortable(id);
 
-					numOfList = $('.viewList').length;
-					setWidthAddList(numOfList);
+				var listHtml = $('#mainList')[0].innerHTML;
+				send('mainList', 'listCreate', '${sessionScope.id}',
+						'${sessionScope.b_num}', '0', '0');
 
-					/* 각 리스트들의 카드들을 쇼터블 하는 function */
-					listSortable(id);
-
-					var listHtml = $('#mainList')[0].innerHTML;
-					send('mainList', 'listCreate', '${sessionScope.id}',
-							'${sessionScope.b_num}', '0', '0');
-
-				});
-
+			});
+		}
 	}
 
 	function addCard(l_num, id) {
-		$('#addCardContainer' + id).toggle();
-		$('#addCardTitle' + id).focus();
-		$('#addCardTitle' + id).val('');
-		cardId = id;
-		cardl_num = l_num;
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$('#addCardContainer' + id).toggle();
+			$('#addCardTitle' + id).focus();
+			$('#addCardTitle' + id).val('');
+			cardId = id;
+			cardl_num = l_num;
+		}
 	}
 
 	function addCardDetail() {
-		if ($('#addCardTitle' + cardId).val()) {
-			var title = $('#addCardTitle' + cardId).val();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			if ($('#addCardTitle' + cardId).val()) {
+				var title = $('#addCardTitle' + cardId).val();
+	
+				var LengthOfTitle = byteCalc(title);
+	
+				if (LengthOfTitle > 30) {
+					alert('카드 이름은 영문 30자, 한글 15자를 넘을 수 없습니다');
+					$('#addCardTitle' + cardId).val('');
+				} else {
+					$.ajax({
+						method : 'post',
+						url : '/main/createCard',
+						data : {
+							id : '${sessionScope.id}',
+							title : title,
+							b_num : b_num,
+							l_num : cardl_num
+	
+						}
+					}).done(function(msg) {
+						console.log(msg);
+						var cardArr = JSON.parse(msg);
+	
+						var newCard = document.createElement('div');
+						var c_num = cardArr.c_num;
+	
+						newCard.id = c_num;
+						newCard.className = 'list-card';
+						newCard.onclick = function() {
+	
+							cardView(b_num, cardl_num, c_num)
+	
+						};
+						// 카드 내부의 label div 생성!!!
+						for (var j = 1; j <= 7; j++) {
+							var labelDiv = document.createElement('div');
+							labelDiv.id = 'labelDiv' + c_num + '_' + j;
+							newCard.append(labelDiv);
+						}
+	
+						var createCardText = document
+								.createTextNode(cardArr.title);
+	
+						newCard.appendChild(createCardText);
+						document.getElementById('list' + cardId)
+								.appendChild(newCard);
+	
+						var cardHtml = $('#list' + cardId)[0].innerHTML;
+						send('cardCreate', 'cardCreate',
+								'${sessionScope.id}',
+								'${sessionScope.b_num}', '0', '0');
+						$('#addCardContainer' + cardId).toggle();
+						$('#addCardTitle' + cardId).val('');
+					});
+				}
 
-			var LengthOfTitle = byteCalc(title);
-
-			if (LengthOfTitle > 30) {
-				alert('카드 이름은 영문 30자, 한글 15자를 넘을 수 없습니다');
-				$('#addCardTitle' + cardId).val('');
-			} else {
-				sessionChk();
-				$.ajax({
-					method : 'post',
-					url : '/main/createCard',
-					data : {
-						id : '${sessionScope.id}',
-						title : title,
-						b_num : b_num,
-						l_num : cardl_num
-
-					}
-				}).done(
-						function(msg) {
-							console.log(msg);
-							var cardArr = JSON.parse(msg);
-
-							var newCard = document.createElement('div');
-							var c_num = cardArr.c_num;
-
-							newCard.id = c_num;
-							newCard.className = 'list-card';
-							newCard.onclick = function() {
-
-								cardView(b_num, cardl_num, c_num)
-
-							};
-							// 카드 내부의 label div 생성!!!
-							for (var j = 1; j <= 7; j++) {
-								var labelDiv = document.createElement('div');
-								labelDiv.id = 'labelDiv' + c_num + '_' + j;
-								newCard.append(labelDiv);
-							}
-
-							var createCardText = document
-									.createTextNode(cardArr.title);
-
-							newCard.appendChild(createCardText);
-							document.getElementById('list' + cardId)
-									.appendChild(newCard);
-
-							var cardHtml = $('#list' + cardId)[0].innerHTML;
-							send('cardCreate', 'cardCreate',
-									'${sessionScope.id}',
-									'${sessionScope.b_num}', '0', '0');
-							$('#addCardContainer' + cardId).toggle();
-							$('#addCardTitle' + cardId).val('');
-						});
 			}
-
 		}
 	}
 	var dateC_num = 0;
 
 	function cardView(b_num, l_num, c_num) {
-		$('#cardReply').empty();
-		$('#commentArea').val('');
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/selectCardDetail',
-			data : {
-				b_num : b_num,
-				l_num : l_num,
-				c_num : c_num
-			}
-		}).done(
-				function(msg) {
-					console.log('msg: ' + msg);
-					var detail = JSON.parse(msg);
-
-					var cardInfo = detail[0];
-
-					var cardReply = detail[1];
-					//hs
-					var cardLink = detail[2];
-					// console.log('cardLink=' + cardLink[0]);
-
-					handleDesc(0); // description textarea 숨기기
-					// console.log('detail: '+detail);
-					var content = cardInfo.content;
-
-					var label = cardInfo.label;
-					var labelName = cardInfo.labelname;
-					// console.log("view: " + labelName);
-
-					var cardTitle = cardInfo.title;
-
-					$('#card_title_view').text(cardTitle);
-
-					$('#card_title_input').val(cardTitle);
-
-					var dueDate = cardInfo.duedate;
-					$('#date').val(dueDate);
-
-					if (null != dueDate) {
-
-						var sday = "D-day";
-						var today = new Date();
-						var mday = new Date(dueDate);
-						var tmime = (mday.getTime() - today.getTime());
-						var itime = 24 * 60 * 60 * 1000;
-						var fdday = tmime / itime;
-						var dday = Math.floor(fdday) + 1;
-
-						$('.nal_div').text("D-day  " + dueDate);
-						$('.nal2_div').text("D-day 까지 " + dday + " 일 남았습니다.");
-					} else {
-						$('.nal_div').text('');
-						$('.nal2_div').text('');
-					}
-
-					labelShow(label);
-					labelNameShow(labelName);
-
-					if (null != content) {
-						$('.content_div').html(content);
-					} else {
-						$('.content_div').text('');
-					}
-
-					$.each(cardReply, function(i) {
-
-						createReplyDiv(cardReply[i].seq, cardReply[i].content,
-								cardReply[i].m_id);
-
-					});
-
-					//hs
-					$('#attachLink').children().empty();
-					$.each(cardLink, function(i) {
-						var node = document.createElement('div');
-
-						var textNode = document
-								.createTextNode(cardLink[i].content);
-						var aTag = document.createElement('a');
-						aTag.href = cardLink[i].content;
-						aTag.appendChild(textNode);
-						aTag.target = '_blank';
-						node.appendChild(aTag);
-
-						$('#attachLink').append(node);
-					});
-
-					document.getElementById('listNum').value = l_num;
-					document.getElementById('cardNum').value = c_num;
-					dateC_num = c_num;
-					cardModal.style.display = "block";
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$('#cardReply').empty();
+			$('#commentArea').val('');
+			$.ajax({
+				method : 'post',
+				url : '/main/selectCardDetail',
+				data : {
+					b_num : b_num,
+					l_num : l_num,
+					c_num : c_num
+				}
+			}).done(function(msg) {
+				console.log('msg: ' + msg);
+				var detail = JSON.parse(msg);
+	
+				var cardInfo = detail[0];
+	
+				var cardReply = detail[1];
+				//hs
+				var cardLink = detail[2];
+				// console.log('cardLink=' + cardLink[0]);
+	
+				handleDesc(0); // description textarea 숨기기
+				// console.log('detail: '+detail);
+				var content = cardInfo.content;
+	
+				var label = cardInfo.label;
+				var labelName = cardInfo.labelname;
+				// console.log("view: " + labelName);
+	
+				var cardTitle = cardInfo.title;
+	
+				$('#card_title_view').text(cardTitle);
+	
+				$('#card_title_input').val(cardTitle);
+	
+				var dueDate = cardInfo.duedate;
+				$('#date').val(dueDate);
+	
+				if (null != dueDate) {
+	
+					var sday = "D-day";
+					var today = new Date();
+					var mday = new Date(dueDate);
+					var tmime = (mday.getTime() - today.getTime());
+					var itime = 24 * 60 * 60 * 1000;
+					var fdday = tmime / itime;
+					var dday = Math.floor(fdday) + 1;
+	
+					$('.nal_div').text("D-day  " + dueDate);
+					$('.nal2_div').text("D-day 까지 " + dday + " 일 남았습니다.");
+				} else {
+					$('.nal_div').text('');
+					$('.nal2_div').text('');
+				}
+	
+				labelShow(label);
+				labelNameShow(labelName);
+	
+				if (null != content) {
+					$('.content_div').html(content);
+				} else {
+					$('.content_div').text('');
+				}
+	
+				$.each(cardReply, function(i) {
+	
+					createReplyDiv(cardReply[i].seq, cardReply[i].content,
+							cardReply[i].m_id);
+	
 				});
-
+	
+				//hs
+				$('#attachLink').children().empty();
+				$.each(cardLink, function(i) {
+					var node = document.createElement('div');
+	
+					var textNode = document
+							.createTextNode(cardLink[i].content);
+					var aTag = document.createElement('a');
+					aTag.href = cardLink[i].content;
+					aTag.appendChild(textNode);
+					aTag.target = '_blank';
+					node.appendChild(aTag);
+	
+					$('#attachLink').append(node);
+				});
+	
+				document.getElementById('listNum').value = l_num;
+				document.getElementById('cardNum').value = c_num;
+				dateC_num = c_num;
+				cardModal.style.display = "block";
+			});
+		}
 	}
 
 	function labelShow(label) {
-		if (null == label) {
-			label = "0,0,0,0,0,0,0";
-		}
-
-		var labelArr = label.split(',');
-
-		for (var i = 1; i <= 7; i++) {
-			$('#selected_label' + i).hide();
-			if ('0' != labelArr[i - 1]) {
-				$('#selected_label' + i).css('background-color',
-						rgb2hex($('#label' + i).css("background-color")));
-				$('#selected_label' + i).show();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			if (null == label) {
+				label = "0,0,0,0,0,0,0";
+			}
+	
+			var labelArr = label.split(',');
+	
+			for (var i = 1; i <= 7; i++) {
+				$('#selected_label' + i).hide();
+				if ('0' != labelArr[i - 1]) {
+					$('#selected_label' + i).css('background-color',
+							rgb2hex($('#label' + i).css("background-color")));
+					$('#selected_label' + i).show();
+				}
 			}
 		}
 	}
 
 	function labelNameShow(labelName) {
-		var labelWidth = 0;
-
-		// 		console.log(labelName);
-		if (null == labelName) {
-			label = ",,,,,,";
-		}
-		var labelNameArr = labelName.split(',');
-		// 		console.log('show: ' + labelNameArr);
-		for (var i = 1; i <= 7; i++) {
-			if ('' != labelNameArr[i - 1]) {
-				labelWidth = byteCalc(labelNameArr[i - 1]);
-				if (labelWidth <= 4)
-					labelWidth = 4;
-				else if (labelWidth >= 18)
-					labelWidth = 18;
-				$('#label_name' + i).text(labelNameArr[i - 1]);
-				$('#selected_label' + i).css('width', labelWidth * 10);
-				$('#selected_label' + i).val(labelNameArr[i - 1]);
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			var labelWidth = 0;
+	
+			// 		console.log(labelName);
+			if (null == labelName) {
+				label = ",,,,,,";
+			}
+			var labelNameArr = labelName.split(',');
+			// 		console.log('show: ' + labelNameArr);
+			for (var i = 1; i <= 7; i++) {
+				if ('' != labelNameArr[i - 1]) {
+					labelWidth = byteCalc(labelNameArr[i - 1]);
+					if (labelWidth <= 4)
+						labelWidth = 4;
+					else if (labelWidth >= 18)
+						labelWidth = 18;
+					$('#label_name' + i).text(labelNameArr[i - 1]);
+					$('#selected_label' + i).css('width', labelWidth * 10);
+					$('#selected_label' + i).val(labelNameArr[i - 1]);
+				}
 			}
 		}
 	}
 
 	function comment() {
-
-		var content = $('#commentArea')[0].value;
-
-		if ('' == content) {
-			alert('댓글을 입력하세요');
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
 		} else {
-			sessionChk();
-			$.ajax({
-				method : 'post',
-				url : '/main/addCardReply',
-				data : {
+				
+			var content = $('#commentArea')[0].value;
+	
+			if ('' == content) {
+				alert('댓글을 입력하세요');
+			} else {
+				$.ajax({
+					method : 'post',
+					url : '/main/addCardReply',
+					data : {
+	
+						c_key : $('#cardNum')[0].value,
+						m_id : '${sessionScope.id}',
+						content : content
+					}
+				}).done(function(msg) {
+	
+					var replyInfo = JSON.parse(msg);
 
-					c_key : $('#cardNum')[0].value,
-					m_id : '${sessionScope.id}',
-					content : content
-				}
-			}).done(
-					function(msg) {
+					createReplyDiv(replyInfo.seq, replyInfo.content,
+							replyInfo.m_id);
 
-						var replyInfo = JSON.parse(msg);
+					$('#commentArea').val('');
 
-						createReplyDiv(replyInfo.seq, replyInfo.content,
-								replyInfo.m_id);
-
-						$('#commentArea').val('');
-
-					});
+				});
+			}
 		}
-
 	}
 
 	function handleDesc(num) {
-
-		$('.content_textarea').val('');
-
-		if (num == 1) {
-			$('.content_tag').hide();
-			$('.content_area').show();
-			$('.content_div').hide();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
 		} else {
-			$('.content_tag').show();
-			$('.content_area').hide();
+				
+			$('.content_textarea').val('');
+		
+			if (num == 1) {
+				$('.content_tag').hide();
+				$('.content_area').show();
+				$('.content_div').hide();
+			} else {
+				$('.content_tag').show();
+				$('.content_area').hide();
+			}
 		}
 	}
 
 	function sendDesc() {
-		$('.content_tag').show();
-		$('.content_div').show();
-		$('.content_area').hide();
-
-		var content = $('.content_textarea').val();
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/updateContent',
-			data : {
-				c_key : $('#cardNum')[0].value,
-				content : $('.content_textarea')[0].value
-			}
-		}).done(function(msg) {
-			$('.content_div').text(content);
-		});
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			$('.content_tag').show();
+			$('.content_div').show();
+			$('.content_area').hide();
+	
+			var content = $('.content_textarea').val();
+			$.ajax({
+				method : 'post',
+				url : '/main/updateContent',
+				data : {
+					c_key : $('#cardNum')[0].value,
+					content : $('.content_textarea')[0].value
+				}
+			}).done(function(msg) {
+				$('.content_div').text(content);
+			});
+		}
 
 	}
 
@@ -1160,67 +1208,82 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function updateComment(getSeq) {
-		var newReply = $('#input_update' + getSeq).val();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			var newReply = $('#input_update' + getSeq).val();
+	
+			$.ajax({
+				method : 'post',
+				url : '/main/updateCardReply',
+				data : {
+					c_key : $('#cardNum')[0].value,
+					seq : getSeq,
+					content : newReply
+				}
+			}).done(function(msg) {
+				var replyInfo = JSON.parse(msg);
 
-		$.ajax({
-			method : 'post',
-			url : '/main/updateCardReply',
-			data : {
-				c_key : $('#cardNum')[0].value,
-				seq : getSeq,
-				content : newReply
-			}
-		}).done(
-				function(msg) {
-					var replyInfo = JSON.parse(msg);
+				$('#cardReply').empty();
 
-					$('#cardReply').empty();
+				$.each(replyInfo, function(i) {
+					createReplyDiv(replyInfo[i].seq, replyInfo[i].content,
+							replyInfo[i].m_id);
 
-					$.each(replyInfo, function(i) {
-						createReplyDiv(replyInfo[i].seq, replyInfo[i].content,
-								replyInfo[i].m_id);
-
-					});
 				});
-
+			});
+		}
 	}
 
 	function showUpdate(getSeq, action) {
-		if ('1' == action) {
-			$('#input_cancle_div' + getSeq).show();
-			$('#update_delete' + getSeq).hide();
-		} else if ('2' == action) {
-			$('#input_cancle_div' + getSeq).hide();
-			$('#update_delete' + getSeq).show();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			if ('1' == action) {
+				$('#input_cancle_div' + getSeq).show();
+				$('#update_delete' + getSeq).hide();
+			} else if ('2' == action) {
+				$('#input_cancle_div' + getSeq).hide();
+				$('#update_delete' + getSeq).show();
+			}
 		}
 	}
 
 	function deleteComment(getSeq) {
-		var result = confirm('댓글을 삭제 하시겠습니까?');
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			var result = confirm('댓글을 삭제 하시겠습니까?');
+	
+			if (result) {
+				$.ajax({
+					method : 'post',
+					url : '/main/deleteCardReply',
+					data : {
+						c_key : $('#cardNum')[0].value,
+						seq : getSeq,
+						m_id : '${sessionScope.id}'
+					}
+				}).done(function(msg) {
+					var replyInfo = JSON.parse(msg);
 
-		if (result) {
-			$.ajax({
-				method : 'post',
-				url : '/main/deleteCardReply',
-				data : {
-					c_key : $('#cardNum')[0].value,
-					seq : getSeq,
-					m_id : '${sessionScope.id}'
-				}
-			}).done(
-					function(msg) {
-						var replyInfo = JSON.parse(msg);
+					$('#cardReply').empty();
 
-						$('#cardReply').empty();
+					console.log(replyInfo);
 
-						console.log(replyInfo);
+					$.each(replyInfo, function(i) {
+						createReplyDiv(replyInfo[i].seq,
+								replyInfo[i].content, replyInfo[i].m_id);
 
-						$.each(replyInfo, function(i) {
-							createReplyDiv(replyInfo[i].seq,
-									replyInfo[i].content, replyInfo[i].m_id);
-
-						});
 					});
+				});
+			}
 		}
 	}
 
@@ -1233,56 +1296,66 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function getHistory() {
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/selectHistory',
-			data : {
-				b_num : b_num,
-				id : '${sessionScope.id}'
-			}
-		}).done(
-				function(msg) {
-					var history = JSON.parse(msg);
-					var msg = '';
-					for (i = 0; i < history.length; i++) {
-						msg += '<p class="history">' + history[i].content + ' '
-								+ history[i].regdate + '</p>'
-						$('#selectHistory').html(msg);
-					}
-
-				});
-	}
-	function updateListTitle(id, choice) {
-		if (1 == choice) {
-			$('#list_title' + id).hide();
-			$('#up_list_title' + id).show();
-			$('#up_title_input' + id).select();
-		} else if (2 == choice) {
-			var title = $('#up_title_input' + id).val();
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
 			$.ajax({
-				url : '/main/listTitleUpdate',
 				method : 'post',
+				url : '/main/selectHistory',
 				data : {
 					b_num : b_num,
-					l_num : id,
-					title : title
+					id : '${sessionScope.id}'
+				}
+			}).done(function(msg) {
+				var history = JSON.parse(msg);
+				var msg = '';
+				for (i = 0; i < history.length; i++) {
+					msg += '<p class="history">' + history[i].content + ' '
+							+ history[i].regdate + '</p>'
+					$('#selectHistory').html(msg);
 				}
 
-			}).done(function(msg) {
-				var result = JSON.parse(msg);
-				if ('success' == result) {
-					$('#list_title' + id).html('');
-					$('#list_title' + id).html(title);
-					$('#list_title' + id).innerHTML = title;
-					$('#list_title' + id).attr('title', title);
-					$('#up_list_title' + id).hide();
-					$('#list_title' + id).show();
-				} else if ('fail' == result) {
-					alert('수정 실패');
-				}
 			});
+		}
+	}
+	function updateListTitle(id, choice) {
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			if (1 == choice) {
+				$('#list_title' + id).hide();
+				$('#up_list_title' + id).show();
+				$('#up_title_input' + id).select();
+			} else if (2 == choice) {
+				var title = $('#up_title_input' + id).val();
+		
+				$.ajax({
+					url : '/main/listTitleUpdate',
+					method : 'post',
+					data : {
+						b_num : b_num,
+						l_num : id,
+						title : title
+					}
+		
+				}).done(function(msg) {
+					var result = JSON.parse(msg);
+					if ('success' == result) {
+						$('#list_title' + id).html('');
+						$('#list_title' + id).html(title);
+						$('#list_title' + id).innerHTML = title;
+						$('#list_title' + id).attr('title', title);
+						$('#up_list_title' + id).hide();
+						$('#list_title' + id).show();
+					} else if ('fail' == result) {
+						alert('수정 실패');
+					}
+				});
+			}
 		}
 	}
 
@@ -1388,206 +1461,235 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function listSearch(b_num) {
-		sessionChk();
-		$.ajax({
-			url : '/main/searchList',
-			method : 'post',
-			data : {
-				b_num : b_num
-			}
-		}).done(function(msg) {
-
-			var listArr = JSON.parse(msg);
-			$.each(listArr, function(i) {
-
-				var l_num = listArr[i].l_num;
-				var id = l_num;
-				//nhs
-				var l_title = listArr[i].title;
-
-				listView(id, l_title, l_num);
-
-				/*
-				cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
-				 */
-				cardSearch(b_num, l_num, id);
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			$.ajax({
+				url : '/main/searchList',
+				method : 'post',
+				data : {
+					b_num : b_num
+				}
+			}).done(function(msg) {
+	
+				var listArr = JSON.parse(msg);
+				$.each(listArr, function(i) {
+	
+					var l_num = listArr[i].l_num;
+					var id = l_num;
+					//nhs
+					var l_title = listArr[i].title;
+	
+					listView(id, l_title, l_num);
+	
+					/*
+					cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
+					 */
+					cardSearch(b_num, l_num, id);
+	
+				});
+	
+				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+	
+				// 			console.log('length_onload: ' + numOfList);
+	
+				setWidthOnload(numOfList); // Onload 시 전체 width 설정
+	
 			});
-
-			numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-
-			// 			console.log('length_onload: ' + numOfList);
-
-			setWidthOnload(numOfList); // Onload 시 전체 width 설정
-
-		});
-
+		}
 	}
 
 	function labelSet(b_num, l_num, c_num) {
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/selectCardDetail',
-			data : {
-				b_num : b_num,
-				l_num : l_num,
-				c_num : c_num
-			}
-		}).done(
-				function(msg) {
-
-					var detail = JSON.parse(msg);
-					var cardInfo = detail[0];
-					var cardReply = detail[1];
-
-					var label = cardInfo.label;
-
-					if (label == null) {
-						label = "0,0,0,0,0,0,0";
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			$.ajax({
+				method : 'post',
+				url : '/main/selectCardDetail',
+				data : {
+					b_num : b_num,
+					l_num : l_num,
+					c_num : c_num
+				}
+			}).done(function(msg) {
+	
+				var detail = JSON.parse(msg);
+				var cardInfo = detail[0];
+				var cardReply = detail[1];
+	
+				var label = cardInfo.label;
+	
+				if (label == null) {
+					label = "0,0,0,0,0,0,0";
+				}
+	
+				var labelArr = label.split(',');
+	
+				for (var i = 1; i <= 7; i++) {
+					if ('0' != labelArr[i - 1]) {
+						$('#labelDiv' + c_num + '_' + i).css(
+								'background-color',
+								rgb2hex($('#label' + i).css(
+										"background-color")));
+						$('#labelDiv' + c_num + '_' + i).show();
 					}
-
-					var labelArr = label.split(',');
-
-					for (var i = 1; i <= 7; i++) {
-						if ('0' != labelArr[i - 1]) {
-							$('#labelDiv' + c_num + '_' + i).css(
-									'background-color',
-									rgb2hex($('#label' + i).css(
-											"background-color")));
-							$('#labelDiv' + c_num + '_' + i).show();
-						}
-					}
-				});
-
+				}
+			});
+		}
 	}
 
 	function cardSearch(b_num, l_num, id) {
-		sessionChk();
-		$.ajax({
-			url : '/main/searchCard',
-			method : 'post',
-			data : {
-				b_num : b_num,
-				l_num : l_num
-			}
-		}).done(function(msg) {
-			var cardArr = JSON.parse(msg);
-
-			$.each(cardArr, function(i) {
-				var cardDiv = document.createElement('div');
-				var c_num = cardArr[i].c_num;
-
-				cardDiv.id = c_num;
-				cardDiv.className = 'list-card';
-				cardDiv.onclick = function() {
-					cardView(b_num, l_num, c_num);
-				};
-
-				labelSet(b_num, l_num, c_num);
-				var labelArea = document.createElement('div');
-				labelArea.className = 'labelDiv';
-
-				// 카드 내부의 label div 생성!!!
-				for (var j = 1; j <= 7; j++) {
-					var labelDiv = document.createElement('div');
-					labelDiv.id = 'labelDiv' + c_num + '_' + j;
-					labelArea.append(labelDiv);
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$.ajax({
+				url : '/main/searchCard',
+				method : 'post',
+				data : {
+					b_num : b_num,
+					l_num : l_num
 				}
-				var cardTitle = document.createElement('div');
-				cardTitle.id = 'cardTitle' + c_num;
-				cardTitle.className = 'cardTitle';
-
-				var createCardText = document.createTextNode(cardArr[i].title);
-
-				cardTitle.appendChild(createCardText);
-
-				cardDiv.append(labelArea);
-				cardDiv.append(cardTitle);
-
-				$('#list' + id).append(cardDiv);
-
+			}).done(function(msg) {
+				var cardArr = JSON.parse(msg);
+	
+				$.each(cardArr, function(i) {
+					var cardDiv = document.createElement('div');
+					var c_num = cardArr[i].c_num;
+	
+					cardDiv.id = c_num;
+					cardDiv.className = 'list-card';
+					cardDiv.onclick = function() {
+						cardView(b_num, l_num, c_num);
+					};
+	
+					labelSet(b_num, l_num, c_num);
+					var labelArea = document.createElement('div');
+					labelArea.className = 'labelDiv';
+	
+					// 카드 내부의 label div 생성!!!
+					for (var j = 1; j <= 7; j++) {
+						var labelDiv = document.createElement('div');
+						labelDiv.id = 'labelDiv' + c_num + '_' + j;
+						labelArea.append(labelDiv);
+					}
+					var cardTitle = document.createElement('div');
+					cardTitle.id = 'cardTitle' + c_num;
+					cardTitle.className = 'cardTitle';
+	
+					var createCardText = document.createTextNode(cardArr[i].title);
+	
+					cardTitle.appendChild(createCardText);
+	
+					cardDiv.append(labelArea);
+					cardDiv.append(cardTitle);
+	
+					$('#list' + id).append(cardDiv);
+	
+				});
+				listSortable(id);
+	
 			});
-			listSortable(id);
-
-		});
-
+		}
 	}
 	function listSortable(id) {
+			
+		$('#list' + id).sortable({
+			connectWith : '.list',
+			update : function(ev, ui) {
+				if (sessionChk()) {
+					alert('로그아웃되었습니다.');
+					location.href = '/';
+				} else {
+					
+					var result1 = $('#list' + id).sortable('toArray');
+					var targetId = ev.target.id;
+					var parentId = ev.toElement.parentElement.id;
+					var cardArr = '';
 
-		$('#list' + id).sortable(
-				{
-					connectWith : '.list',
-					update : function(ev, ui) {
-						var result1 = $('#list' + id).sortable('toArray');
-						var targetId = ev.target.id;
-						var parentId = ev.toElement.parentElement.id;
-						var cardArr = '';
+					if (targetId == parentId) {
 
-						if (targetId == parentId) {
-
-							for (var i = 0; i < result1.length; i++) {
-								if (i < (result1.length - 1)) {
-									cardArr += result1[i] + ',';
-								} else {
-									cardArr += result1[i];
-								}
-
+						for (var i = 0; i < result1.length; i++) {
+							if (i < (result1.length - 1)) {
+								cardArr += result1[i] + ',';
+							} else {
+								cardArr += result1[i];
 							}
-							sessionChk();
-							$.ajax({
-								url : '/main/moveCard',
-								method : 'post',
-								data : {
 
-									b_num : b_num,
-									l_num : id,
-									c_num : ev.toElement.id,
-									msg : cardArr,
-									length : result1.length
-								}
-
-							}).done(
-									function(msg) {
-										send('cardMove', 'cardMove',
-												'${sessionScope.id}',
-												'${sessionScope.b_num}', '0',
-												'0');
-									});
 						}
+						$.ajax({
+							url : '/main/moveCard',
+							method : 'post',
+							data : {
+
+								b_num : b_num,
+								l_num : id,
+								c_num : ev.toElement.id,
+								msg : cardArr,
+								length : result1.length
+							}
+
+						}).done(function(msg) {
+							send('cardMove', 'cardMove',
+									'${sessionScope.id}',
+									'${sessionScope.b_num}', '0',
+									'0');
+						});
 					}
-				});
+				}
+			}
+		});
 	}
 
 	function openChat() {
-		chatOnOff = true;
-		viewMsg();
-		document.getElementById("mySidenavChat").style.width = "600px";
-		closeMsg();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			chatOnOff = true;
+			viewMsg();
+			document.getElementById("mySidenavChat").style.width = "600px";
+			closeMsg();
+		}
 	}
 
 	function closeChat() {
-		chatOnOff = false;
-		document.getElementById("mySidenavChat").style.width = "0";
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			chatOnOff = false;
+			document.getElementById("mySidenavChat").style.width = "0";
+		}
 	}
 
 	function unConnect() {
-		sessionChk();
-		$.ajax({
-			url : '/chat/ucConnection',
-			method : 'post',
-			dataType : 'json',
-			data : {
-				b_num : '${sessionScope.b_num}'
-			}
-
-		}).done(
-				function(msg) {
-					send('${sessionScope.id}', 'unConnec',
-							'${sessionScope.id}', '${sessionScope.b_num}', '0',
-							'0');
-				});
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$.ajax({
+				url : '/chat/ucConnection',
+				method : 'post',
+				dataType : 'json',
+				data : {
+					b_num : '${sessionScope.b_num}'
+				}
+	
+			}).done(function(msg) {
+				send('${sessionScope.id}', 'unConnec',
+						'${sessionScope.id}', '${sessionScope.b_num}', '0',
+						'0');
+			});
+		}
 	}
 
 	//hs
@@ -1634,67 +1736,79 @@ body::-webkit-scrollbar-thumb {
 			$('#popup_layer, #overlay_t').hide();
 		});
 		$('#linkSubmit').click(function() {
-			if ($('#insertLinkInput').val()) {
-				sessionChk();
-				$.ajax({
-					method : 'post',
-					url : '/main/insertLink',
-					data : {
-						c_key : $('#cardNum')[0].value,
-						content : $('#insertLinkInput').val()
-					}
-				}).done(function(msg) {
-					$('#popup_layer, #overlay_t').hide();
-					var insertLink = JSON.parse(msg);
-
-					var node = document.createElement('div');
-					var textNode = document.createTextNode(insertLink.content);
-					var aTag = document.createElement('a');
-					aTag.href = insertLink.content;
-					aTag.appendChild(textNode);
-					aTag.target = '_blank';
-					node.appendChild(aTag);
-
-					$('#attachLink').prepend(node);
-
-				});
+			if (sessionChk()) {
+				alert('로그아웃되었습니다.');
+				location.href = '/';
 			} else {
-				$('#popup_layer, #overlay_t').hide();
+				
+				if ($('#insertLinkInput').val()) {
+					
+					$.ajax({
+						method : 'post',
+						url : '/main/insertLink',
+						data : {
+							c_key : $('#cardNum')[0].value,
+							content : $('#insertLinkInput').val()
+						}
+					}).done(function(msg) {
+						$('#popup_layer, #overlay_t').hide();
+						var insertLink = JSON.parse(msg);
+	
+						var node = document.createElement('div');
+						var textNode = document.createTextNode(insertLink.content);
+						var aTag = document.createElement('a');
+						aTag.href = insertLink.content;
+						aTag.appendChild(textNode);
+						aTag.target = '_blank';
+						node.appendChild(aTag);
+	
+						$('#attachLink').prepend(node);
+	
+					});
+				} else {
+					$('#popup_layer, #overlay_t').hide();
+				}
 			}
 		});
 
 		$('#deleteCard').click(function() {
-			sessionChk();
-			var result = confirm('카드를 삭제 하시겠습니까?');
-
-			if (result) { //yes 
-				$.ajax({
-					method : 'post',
-					url : '/main/deleteCard',
-					data : {
-						b_num : b_num,
-						c_key : $('#cardNum')[0].value
-					}
-				}).done(function(msg) {
-					console.log(msg);
-					$('#cardModal').css('display', 'none');
-					var listArr = JSON.parse(msg);
-					$('#mainList').children().remove();
-					$.each(listArr, function(i) {
-
-						var l_num = listArr[i].l_num;
-						var id = l_num;
-						var l_title = listArr[i].title;
-
-						listView(id, l_title, l_num);
-						cardSearch(b_num, l_num, id);
-
+			if (sessionChk()) {
+				alert('로그아웃되었습니다.');
+				location.href = '/';
+			} else {
+					
+				var result = confirm('카드를 삭제 하시겠습니까?');
+	
+				if (result) { //yes 
+					$.ajax({
+						method : 'post',
+						url : '/main/deleteCard',
+						data : {
+							b_num : b_num,
+							c_key : $('#cardNum')[0].value
+						}
+					}).done(function(msg) {
+						console.log(msg);
+						$('#cardModal').css('display', 'none');
+						var listArr = JSON.parse(msg);
+						$('#mainList').children().remove();
+						$.each(listArr, function(i) {
+	
+							var l_num = listArr[i].l_num;
+							var id = l_num;
+							var l_title = listArr[i].title;
+	
+							listView(id, l_title, l_num);
+							cardSearch(b_num, l_num, id);
+	
+						});
+						numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+						setWidthOnload(numOfList); // Onload 시 전체 width 설정
 					});
-					numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-					setWidthOnload(numOfList); // Onload 시 전체 width 설정
-				});
+				}
 			}
 		});
+		
 		$("#sch_main").keydown(function(e) {
 
 			if (e.keyCode == 13) {
@@ -1705,35 +1819,40 @@ body::-webkit-scrollbar-thumb {
 	});
 
 	function deleteList(b_num, l_num) {
-
-		var result = confirm('리스트를 삭제 하시겠습니까?');
-
-		if (result) {
-			$.ajax({
-				method : 'post',
-				url : '/main/deleteList',
-				data : {
-					b_num : b_num,
-					l_num : l_num
-				}
-			}).done(function(msg) {
-				//카드 삭제 시 리스트 뷰 재구성
-				$('#cardModal').css('display', 'none');
-				var listArr = JSON.parse(msg);
-				$('#mainList').children().remove();
-				$.each(listArr, function(i) {
-
-					var l_num = listArr[i].l_num;
-					var id = l_num;
-					var l_title = listArr[i].title;
-
-					listView(id, l_title, l_num);
-					cardSearch(b_num, l_num, id);
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			var result = confirm('리스트를 삭제 하시겠습니까?');
+	
+			if (result) {
+				$.ajax({
+					method : 'post',
+					url : '/main/deleteList',
+					data : {
+						b_num : b_num,
+						l_num : l_num
+					}
+				}).done(function(msg) {
+					//카드 삭제 시 리스트 뷰 재구성
+					$('#cardModal').css('display', 'none');
+					var listArr = JSON.parse(msg);
+					$('#mainList').children().remove();
+					$.each(listArr, function(i) {
+	
+						var l_num = listArr[i].l_num;
+						var id = l_num;
+						var l_title = listArr[i].title;
+	
+						listView(id, l_title, l_num);
+						cardSearch(b_num, l_num, id);
+	
+					});
+					numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
+					setWidthOnload(numOfList); // Onload 시 전체 width 설정
 				});
-				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-				setWidthOnload(numOfList); // Onload 시 전체 width 설정
-			});
+			}
 		}
 	}
 
@@ -1779,68 +1898,77 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function changeLabelName(num) {
-		var inputLabelName = $('#label_name').val();
-
-		var labelWidth = byteCalc(inputLabelName);
-
-		if (labelWidth > 20) {
-			alert('라벨 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
-			$('#label_name').val('');
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
 		} else {
-			sessionChk();
-			$.ajax({
-				method : 'post',
-				url : '/main/selectLabelName',
-				data : {
-					c_key : $('#cardNum')[0].value
-				}
-			}).done(function(msg) {
-				var detail = JSON.parse(msg);
-				console.log(detail);
-				var labelName = detail.labelName;
-
-				//	 			alert(labelWidth);
-
-				if (labelWidth <= 4)
-					labelWidth = 4;
-				else if (labelWidth >= 18)
-					labelWidth = 18;
-
-				$('#selected_label' + num).css('width', labelWidth * 10);
-
-				if ('' == inputLabelName) {
-					$('#selected_label' + num).val(" ");
-					$('#selected_label' + num).append("&nbsp;");
-
-					$('#label_name' + num).text(' ');
-					$('#label_name' + num).append("&nbsp;");
-				} else {
-					$('#selected_label' + num).val(inputLabelName);
-					$('#label_name' + num).text(inputLabelName);
-				}
-
-				console.log("asdfasfd: " + inputLabelName);
-
-				$('#label_name').text('');
-
-				var labelNameArr = makeLabelNameArr(labelName, num);
-
-				var tempArr = labelNameArr.toString();
-
-				sessionChk();
+				
+			var inputLabelName = $('#label_name').val();
+	
+			var labelWidth = byteCalc(inputLabelName);
+	
+			if (labelWidth > 20) {
+				alert('라벨 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
+				$('#label_name').val('');
+			} else {
 				$.ajax({
 					method : 'post',
-					url : '/main/updateLabelName',
+					url : '/main/selectLabelName',
 					data : {
-						b_num : b_num,
-						labelName : tempArr
+						c_key : $('#cardNum')[0].value
 					}
 				}).done(function(msg) {
-					var result = JSON.parse(msg);
-
+					var detail = JSON.parse(msg);
+					console.log(detail);
+					var labelName = detail.labelName;
+	
+					//	 			alert(labelWidth);
+	
+					if (labelWidth <= 4)
+						labelWidth = 4;
+					else if (labelWidth >= 18)
+						labelWidth = 18;
+	
+					$('#selected_label' + num).css('width', labelWidth * 10);
+	
+					if ('' == inputLabelName) {
+						$('#selected_label' + num).val(" ");
+						$('#selected_label' + num).append("&nbsp;");
+	
+						$('#label_name' + num).text(' ');
+						$('#label_name' + num).append("&nbsp;");
+					} else {
+						$('#selected_label' + num).val(inputLabelName);
+						$('#label_name' + num).text(inputLabelName);
+					}
+	
+					console.log("asdfasfd: " + inputLabelName);
+	
+					$('#label_name').text('');
+	
+					var labelNameArr = makeLabelNameArr(labelName, num);
+	
+					var tempArr = labelNameArr.toString();
+	
+					if (sessionChk()) {
+						alert('로그아웃되었습니다.');
+						location.href = '/';
+					} else {
+							
+						$.ajax({
+							method : 'post',
+							url : '/main/updateLabelName',
+							data : {
+								b_num : b_num,
+								labelName : tempArr
+							}
+						}).done(function(msg) {
+							var result = JSON.parse(msg);
+		
+						});
+					}
 				});
-
-			});
+			}
 		}
 	}
 
@@ -1856,55 +1984,59 @@ body::-webkit-scrollbar-thumb {
 	}
 
 	function label(num) {
-		var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
-		$('#selected_label' + num).css('background-color', backgroundColor);
-
-		var isNone = $('#selected_label' + num).css('display');
-
-		sessionChk();
-		$.ajax({
-			method : 'post',
-			url : '/main/selectLabel',
-			data : {
-				c_key : $('#cardNum')[0].value
-			}
-		}).done(
-				function(msg) {
-					var detail = JSON.parse(msg);
-
-					var label = detail.label;
-					console.log(detail);
-
-					var c_num = $('#cardNum')[0].value;
-
-					var labelArr;
-					$('#labelDiv' + c_num + '_' + num).css('background-color',
-							backgroundColor);
-					if ('none' != isNone) {
-						labelArr = makeLabelArr(label, num, 'del');
-						$('#selected_label' + num).hide();
-						$('#labelDiv' + c_num + '_' + num).hide();
-					} else {
-						labelArr = makeLabelArr(label, num, 'ins');
-						$('#selected_label' + num).show();
-						$('#labelDiv' + c_num + '_' + num).show();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
+			$('#selected_label' + num).css('background-color', backgroundColor);
+		
+			var isNone = $('#selected_label' + num).css('display');
+		
+			$.ajax({
+				method : 'post',
+				url : '/main/selectLabel',
+				data : {
+					c_key : $('#cardNum')[0].value
+				}
+			}).done(function(msg) {
+				var detail = JSON.parse(msg);
+	
+				var label = detail.label;
+				console.log(detail);
+	
+				var c_num = $('#cardNum')[0].value;
+	
+				var labelArr;
+				$('#labelDiv' + c_num + '_' + num).css('background-color',
+						backgroundColor);
+				if ('none' != isNone) {
+					labelArr = makeLabelArr(label, num, 'del');
+					$('#selected_label' + num).hide();
+					$('#labelDiv' + c_num + '_' + num).hide();
+				} else {
+					labelArr = makeLabelArr(label, num, 'ins');
+					$('#selected_label' + num).show();
+					$('#labelDiv' + c_num + '_' + num).show();
+				}
+	
+				var tempArr = labelArr.toString();
+	
+				
+				$.ajax({
+					method : 'post',
+					url : '/main/updateLabel',
+					data : {
+						c_key : $('#cardNum')[0].value,
+						label : tempArr
 					}
-
-					var tempArr = labelArr.toString();
-
-					sessionChk();
-					$.ajax({
-						method : 'post',
-						url : '/main/updateLabel',
-						data : {
-							c_key : $('#cardNum')[0].value,
-							label : tempArr
-						}
-					}).done(function(msg) {
-
-					});
-
+				}).done(function(msg) {
+	
 				});
+	
+			});
+		}
 	}
 
 	function makeLabelArr(label, num, action) {
@@ -1930,7 +2062,6 @@ body::-webkit-scrollbar-thumb {
 
 	function openMsg() {
 		var bodyHeight = document.body.offsetHeight - 150;
-
 		document.getElementById("msgOff").style.top = bodyHeight + "px";
 
 	}
@@ -1960,7 +2091,7 @@ body::-webkit-scrollbar-thumb {
 
 	$(function() {
 		$("#wow").datepicker({
-
+				
 			changeMonth : true,
 			closeText : 'close',
 			dateFormat : 'yy-mm-dd',
@@ -2001,7 +2132,6 @@ body::-webkit-scrollbar-thumb {
 					$("#wow").css('display', 'none');
 				});
 			}
-
 		});
 	});
 
@@ -2036,182 +2166,200 @@ body::-webkit-scrollbar-thumb {
 	});
 
 	function sessionChk() {
+		var result = false;
 		$.ajax({
 			url : '/main/sessionChk',
-			method : 'post'
+			method : 'post',
+			async : false
 		}).done(function(msg) {
+			console.log('sessionChk : ' + msg);
 			if ('1' == msg) {
-				alert('다른 아이피로 접속되었습니다.');
-				location.href = '/';
+				result = true;
 			}
-
 		});
+		return result;
 	}
 
 	function updateBoardTitle(choice) {
-		if (1 == choice) {
-			$('#board_Title').hide();
-			$('#up_board_Title').show();
-			$('#up_board_input').select();
-		} else if (2 == choice) {
-			var title = $('#up_board_input').val();
-
-			$.ajax({
-				url : '/main/boardTitleUpdate',
-				method : 'post',
-				data : {
-					b_num : b_num,
-					title : title
-				}
-
-			}).done(function(msg) {
-				var result = JSON.parse(msg);
-				if ('success' == result) {
-					$('#board_Title').html('');
-					$('#board_Title').html(title);
-					$('#up_board_Title').hide();
-					$('#board_Title').show();
-				} else if ('fail' == result) {
-					alert('수정 실패');
-				}
-
-			});
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			if (1 == choice) {
+				$('#board_Title').hide();
+				$('#up_board_Title').show();
+				$('#up_board_input').select();
+			} else if (2 == choice) {
+				var title = $('#up_board_input').val();
+	
+				$.ajax({
+					url : '/main/boardTitleUpdate',
+					method : 'post',
+					data : {
+						b_num : b_num,
+						title : title
+					}
+	
+				}).done(function(msg) {
+					var result = JSON.parse(msg);
+					if ('success' == result) {
+						$('#board_Title').html('');
+						$('#board_Title').html(title);
+						$('#up_board_Title').hide();
+						$('#board_Title').show();
+					} else if ('fail' == result) {
+						alert('수정 실패');
+					}
+	
+				});
+	
+			}
 		}
-
 	}
 	function updateCardTitle(choice) {
-
-		//카드 타이틀
-		if (1 == choice) {
-			$('#card_title_view').hide();
-			$('#card_title_update').show();
-			$('#card_title_input').select();
-		} else if (2 == choice) {
-			var title = $('#card_title_input').val();
-			var l_num = $('#listNum').val();
-			var c_num = $('#cardNum').val();
-
-			$.ajax({
-				url : '/main/cardTitleUpdate',
-				method : 'post',
-				data : {
-					b_num : b_num,
-					l_num : l_num,
-					c_num : c_num,
-					title : title
-				}
-			}).done(function(msg) {
-				var result = JSON.parse(msg);
-				if ('success' == result) {
-					$('#cardTitle' + c_num).html(title);
-					$('#card_title_view').html('');
-					$('#card_title_view').html(title);
-					$('#card_title_update').hide();
-					$('#card_title_view').show();
-				} else if ('fail' == result) {
-					alert('수정 실패');
-				}
-			});
-
-			$('#card_title_update').hide();
-			$('#card_title_view').show();
-			$('#card_title_view').select();
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+				
+			//카드 타이틀
+			if (1 == choice) {
+				$('#card_title_view').hide();
+				$('#card_title_update').show();
+				$('#card_title_input').select();
+			} else if (2 == choice) {
+				var title = $('#card_title_input').val();
+				var l_num = $('#listNum').val();
+				var c_num = $('#cardNum').val();
+	
+				$.ajax({
+					url : '/main/cardTitleUpdate',
+					method : 'post',
+					data : {
+						b_num : b_num,
+						l_num : l_num,
+						c_num : c_num,
+						title : title
+					}
+				}).done(function(msg) {
+					var result = JSON.parse(msg);
+					if ('success' == result) {
+						$('#cardTitle' + c_num).html(title);
+						$('#card_title_view').html('');
+						$('#card_title_view').html(title);
+						$('#card_title_update').hide();
+						$('#card_title_view').show();
+					} else if ('fail' == result) {
+						alert('수정 실패');
+					}
+				});
+	
+				$('#card_title_update').hide();
+				$('#card_title_view').show();
+				$('#card_title_view').select();
+			}
 		}
 	}
 	
 	function beforeMsg(){
-		$("#display${sessionScope.b_num}").scroll(function() {
-			var dis = $("#display${sessionScope.b_num}");
-			if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
-				var beHeight = dis[0].scrollHeight - dis.scrollTop(); 
-				console.log(dis[0].scrollHeight - dis.scrollTop());
-				$.ajax({
-					method : 'post',
-					url : '/chat/beforeMsg',
-					data : {
-						b_num : '${sessionScope.b_num}',
-						userId : '${sessionScope.id}',
-						seq : firstSeq
-					}
-				}).done(function(msg) {
-					var data = JSON.parse(msg);
-					$.each(data, function(i) {
-						var regdate = data[i].date;
-						var msg = data[i].content;
-						var id = data[i].m_id;
-						firstSeq = data[i].firstSeq;
-						
-						if (id == '${sessionScope.id}') {
-
-							var div = document.createElement('div');
-							div.className = 'myMsg';
-
-							var content = document.createElement('pre');
-							content.className = "myContent";
-
-							var date = document.createElement('div');
-							date.className = "myDate";
-
-							var b = document.createElement('div');
-							b.className = 'b';
-
-							var contentText = document.createTextNode(msg);
-							var dateText = document.createTextNode(regdate);
-
-							content.appendChild(contentText);
-
-							date.appendChild(dateText);
-
-							div.append(b);
-							div.append(content);
-							div.append(date);
-
-						} else {
-							var box = document.createElement('div');
-							box.className = 'box';
-
-							var div = document.createElement('div');
-							div.className = 'memberMsg';
-
-							var content = document.createElement('pre');
-							content.className = "memberContent";
-
-							var writer = document.createElement('div');
-							writer.className = "memberWriter";
-
-							var date = document.createElement('div');
-							date.className = "memberDate";
-
-							var b = document.createElement('div');
-							b.className = 'm';
-
-							var contentText = document.createTextNode(msg);
-							var writerText = document.createTextNode(id);
-							var dateText = document.createTextNode(regdate);
-
-							content.appendChild(contentText);
-							writer.appendChild(writerText);
-							date.appendChild(dateText);
-
-							box.append(writer);
-							box.append(b);
-							box.append(content);
-							box.append(date);
-
-							div.append(box);
-							
-
+		if (sessionChk()) {
+			alert('로그아웃되었습니다.');
+			location.href = '/';
+		} else {
+			
+			$("#display${sessionScope.b_num}").scroll(function() {
+				var dis = $("#display${sessionScope.b_num}");
+				if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
+					var beHeight = dis[0].scrollHeight - dis.scrollTop(); 
+					console.log(dis[0].scrollHeight - dis.scrollTop());
+					$.ajax({
+						method : 'post',
+						url : '/chat/beforeMsg',
+						data : {
+							b_num : '${sessionScope.b_num}',
+							userId : '${sessionScope.id}',
+							seq : firstSeq
 						}
-						$('#display${sessionScope.b_num}').prepend(div);
+					}).done(function(msg) {
+						var data = JSON.parse(msg);
+						$.each(data, function(i) {
+							var regdate = data[i].date;
+							var msg = data[i].content;
+							var id = data[i].m_id;
+							firstSeq = data[i].firstSeq;
+							
+							if (id == '${sessionScope.id}') {
+	
+								var div = document.createElement('div');
+								div.className = 'myMsg';
+	
+								var content = document.createElement('pre');
+								content.className = "myContent";
+	
+								var date = document.createElement('div');
+								date.className = "myDate";
+	
+								var b = document.createElement('div');
+								b.className = 'b';
+	
+								var contentText = document.createTextNode(msg);
+								var dateText = document.createTextNode(regdate);
+	
+								content.appendChild(contentText);
+	
+								date.appendChild(dateText);
+	
+								div.append(b);
+								div.append(content);
+								div.append(date);
+	
+							} else {
+								var box = document.createElement('div');
+								box.className = 'box';
+	
+								var div = document.createElement('div');
+								div.className = 'memberMsg';
+	
+								var content = document.createElement('pre');
+								content.className = "memberContent";
+	
+								var writer = document.createElement('div');
+								writer.className = "memberWriter";
+	
+								var date = document.createElement('div');
+								date.className = "memberDate";
+	
+								var b = document.createElement('div');
+								b.className = 'm';
+	
+								var contentText = document.createTextNode(msg);
+								var writerText = document.createTextNode(id);
+								var dateText = document.createTextNode(regdate);
+	
+								content.appendChild(contentText);
+								writer.appendChild(writerText);
+								date.appendChild(dateText);
+	
+								box.append(writer);
+								box.append(b);
+								box.append(content);
+								box.append(date);
+	
+								div.append(box);
+								
+	
+							}
+							$('#display${sessionScope.b_num}').prepend(div);
+							
+						}); 
 						
-					}); 
-					
-					$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
-				});
-			}
-
-		});
+						$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
+					});
+				}
+	
+			});
+		}
 	}
 	// 	function checkEnter() {
 	// 		var key = window.event.keycode;

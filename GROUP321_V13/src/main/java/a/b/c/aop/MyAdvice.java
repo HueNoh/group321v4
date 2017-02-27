@@ -1,5 +1,6 @@
 package a.b.c.aop;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,47 +64,67 @@ public class MyAdvice {
 	 */
 
 	@Before("advice2()")
-	public void before(JoinPoint joinPoint) throws Throwable {
+	public void before(JoinPoint joinPoint) {
 		ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpServletRequest request = sra.getRequest();
 		HttpSession session = request.getSession(false);
 		HttpServletResponse response = sra.getResponse();
-		Map inUserIpMap = inBoardMember.getUserIpMap();
-
-		String methodName = joinPoint.getSignature().getName();
-
 		PrintWriter out = null;
-		System.out.println("methodName : "+methodName);
-		if (null == session.getAttribute("id")) {
-			out = response.getWriter();
-			out.print("<script>");
-			out.print("alert('로그아웃되었습니다.');");
-			out.print("location.href='/';");
-			out.print("</script>");
-			out.flush();
-			out.close();
+		try {
 
-		} else {
-			if (!request.getRemoteHost().equals(inUserIpMap.get(session.getAttribute("id")))) {
+			Map inUserIpMap = inBoardMember.getUserIpMap();
+
+			String methodName = joinPoint.getSignature().getName();
+
+			System.out.println("methodName : " + methodName);
+			if (null == session || null == session.getAttribute("id")) {
 				if ("list".equals(methodName) || "board".equals(methodName)) {
 					out = response.getWriter();
 					out.print("<script>");
-					out.print("alert('다른아이피에서 로그인했습니다.');");
+					out.print("alert('로그아웃되었습니다.');");
 					out.print("location.href='/';");
 					out.print("</script>");
 					out.flush();
 					out.close();
-					session.invalidate();
 				} else {
 					out = response.getWriter();
 					out.print("1");
 					out.flush();
 					out.close();
-					session.invalidate();
 				}
 			} else {
-			}
+				if (!request.getRemoteHost().equals(inUserIpMap.get(session.getAttribute("id")))) {
+					if ("list".equals(methodName) || "board".equals(methodName)) {
+						out = response.getWriter();
+						out.print("<script>");
+						out.print("alert('로그아웃되었습니다.');");
+						out.print("location.href='/';");
+						out.print("</script>");
+						out.flush();
+						out.close();
+						session.invalidate();
+					} else {
+						out = response.getWriter();
+						out.print("1");
+						out.flush();
+						out.close();
+						session.invalidate();
+					}
+				} else {
+				}
 
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			try {
+				out = response.getWriter();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			out.print("1");
+			out.flush();
+			out.close();
+			session.invalidate();
 		}
 	}
 
