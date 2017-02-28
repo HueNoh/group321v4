@@ -1,5 +1,7 @@
 package a.b.c.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,8 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String list(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session) {
+	public String list(Model model, @RequestParam Map map, HttpServletRequest request, HttpSession session,
+			HttpServletResponse response) {
 		Map inBoardMemberMap = inBoardMember.getInstanceMap();
 		Set inBoardMemberSet = inBoardMember.getInstanceSet();
 		String userId = (String) session.getAttribute("id");
@@ -58,33 +62,52 @@ public class MainController {
 		map.put("id", userId);
 		map.put("b_num", b_num);
 
-		if (null != session.getAttribute("id")) {
-			if (inBoardMemberSet.contains(userId)) {
-				inBoardMemberMap.remove(userId);
-				inBoardMemberSet.add(userId);
-				inBoardMemberMap.put(userId, b_num);
-			} else {
-				inBoardMemberSet.add(userId);
-				inBoardMemberMap.put(userId, b_num);
-			}
-		}
-
-		List list2 = new ArrayList<>();
-		Iterator it = inBoardMemberMap.keySet().iterator();
-		while (it.hasNext()) {
-			String id = (String) it.next();
-			// if (b_num == (int) inBoardMemberMap.get(id)) {
-			// list2.add(id);
-			// }
-			if (b_num == (int) inBoardMemberMap.get(id) && !userId.equals(id)) {
-				list2.add(id);
-			}
-		}
-		model.addAttribute("users", new Gson().toJson(list2));
-
 		List list = memberService.selectBoardMember(map);
+		System.out.println("map : " + map);
+		System.out.println("list : " + list);
+		System.out.println("listsize : " + list.size());
 
-		return "list";
+		if (0 != list.size()) {
+			System.out.println("11");
+
+			if (null != session.getAttribute("id")) {
+				if (inBoardMemberSet.contains(userId)) {
+					inBoardMemberMap.remove(userId);
+					inBoardMemberSet.add(userId);
+					inBoardMemberMap.put(userId, b_num);
+				} else {
+					inBoardMemberSet.add(userId);
+					inBoardMemberMap.put(userId, b_num);
+				}
+			}
+
+			List list2 = new ArrayList<>();
+			Iterator it = inBoardMemberMap.keySet().iterator();
+			while (it.hasNext()) {
+				String id = (String) it.next();
+				// if (b_num == (int) inBoardMemberMap.get(id)) {
+				// list2.add(id);
+				// }
+				if (b_num == (int) inBoardMemberMap.get(id) && !userId.equals(id)) {
+					list2.add(id);
+				}
+			}
+			model.addAttribute("users", new Gson().toJson(list2));
+
+			return "list";
+		} else {
+			try {
+				PrintWriter out = response.getWriter();
+				out.print("<script>");
+				out.print("alert('권한이 없습니다.');");
+				out.print("location.href='/main/board';");
+				out.print("</script>");
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+			}
+			return "board";
+		}
 
 	}
 
@@ -106,8 +129,7 @@ public class MainController {
 		return new Gson().toJson(list);
 	}
 
-	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET,
-			RequestMethod.POST })
+	@RequestMapping(value = "/deleteBoard", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
 	public int deleteBoard(@RequestParam Map map) {
 		int result = memberService.deleteBoard(map);
@@ -182,17 +204,17 @@ public class MainController {
 		session.setAttribute("c_num", map.get("c_num"));
 
 		List list = memberService.selectCardDetail(map);
-		
-//		for(int i=0; i<list.size(); i++) {
-//			Map getMap = (Map) list.get(i);
-//		}
-//		
-//		Iterator iterator = list.iterator();
-//		while (iterator.hasNext()) {
-//			
-//			list.get(iterator.next());
-//		}
-		
+
+		// for(int i=0; i<list.size(); i++) {
+		// Map getMap = (Map) list.get(i);
+		// }
+		//
+		// Iterator iterator = list.iterator();
+		// while (iterator.hasNext()) {
+		//
+		// list.get(iterator.next());
+		// }
+
 		return new Gson().toJson(list);
 	}
 
@@ -231,6 +253,7 @@ public class MainController {
 	@ResponseBody
 	public String moveCard(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
+		System.out.println("movemove");
 		map.put("cardArr", map.get("msg"));
 		List list = memberService.moveCard(map);
 		return new Gson().toJson("aa");
@@ -241,7 +264,7 @@ public class MainController {
 	@ResponseBody
 	public String addCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		
+
 		int result = memberService.addCardReply(map);
 		JsonObject obj = new JsonObject();
 
@@ -257,7 +280,7 @@ public class MainController {
 	@ResponseBody
 	public String updateCardReply(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		
+
 		List list = memberService.updateCardReply(map);
 
 		List cardReplyInfo = memberService.selectCardReply(map);
@@ -286,12 +309,12 @@ public class MainController {
 	@ResponseBody
 	public String updateContent(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
-		
-		String content = (String)map.get("content");
+
+		String content = (String) map.get("content");
 		content = content.replace("\n", "<br>");
 		map.put("content", content);
 		List list = memberService.updateContent(map);
-		
+
 		return "";
 	}
 
@@ -447,7 +470,7 @@ public class MainController {
 			RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String sessionChk(Model model, @RequestParam Map map) {
-		
+
 		return "";
 	}
 
