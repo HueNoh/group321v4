@@ -1598,51 +1598,57 @@ body::-webkit-scrollbar-thumb {
 		}
 	}
 	function listSortable(id) {
+			
 		$('#list' + id).sortable({
 			connectWith : '.list',
 			update : function(ev, ui) {
 				
-				var result1 = $('#list' + id).sortable('toArray');
-				var parentId = ev.toElement.parentElement.id;
-				var cardArr = '';
-				
-				
-				$.each(ev.target.childNodes, function(i){
+			if (sessionChk()) {
+				alert('로그아웃되었습니다.');
+				location.href = '/';
+			} else {
+					var result1 = $('#list' + id).sortable('toArray');
+					var parentId = ev.toElement.parentElement.id;
+					var cardArr = '';
 					
-					if(parentId==ev.target.childNodes[i].id){
-						console.log(id);
-						console.log(parentId);
-						console.log(ev.target.childNodes[i].id);
-				
-						for (var i = 0; i < result1.length; i++) {
-							if (i < (result1.length - 1)) {
-								cardArr += result1[i] + ',';
-							} else {
-								cardArr += result1[i];
+					
+					$.each(ev.target.childNodes, function(i){
+						
+						if(parentId==ev.target.childNodes[i].id){
+							console.log(id);
+							console.log(parentId);
+							console.log(ev.target.childNodes[i].id);
+					
+							for (var i = 0; i < result1.length; i++) {
+								if (i < (result1.length - 1)) {
+									cardArr += result1[i] + ',';
+								} else {
+									cardArr += result1[i];
+								}
+			
 							}
-		
+							$.ajax({
+								url : '/main/moveCard',
+								method : 'post',
+								data : {
+			
+									b_num : b_num,
+									l_num : id,
+									c_num : parentId,
+									msg : cardArr,
+									length : result1.length
+								}
+			
+							}).done(function(msg) {
+								
+								send('cardMove', 'cardMove',
+										'${sessionScope.id}',
+										'${sessionScope.b_num}', '0',
+										'0');
+							});
 						}
-						$.ajax({
-							url : '/main/moveCard',
-							method : 'post',
-							data : {
-		
-								b_num : b_num,
-								l_num : id,
-								c_num : parentId,
-								msg : cardArr,
-								length : result1.length
-							}
-		
-						}).done(function(msg) {
-							
-							send('cardMove', 'cardMove',
-									'${sessionScope.id}',
-									'${sessionScope.b_num}', '0',
-									'0');
-						});
-					}
-				});
+					});
+				}
 			}
 		});
 	}
