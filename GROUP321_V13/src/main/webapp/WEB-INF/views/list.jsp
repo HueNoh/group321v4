@@ -2434,9 +2434,7 @@ body::-webkit-scrollbar-thumb {
 					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
 					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
 					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
-					<li class="link"><a href="#" class="link_tag4">File</a></li>
 					<li class="link"><a href="#" onclick="inviteMember()" class="link_tag5 js-close-right-slidebar">Members</a></li>
-					<li class="link"><a href="#" onclick="logout()" class="link_tag6 js-close-right-slidebar">SignOut</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -2572,14 +2570,6 @@ body::-webkit-scrollbar-thumb {
 						<br> <br>
 
 
-						<button>
-							<span><img alt="label" src="/resources/images/btn_calendar.png" width="20px" height="20px" class="btn-calendar" />&nbsp;&nbsp;&nbsp;empty1</span>
-						</button>
-						<br> <br>
-						<button>
-							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;empty2</span>
-						</button>
-						<br> <br>
 					</div>
 				</div>
 
