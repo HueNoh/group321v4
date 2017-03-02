@@ -148,7 +148,7 @@ html, body {
 	border: 1px solid #888;
 	width: 60%;
 	min-width: 700px;
-	height: 760px;
+	height: 90%;
 	max-height: 760px;
 	overflow: auto;
 }

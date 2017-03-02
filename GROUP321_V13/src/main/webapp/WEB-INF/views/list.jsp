@@ -216,8 +216,9 @@ body::-webkit-scrollbar-thumb {
 }
 
 .card-detail-main {
+
 	height: 700px;
-	max-width: 600px;
+	width: 65%;
 	float: left;
 }
 
@@ -375,7 +376,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .label_div {
-	width: 600px;
+	width: 100%;
 }
 
 .label_div>input {
@@ -837,19 +838,33 @@ body::-webkit-scrollbar-thumb {
 							cardView(b_num, cardl_num, c_num)
 	
 						};
+						
+						labelSet(b_num, cardl_num, c_num);
+						
+						var labelArea = document.createElement('div');
+						labelArea.className = 'labelDiv';
+						
 						// 카드 내부의 label div 생성!!!
 						for (var j = 1; j <= 7; j++) {
 							var labelDiv = document.createElement('div');
 							labelDiv.id = 'labelDiv' + c_num + '_' + j;
-							newCard.append(labelDiv);
+							labelArea.append(labelDiv);
 						}
+						
+						var cardTitle = document.createElement('div');
+						cardTitle.id = 'cardTitle' + c_num;
+						cardTitle.className = 'cardTitle';
 	
 						var createCardText = document
 								.createTextNode(cardArr.title);
 	
-						newCard.appendChild(createCardText);
+						cardTitle.appendChild(createCardText);
+						
+						newCard.append(labelArea);
+						newCard.append(cardTitle);
+						
 						document.getElementById('list' + cardId)
-								.appendChild(newCard);
+								.append(newCard);
 	
 						var cardHtml = $('#list' + cardId)[0].innerHTML;
 						send('cardCreate', 'cardCreate',
@@ -999,7 +1014,7 @@ body::-webkit-scrollbar-thumb {
 	
 			// 		console.log(labelName);
 			if (null == labelName) {
-				label = ",,,,,,";
+				labelName = ",,,,,,";
 			}
 			var labelNameArr = labelName.split(',');
 			// 		console.log('show: ' + labelNameArr);
@@ -1569,6 +1584,7 @@ body::-webkit-scrollbar-thumb {
 					};
 	
 					labelSet(b_num, l_num, c_num);
+					
 					var labelArea = document.createElement('div');
 					labelArea.className = 'labelDiv';
 	
@@ -2500,7 +2516,7 @@ body::-webkit-scrollbar-thumb {
 						</div>
 
 						<h3>Add Comment</h3>
-						<textarea id="commentArea" style="width: 600px; height: 100px;" required="required"></textarea>
+						<textarea id="commentArea" style="width: 100%; height: 100px;" required="required"></textarea>
 
 						<input type="button" value="SAVE" onclick="comment();" id="btn_comment">
 						<div id="attachLink"></div>
