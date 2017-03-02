@@ -7,9 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>List</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="/resources/js/jquery-3.1.1.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/resources/js/jquery-3.1.1.min.js"></script>
@@ -18,7 +20,8 @@
 <link rel="stylesheet" href="/resources/css/slidebars.atj.css">
 <link rel="stylesheet" href="/resources/css/style.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="/resources/css/websocket.atj.css">
 <!-- <link rel="stylesheet" href="/resources/css/jquery-ui.css"> -->
 <style>
@@ -216,7 +219,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 .card-detail-main {
-
 	height: 700px;
 	width: 65%;
 	float: left;
@@ -642,65 +644,70 @@ body::-webkit-scrollbar-thumb {
 	var cardl_num = 0;
 	var cardId = 0;
 	window.onload = function() {
-			
-			var users = ${users};
-	
+
+		var users = $
+		{
+			users
+		}
+		;
+
 		beforeMsg();
 		userConnection(users);
-		$('#mainList').sortable({
-			update : function(ev, ui) {
-				if (sessionChk()) {
-					alert('로그아웃되었습니다.');
-					location.href = '/';
-				} else {
-					
-					console.log(ev);
-					var result = $('#mainList').sortable('toArray');
-					console.log(result);
-	
-					var moveData = new Object();
-					var msg = '';
-					for (var i = 0; i < result.length; i++) {
-						if (i < (result.length - 1)) {
-							msg += result[i] + ',';
+		$('#mainList').sortable(
+				{
+					update : function(ev, ui) {
+						if (sessionChk()) {
+							alert('로그아웃되었습니다.');
+							location.href = '/';
 						} else {
-							msg += result[i];
-						}
-	
-					}
-	
-					moveData = result;
-	
-					var data = JSON.stringify(moveData);
-					if (sessionChk()) {
-						alert('로그아웃되었습니다.');
-						location.href = '/';
-					} else {
-							
-						$.ajax({
-						url : '/main/moveList',
-						method : 'post',
-						data : {
-							data : msg,
-							length : result.length,
-							b_num : b_num
-						}
-	
-						}).done(function(msg) {
-							send('mainList', 'listMove',
-									'${sessionScope.id}',
-									'${sessionScope.b_num}', '0', '0');
-						});
-					}
-				}
-			}
 
-		});
+							console.log(ev);
+							var result = $('#mainList').sortable('toArray');
+							console.log(result);
+
+							var moveData = new Object();
+							var msg = '';
+							for (var i = 0; i < result.length; i++) {
+								if (i < (result.length - 1)) {
+									msg += result[i] + ',';
+								} else {
+									msg += result[i];
+								}
+
+							}
+
+							moveData = result;
+
+							var data = JSON.stringify(moveData);
+							if (sessionChk()) {
+								alert('로그아웃되었습니다.');
+								location.href = '/';
+							} else {
+
+								$.ajax({
+									url : '/main/moveList',
+									method : 'post',
+									data : {
+										data : msg,
+										length : result.length,
+										b_num : b_num
+									}
+
+								}).done(
+										function(msg) {
+											send('mainList', 'listMove',
+													'${sessionScope.id}',
+													'${sessionScope.b_num}',
+													'0', '0');
+										});
+							}
+						}
+					}
+
+				});
 
 		listSearch(b_num);
 
-		
-	
 		inUsers();
 		$("#inputMessage").keyup(function(key) {
 			if (key.keyCode == 13) {
@@ -751,7 +758,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			$.ajax({
 				method : 'post',
 				url : '/main/createList',
@@ -759,29 +766,30 @@ body::-webkit-scrollbar-thumb {
 					id : '${sessionScope.id}',
 					title : title,
 					b_num : b_num
-	
+
 				}
-	
-			}).done(function(msg) {
 
-				var arrList = JSON.parse(msg);
-				var id = arrList.l_num;
-				//nhs
-				var l_title = arrList.title;
+			}).done(
+					function(msg) {
 
-				listView(id, l_title, arrList.l_num);
+						var arrList = JSON.parse(msg);
+						var id = arrList.l_num;
+						//nhs
+						var l_title = arrList.title;
 
-				numOfList = $('.viewList').length;
-				setWidthAddList(numOfList);
+						listView(id, l_title, arrList.l_num);
 
-				/* 각 리스트들의 카드들을 쇼터블 하는 function */
-				listSortable(id);
+						numOfList = $('.viewList').length;
+						setWidthAddList(numOfList);
 
-				var listHtml = $('#mainList')[0].innerHTML;
-				send('mainList', 'listCreate', '${sessionScope.id}',
-						'${sessionScope.b_num}', '0', '0');
+						/* 각 리스트들의 카드들을 쇼터블 하는 function */
+						listSortable(id);
 
-			});
+						var listHtml = $('#mainList')[0].innerHTML;
+						send('mainList', 'listCreate', '${sessionScope.id}',
+								'${sessionScope.b_num}', '0', '0');
+
+					});
 		}
 	}
 
@@ -790,7 +798,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			$('#addCardContainer' + id).toggle();
 			$('#addCardTitle' + id).focus();
 			$('#addCardTitle' + id).val('');
@@ -804,75 +812,86 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			if ($('#addCardTitle' + cardId).val()) {
 				var title = $('#addCardTitle' + cardId).val();
-	
+
 				var LengthOfTitle = byteCalc(title);
-	
+
 				if (LengthOfTitle > 30) {
 					alert('카드 이름은 영문 30자, 한글 15자를 넘을 수 없습니다');
 					$('#addCardTitle' + cardId).val('');
 				} else {
-					$.ajax({
-						method : 'post',
-						url : '/main/createCard',
-						data : {
-							id : '${sessionScope.id}',
-							title : title,
-							b_num : b_num,
-							l_num : cardl_num
-	
-						}
-					}).done(function(msg) {
-						console.log(msg);
-						var cardArr = JSON.parse(msg);
-	
-						var newCard = document.createElement('div');
-						var c_num = cardArr.c_num;
-	
-						newCard.id = c_num;
-						newCard.className = 'list-card';
-						newCard.onclick = function() {
-	
-							cardView(b_num, cardl_num, c_num)
-	
-						};
-						
-						labelSet(b_num, cardl_num, c_num);
-						
-						var labelArea = document.createElement('div');
-						labelArea.className = 'labelDiv';
-						
-						// 카드 내부의 label div 생성!!!
-						for (var j = 1; j <= 7; j++) {
-							var labelDiv = document.createElement('div');
-							labelDiv.id = 'labelDiv' + c_num + '_' + j;
-							labelArea.append(labelDiv);
-						}
-						
-						var cardTitle = document.createElement('div');
-						cardTitle.id = 'cardTitle' + c_num;
-						cardTitle.className = 'cardTitle';
-	
-						var createCardText = document
-								.createTextNode(cardArr.title);
-	
-						cardTitle.appendChild(createCardText);
-						
-						newCard.append(labelArea);
-						newCard.append(cardTitle);
-						
-						document.getElementById('list' + cardId)
-								.append(newCard);
-	
-						var cardHtml = $('#list' + cardId)[0].innerHTML;
-						send('cardCreate', 'cardCreate',
-								'${sessionScope.id}',
-								'${sessionScope.b_num}', '0', '0');
-						$('#addCardContainer' + cardId).toggle();
-						$('#addCardTitle' + cardId).val('');
-					});
+					$
+							.ajax({
+								method : 'post',
+								url : '/main/createCard',
+								data : {
+									id : '${sessionScope.id}',
+									title : title,
+									b_num : b_num,
+									l_num : cardl_num
+
+								}
+							})
+							.done(
+									function(msg) {
+										console.log(msg);
+										var cardArr = JSON.parse(msg);
+
+										var newCard = document
+												.createElement('div');
+										var c_num = cardArr.c_num;
+
+										newCard.id = c_num;
+										newCard.className = 'list-card';
+										newCard.onclick = function() {
+
+											cardView(b_num, cardl_num, c_num)
+
+										};
+
+										labelSet(b_num, cardl_num, c_num);
+
+										var labelArea = document
+												.createElement('div');
+										labelArea.className = 'labelDiv';
+
+										// 카드 내부의 label div 생성!!!
+										for (var j = 1; j <= 7; j++) {
+											var labelDiv = document
+													.createElement('div');
+											labelDiv.id = 'labelDiv' + c_num
+													+ '_' + j;
+											labelArea.append(labelDiv);
+										}
+
+										var cardTitle = document
+												.createElement('div');
+										cardTitle.id = 'cardTitle' + c_num;
+										cardTitle.className = 'cardTitle';
+
+										var createCardText = document
+												.createTextNode(cardArr.title);
+
+										cardTitle.appendChild(createCardText);
+
+										newCard.append(labelArea);
+										newCard.append(cardTitle);
+
+										document
+												.getElementById('list' + cardId)
+												.append(newCard);
+
+										var cardHtml = $('#list' + cardId)[0].innerHTML;
+										send('cardCreate', 'cardCreate',
+												'${sessionScope.id}',
+												'${sessionScope.b_num}', '0',
+												'0');
+										$('#addCardContainer' + cardId)
+												.toggle();
+										$('#addCardTitle' + cardId).val('');
+									});
 				}
 
 			}
@@ -885,7 +904,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			$('#cardReply').empty();
 			$('#commentArea').val('');
 			$.ajax({
@@ -896,88 +915,92 @@ body::-webkit-scrollbar-thumb {
 					l_num : l_num,
 					c_num : c_num
 				}
-			}).done(function(msg) {
-				console.log('msg: ' + msg);
-				var detail = JSON.parse(msg);
-	
-				var cardInfo = detail[0];
-	
-				var cardReply = detail[1];
-				//hs
-				var cardLink = detail[2];
-				// console.log('cardLink=' + cardLink[0]);
-	
-				handleDesc(0); // description textarea 숨기기
-				// console.log('detail: '+detail);
-				var content = cardInfo.content;
-	
-				var label = cardInfo.label;
-				var labelName = cardInfo.labelname;
-				// console.log("view: " + labelName);
-	
-				var cardTitle = cardInfo.title;
-	
-				$('#card_title_view').text(cardTitle);
-	
-				$('#card_title_input').val(cardTitle);
-	
-				var dueDate = cardInfo.duedate;
-				$('#date').val(dueDate);
-	
-				if (null != dueDate) {
-	
-					var sday = "D-day";
-					var today = new Date();
-					var mday = new Date(dueDate);
-					var tmime = (mday.getTime() - today.getTime());
-					var itime = 24 * 60 * 60 * 1000;
-					var fdday = tmime / itime;
-					var dday = Math.floor(fdday) + 1;
-	
-					$('.nal_div').text("D-day  " + dueDate);
-					$('.nal2_div').text("D-day 까지 " + dday + " 일 남았습니다.");
-				} else {
-					$('.nal_div').text('');
-					$('.nal2_div').text('');
-				}
-	
-				labelShow(label);
-				labelNameShow(labelName);
-	
-				if (null != content) {
-					$('.content_div').html(content);
-				} else {
-					$('.content_div').text('');
-				}
-	
-				$.each(cardReply, function(i) {
-	
-					createReplyDiv(cardReply[i].seq, cardReply[i].content,
-							cardReply[i].m_id);
-	
-				});
-	
-				//hs
-				$('#attachLink').children().empty();
-				$.each(cardLink, function(i) {
-					var node = document.createElement('div');
-	
-					var textNode = document
-							.createTextNode(cardLink[i].content);
-					var aTag = document.createElement('a');
-					aTag.href = cardLink[i].content;
-					aTag.appendChild(textNode);
-					aTag.target = '_blank';
-					node.appendChild(aTag);
-	
-					$('#attachLink').append(node);
-				});
-	
-				document.getElementById('listNum').value = l_num;
-				document.getElementById('cardNum').value = c_num;
-				dateC_num = c_num;
-				cardModal.style.display = "block";
-			});
+			}).done(
+					function(msg) {
+						console.log('msg: ' + msg);
+						var detail = JSON.parse(msg);
+
+						var cardInfo = detail[0];
+
+						var cardReply = detail[1];
+						//hs
+						var cardLink = detail[2];
+						// console.log('cardLink=' + cardLink[0]);
+
+						handleDesc(0); // description textarea 숨기기
+						// console.log('detail: '+detail);
+						var content = cardInfo.content;
+
+						var label = cardInfo.label;
+						var labelName = cardInfo.labelName;
+						// console.log("view: " + labelName);
+
+						var cardTitle = cardInfo.title;
+
+						$('#card_title_view').text(cardTitle);
+
+						$('#card_title_input').val(cardTitle);
+
+						var dueDate = cardInfo.duedate;
+						$('#date').val(dueDate);
+
+						if (null != dueDate) {
+
+							var sday = "D-day";
+							var today = new Date();
+							var mday = new Date(dueDate);
+							var tmime = (mday.getTime() - today.getTime());
+							var itime = 24 * 60 * 60 * 1000;
+							var fdday = tmime / itime;
+							var dday = Math.floor(fdday) + 1;
+
+							$('.nal_div').text("D-day  " + dueDate);
+							$('.nal2_div').text(
+									"D-day 까지 " + dday + " 일 남았습니다.");
+						} else {
+							$('.nal_div').text('');
+							$('.nal2_div').text('');
+						}
+
+						labelShow(label);
+						labelNameShow(labelName);
+
+						console.log('labelName: ' + labelName);
+
+						if (null != content) {
+							$('.content_div').html(content);
+						} else {
+							$('.content_div').text('');
+						}
+
+						$.each(cardReply, function(i) {
+
+							createReplyDiv(cardReply[i].seq,
+									cardReply[i].content, cardReply[i].m_id);
+
+						});
+
+						//hs
+						$('#attachLink').children().empty();
+						$.each(cardLink, function(i) {
+							var node = document.createElement('div');
+
+							var textNode = document
+									.createTextNode(cardLink[i].content);
+							var aTag = document.createElement('a');
+							aTag.href = cardLink[i].content;
+							aTag.appendChild(textNode);
+							aTag.target = '_blank';
+							node.appendChild(aTag);
+
+							$('#attachLink').append(node);
+						});
+
+						document.getElementById('listNum').value = l_num;
+						document.getElementById('cardNum').value = c_num;
+						dateC_num = c_num;
+						cardModal.style.display = "block";
+					});
 		}
 	}
 
@@ -986,13 +1009,13 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			if (null == label) {
 				label = "0,0,0,0,0,0,0";
 			}
-	
+
 			var labelArr = label.split(',');
-	
+
 			for (var i = 1; i <= 7; i++) {
 				$('#selected_label' + i).hide();
 				if ('0' != labelArr[i - 1]) {
@@ -1009,9 +1032,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			var labelWidth = 0;
-	
+
 			// 		console.log(labelName);
 			if (null == labelName) {
 				labelName = ",,,,,,";
@@ -1038,9 +1061,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			var content = $('#commentArea')[0].value;
-	
+
 			if ('' == content) {
 				alert('댓글을 입력하세요');
 			} else {
@@ -1048,21 +1071,22 @@ body::-webkit-scrollbar-thumb {
 					method : 'post',
 					url : '/main/addCardReply',
 					data : {
-	
+
 						c_key : $('#cardNum')[0].value,
 						m_id : '${sessionScope.id}',
 						content : content
 					}
-				}).done(function(msg) {
-	
-					var replyInfo = JSON.parse(msg);
+				}).done(
+						function(msg) {
 
-					createReplyDiv(replyInfo.seq, replyInfo.content,
-							replyInfo.m_id);
+							var replyInfo = JSON.parse(msg);
 
-					$('#commentArea').val('');
+							createReplyDiv(replyInfo.seq, replyInfo.content,
+									replyInfo.m_id);
 
-				});
+							$('#commentArea').val('');
+
+						});
 			}
 		}
 	}
@@ -1072,9 +1096,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			$('.content_textarea').val('');
-		
+
 			if (num == 1) {
 				$('.content_tag').hide();
 				$('.content_area').show();
@@ -1091,11 +1115,11 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			$('.content_tag').show();
 			$('.content_div').show();
 			$('.content_area').hide();
-	
+
 			var content = $('.content_textarea').val();
 			$.ajax({
 				method : 'post',
@@ -1227,9 +1251,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			var newReply = $('#input_update' + getSeq).val();
-	
+
 			$.ajax({
 				method : 'post',
 				url : '/main/updateCardReply',
@@ -1238,17 +1262,18 @@ body::-webkit-scrollbar-thumb {
 					seq : getSeq,
 					content : newReply
 				}
-			}).done(function(msg) {
-				var replyInfo = JSON.parse(msg);
+			}).done(
+					function(msg) {
+						var replyInfo = JSON.parse(msg);
 
-				$('#cardReply').empty();
+						$('#cardReply').empty();
 
-				$.each(replyInfo, function(i) {
-					createReplyDiv(replyInfo[i].seq, replyInfo[i].content,
-							replyInfo[i].m_id);
+						$.each(replyInfo, function(i) {
+							createReplyDiv(replyInfo[i].seq,
+									replyInfo[i].content, replyInfo[i].m_id);
 
-				});
-			});
+						});
+					});
 		}
 	}
 
@@ -1257,7 +1282,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			if ('1' == action) {
 				$('#input_cancle_div' + getSeq).show();
 				$('#update_delete' + getSeq).hide();
@@ -1273,9 +1298,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			var result = confirm('댓글을 삭제 하시겠습니까?');
-	
+
 			if (result) {
 				$.ajax({
 					method : 'post',
@@ -1285,19 +1310,22 @@ body::-webkit-scrollbar-thumb {
 						seq : getSeq,
 						m_id : '${sessionScope.id}'
 					}
-				}).done(function(msg) {
-					var replyInfo = JSON.parse(msg);
+				}).done(
+						function(msg) {
+							var replyInfo = JSON.parse(msg);
 
-					$('#cardReply').empty();
+							$('#cardReply').empty();
 
-					console.log(replyInfo);
+							console.log(replyInfo);
 
-					$.each(replyInfo, function(i) {
-						createReplyDiv(replyInfo[i].seq,
-								replyInfo[i].content, replyInfo[i].m_id);
+							$.each(replyInfo,
+									function(i) {
+										createReplyDiv(replyInfo[i].seq,
+												replyInfo[i].content,
+												replyInfo[i].m_id);
 
-					});
-				});
+									});
+						});
 			}
 		}
 	}
@@ -1315,7 +1343,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			$.ajax({
 				method : 'post',
 				url : '/main/selectHistory',
@@ -1323,16 +1351,17 @@ body::-webkit-scrollbar-thumb {
 					b_num : b_num,
 					id : '${sessionScope.id}'
 				}
-			}).done(function(msg) {
-				var history = JSON.parse(msg);
-				var msg = '';
-				for (i = 0; i < history.length; i++) {
-					msg += '<p class="history">' + history[i].content + ' '
-							+ history[i].regdate + '</p>'
-					$('#selectHistory').html(msg);
-				}
+			}).done(
+					function(msg) {
+						var history = JSON.parse(msg);
+						var msg = '';
+						for (i = 0; i < history.length; i++) {
+							msg += '<p class="history">' + history[i].content
+									+ ' ' + history[i].regdate + '</p>'
+							$('#selectHistory').html(msg);
+						}
 
-			});
+					});
 		}
 	}
 	function updateListTitle(id, choice) {
@@ -1340,14 +1369,14 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			if (1 == choice) {
 				$('#list_title' + id).hide();
 				$('#up_list_title' + id).show();
 				$('#up_title_input' + id).select();
 			} else if (2 == choice) {
 				var title = $('#up_title_input' + id).val();
-		
+
 				$.ajax({
 					url : '/main/listTitleUpdate',
 					method : 'post',
@@ -1356,7 +1385,7 @@ body::-webkit-scrollbar-thumb {
 						l_num : id,
 						title : title
 					}
-		
+
 				}).done(function(msg) {
 					var result = JSON.parse(msg);
 					if ('success' == result) {
@@ -1480,7 +1509,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			$.ajax({
 				url : '/main/searchList',
 				method : 'post',
@@ -1488,30 +1517,30 @@ body::-webkit-scrollbar-thumb {
 					b_num : b_num
 				}
 			}).done(function(msg) {
-	
+
 				var listArr = JSON.parse(msg);
 				$.each(listArr, function(i) {
-	
+
 					var l_num = listArr[i].l_num;
 					var id = l_num;
 					//nhs
 					var l_title = listArr[i].title;
-	
+
 					listView(id, l_title, l_num);
-	
+
 					/*
 					cardSearch >> 데이터베이스에 있는 해당리스트의 카드들을 불러온다.
 					 */
 					cardSearch(b_num, l_num, id);
-	
+
 				});
-	
+
 				numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
-	
+
 				// 			console.log('length_onload: ' + numOfList);
-	
+
 				setWidthOnload(numOfList); // Onload 시 전체 width 설정
-	
+
 			});
 		}
 	}
@@ -1521,7 +1550,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			$.ajax({
 				method : 'post',
 				url : '/main/selectCardDetail',
@@ -1530,30 +1559,31 @@ body::-webkit-scrollbar-thumb {
 					l_num : l_num,
 					c_num : c_num
 				}
-			}).done(function(msg) {
-	
-				var detail = JSON.parse(msg);
-				var cardInfo = detail[0];
-				var cardReply = detail[1];
-	
-				var label = cardInfo.label;
-	
-				if (label == null) {
-					label = "0,0,0,0,0,0,0";
-				}
-	
-				var labelArr = label.split(',');
-	
-				for (var i = 1; i <= 7; i++) {
-					if ('0' != labelArr[i - 1]) {
-						$('#labelDiv' + c_num + '_' + i).css(
-								'background-color',
-								rgb2hex($('#label' + i).css(
-										"background-color")));
-						$('#labelDiv' + c_num + '_' + i).show();
-					}
-				}
-			});
+			}).done(
+					function(msg) {
+
+						var detail = JSON.parse(msg);
+						var cardInfo = detail[0];
+						var cardReply = detail[1];
+
+						var label = cardInfo.label;
+
+						if (label == null) {
+							label = "0,0,0,0,0,0,0";
+						}
+
+						var labelArr = label.split(',');
+
+						for (var i = 1; i <= 7; i++) {
+							if ('0' != labelArr[i - 1]) {
+								$('#labelDiv' + c_num + '_' + i).css(
+										'background-color',
+										rgb2hex($('#label' + i).css(
+												"background-color")));
+								$('#labelDiv' + c_num + '_' + i).show();
+							}
+						}
+					});
 		}
 	}
 
@@ -1562,7 +1592,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			$.ajax({
 				url : '/main/searchCard',
 				method : 'post',
@@ -1570,103 +1600,121 @@ body::-webkit-scrollbar-thumb {
 					b_num : b_num,
 					l_num : l_num
 				}
-			}).done(function(msg) {
-				var cardArr = JSON.parse(msg);
-	
-				$.each(cardArr, function(i) {
-					var cardDiv = document.createElement('div');
-					var c_num = cardArr[i].c_num;
-	
-					cardDiv.id = c_num;
-					cardDiv.className = 'list-card';
-					cardDiv.onclick = function() {
-						cardView(b_num, l_num, c_num);
-					};
-	
-					labelSet(b_num, l_num, c_num);
-					
-					var labelArea = document.createElement('div');
-					labelArea.className = 'labelDiv';
-	
-					// 카드 내부의 label div 생성!!!
-					for (var j = 1; j <= 7; j++) {
-						var labelDiv = document.createElement('div');
-						labelDiv.id = 'labelDiv' + c_num + '_' + j;
-						labelArea.append(labelDiv);
-					}
-					var cardTitle = document.createElement('div');
-					cardTitle.id = 'cardTitle' + c_num;
-					cardTitle.className = 'cardTitle';
-	
-					var createCardText = document.createTextNode(cardArr[i].title);
-	
-					cardTitle.appendChild(createCardText);
-	
-					cardDiv.append(labelArea);
-					cardDiv.append(cardTitle);
-	
-					$('#list' + id).append(cardDiv);
-	
-				});
-				listSortable(id);
-	
-			});
+			}).done(
+					function(msg) {
+						var cardArr = JSON.parse(msg);
+
+						$.each(cardArr, function(i) {
+							var cardDiv = document.createElement('div');
+							var c_num = cardArr[i].c_num;
+
+							cardDiv.id = c_num;
+							cardDiv.className = 'list-card';
+							cardDiv.onclick = function() {
+								cardView(b_num, l_num, c_num);
+							};
+
+							labelSet(b_num, l_num, c_num);
+
+							var labelArea = document.createElement('div');
+							labelArea.className = 'labelDiv';
+
+							// 카드 내부의 label div 생성!!!
+							for (var j = 1; j <= 7; j++) {
+								var labelDiv = document.createElement('div');
+								labelDiv.id = 'labelDiv' + c_num + '_' + j;
+								labelArea.append(labelDiv);
+							}
+							var cardTitle = document.createElement('div');
+							cardTitle.id = 'cardTitle' + c_num;
+							cardTitle.className = 'cardTitle';
+
+							var createCardText = document
+									.createTextNode(cardArr[i].title);
+
+							cardTitle.appendChild(createCardText);
+
+							cardDiv.append(labelArea);
+							cardDiv.append(cardTitle);
+
+							$('#list' + id).append(cardDiv);
+
+						});
+						listSortable(id);
+
+					});
 		}
 	}
 	function listSortable(id) {
-			
-		$('#list' + id).sortable({
-			connectWith : '.list',
-			update : function(ev, ui) {
-				
-			if (sessionChk()) {
-				alert('로그아웃되었습니다.');
-				location.href = '/';
-			} else {
-					var result1 = $('#list' + id).sortable('toArray');
-					var parentId = ev.toElement.parentElement.id;
-					var cardArr = '';
-					
-					
-					$.each(ev.target.childNodes, function(i){
-						
-						if(parentId==ev.target.childNodes[i].id){
-							console.log(id);
-							console.log(parentId);
-							console.log(ev.target.childNodes[i].id);
-					
-							for (var i = 0; i < result1.length; i++) {
-								if (i < (result1.length - 1)) {
-									cardArr += result1[i] + ',';
+
+		$('#list' + id)
+				.sortable(
+						{
+							connectWith : '.list',
+							update : function(ev, ui) {
+
+								if (sessionChk()) {
+									alert('로그아웃되었습니다.');
+									location.href = '/';
 								} else {
-									cardArr += result1[i];
+									var result1 = $('#list' + id).sortable(
+											'toArray');
+									var parentId = ev.toElement.parentElement.id;
+									var cardArr = '';
+
+									$
+											.each(
+													ev.target.childNodes,
+													function(i) {
+
+														if (parentId == ev.target.childNodes[i].id) {
+															console.log(id);
+															console
+																	.log(parentId);
+															console
+																	.log(ev.target.childNodes[i].id);
+
+															for (var i = 0; i < result1.length; i++) {
+																if (i < (result1.length - 1)) {
+																	cardArr += result1[i]
+																			+ ',';
+																} else {
+																	cardArr += result1[i];
+																}
+
+															}
+															$
+																	.ajax(
+																			{
+																				url : '/main/moveCard',
+																				method : 'post',
+																				data : {
+
+																					b_num : b_num,
+																					l_num : id,
+																					c_num : parentId,
+																					msg : cardArr,
+																					length : result1.length
+																				}
+
+																			})
+																	.done(
+																			function(
+																					msg) {
+
+																				send(
+																						'cardMove',
+																						'cardMove',
+																						'${sessionScope.id}',
+																						'${sessionScope.b_num}',
+																						'0',
+																						'0');
+																			});
+														}
+													});
 								}
-			
 							}
-							$.ajax({
-								url : '/main/moveCard',
-								method : 'post',
-								data : {
-			
-									b_num : b_num,
-									l_num : id,
-									c_num : parentId,
-									msg : cardArr,
-									length : result1.length
-								}
-			
-							}).done(function(msg) {
-								
-								send('cardMove', 'cardMove',
-										'${sessionScope.id}',
-										'${sessionScope.b_num}', '0',
-										'0');
-							});
-						}
-					});
-				}
-			}
-		});
+						});
 	}
 
 	function openChat() {
@@ -1674,7 +1722,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			chatOnOff = true;
 			viewMsg();
 			document.getElementById("mySidenavChat").style.width = "600px";
@@ -1687,7 +1735,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			chatOnOff = false;
 			document.getElementById("mySidenavChat").style.width = "0";
 		}
@@ -1698,7 +1746,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			$.ajax({
 				url : '/chat/ucConnection',
 				method : 'post',
@@ -1706,12 +1754,13 @@ body::-webkit-scrollbar-thumb {
 				data : {
 					b_num : '${sessionScope.b_num}'
 				}
-	
-			}).done(function(msg) {
-				send('${sessionScope.id}', 'unConnec',
-						'${sessionScope.id}', '${sessionScope.b_num}', '0',
-						'0');
-			});
+
+			}).done(
+					function(msg) {
+						send('${sessionScope.id}', 'unConnec',
+								'${sessionScope.id}', '${sessionScope.b_num}',
+								'0', '0');
+					});
 		}
 	}
 
@@ -1758,50 +1807,66 @@ body::-webkit-scrollbar-thumb {
 		$('#overlay_t, .close').click(function() {
 			$('#popup_layer, #overlay_t').hide();
 		});
-		$('#linkSubmit').click(function() {
-			if (sessionChk()) {
-				alert('로그아웃되었습니다.');
-				location.href = '/';
-			} else {
-				
-				if ($('#insertLinkInput').val()) {
-					
-					$.ajax({
-						method : 'post',
-						url : '/main/insertLink',
-						data : {
-							c_key : $('#cardNum')[0].value,
-							content : $('#insertLinkInput').val()
-						}
-					}).done(function(msg) {
-						$('#popup_layer, #overlay_t').hide();
-						var insertLink = JSON.parse(msg);
-	
-						var node = document.createElement('div');
-						var textNode = document.createTextNode(insertLink.content);
-						var aTag = document.createElement('a');
-						aTag.href = insertLink.content;
-						aTag.appendChild(textNode);
-						aTag.target = '_blank';
-						node.appendChild(aTag);
-	
-						$('#attachLink').prepend(node);
-	
-					});
-				} else {
-					$('#popup_layer, #overlay_t').hide();
-				}
-			}
-		});
+		$('#linkSubmit')
+				.click(
+						function() {
+							if (sessionChk()) {
+								alert('로그아웃되었습니다.');
+								location.href = '/';
+							} else {
+
+								if ($('#insertLinkInput').val()) {
+
+									$
+											.ajax(
+													{
+														method : 'post',
+														url : '/main/insertLink',
+														data : {
+															c_key : $('#cardNum')[0].value,
+															content : $(
+																	'#insertLinkInput')
+																	.val()
+														}
+													})
+											.done(
+													function(msg) {
+														$(
+																'#popup_layer, #overlay_t')
+																.hide();
+														var insertLink = JSON
+																.parse(msg);
+
+														var node = document
+																.createElement('div');
+														var textNode = document
+																.createTextNode(insertLink.content);
+														var aTag = document
+																.createElement('a');
+														aTag.href = insertLink.content;
+														aTag
+																.appendChild(textNode);
+														aTag.target = '_blank';
+														node.appendChild(aTag);
+
+														$('#attachLink')
+																.prepend(node);
+
+													});
+								} else {
+									$('#popup_layer, #overlay_t').hide();
+								}
+							}
+						});
 
 		$('#deleteCard').click(function() {
 			if (sessionChk()) {
 				alert('로그아웃되었습니다.');
 				location.href = '/';
 			} else {
-					
+
 				var result = confirm('카드를 삭제 하시겠습니까?');
-	
+
 				if (result) { //yes 
 					$.ajax({
 						method : 'post',
@@ -1816,14 +1881,14 @@ body::-webkit-scrollbar-thumb {
 						var listArr = JSON.parse(msg);
 						$('#mainList').children().remove();
 						$.each(listArr, function(i) {
-	
+
 							var l_num = listArr[i].l_num;
 							var id = l_num;
 							var l_title = listArr[i].title;
-	
+
 							listView(id, l_title, l_num);
 							cardSearch(b_num, l_num, id);
-	
+
 						});
 						numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
 						setWidthOnload(numOfList); // Onload 시 전체 width 설정
@@ -1831,7 +1896,7 @@ body::-webkit-scrollbar-thumb {
 				}
 			}
 		});
-		
+
 		$("#sch_main").keydown(function(e) {
 
 			if (e.keyCode == 13) {
@@ -1846,9 +1911,9 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			var result = confirm('리스트를 삭제 하시겠습니까?');
-	
+
 			if (result) {
 				$.ajax({
 					method : 'post',
@@ -1863,14 +1928,14 @@ body::-webkit-scrollbar-thumb {
 					var listArr = JSON.parse(msg);
 					$('#mainList').children().remove();
 					$.each(listArr, function(i) {
-	
+
 						var l_num = listArr[i].l_num;
 						var id = l_num;
 						var l_title = listArr[i].title;
-	
+
 						listView(id, l_title, l_num);
 						cardSearch(b_num, l_num, id);
-	
+
 					});
 					numOfList = $('.listBorder').length; // 전체 viewList의 갯수 획득
 					setWidthOnload(numOfList); // Onload 시 전체 width 설정
@@ -1925,11 +1990,11 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			var inputLabelName = $('#label_name').val();
-	
+
 			var labelWidth = byteCalc(inputLabelName);
-	
+
 			if (labelWidth > 20) {
 				alert('라벨 이름은 영문 20자, 한글 10자를 넘을 수 없습니다');
 				$('#label_name').val('');
@@ -1938,46 +2003,43 @@ body::-webkit-scrollbar-thumb {
 					method : 'post',
 					url : '/main/selectLabelName',
 					data : {
-						c_key : $('#cardNum')[0].value
+						b_num: b_num
 					}
 				}).done(function(msg) {
-					var detail = JSON.parse(msg);
-					console.log(detail);
-					var labelName = detail.labelName;
-	
-					//	 			alert(labelWidth);
-	
+					var labelName = msg;
+
 					if (labelWidth <= 4)
 						labelWidth = 4;
 					else if (labelWidth >= 18)
 						labelWidth = 18;
-	
+
 					$('#selected_label' + num).css('width', labelWidth * 10);
-	
+
 					if ('' == inputLabelName) {
 						$('#selected_label' + num).val(" ");
 						$('#selected_label' + num).append("&nbsp;");
-	
+
 						$('#label_name' + num).text(' ');
 						$('#label_name' + num).append("&nbsp;");
 					} else {
 						$('#selected_label' + num).val(inputLabelName);
 						$('#label_name' + num).text(inputLabelName);
 					}
-	
+
 					console.log("asdfasfd: " + inputLabelName);
-	
+					console.log("getLabelNameArr: " + labelName);
+
 					$('#label_name').text('');
-	
+
 					var labelNameArr = makeLabelNameArr(labelName, num);
-	
+
 					var tempArr = labelNameArr.toString();
-	
+
 					if (sessionChk()) {
 						alert('로그아웃되었습니다.');
 						location.href = '/';
 					} else {
-							
+
 						$.ajax({
 							method : 'post',
 							url : '/main/updateLabelName',
@@ -1987,7 +2049,7 @@ body::-webkit-scrollbar-thumb {
 							}
 						}).done(function(msg) {
 							var result = JSON.parse(msg);
-		
+
 						});
 					}
 				});
@@ -2001,7 +2063,8 @@ body::-webkit-scrollbar-thumb {
 		labelNameArr = labelName.split(',');
 		labelNameArr[num - 1] = inputLabelName;
 
-		// 		console.log('make: '+labelNameArr);
+		console.log('labelNameInside: '+labelName);
+		console.log('make: '+labelNameArr);
 
 		return labelNameArr;
 	}
@@ -2011,54 +2074,55 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
-			var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
+
+			var backgroundColor = rgb2hex($('#label' + num).css(
+					"background-color"));
 			$('#selected_label' + num).css('background-color', backgroundColor);
-		
+
 			var isNone = $('#selected_label' + num).css('display');
-		
+
 			$.ajax({
 				method : 'post',
 				url : '/main/selectLabel',
 				data : {
 					c_key : $('#cardNum')[0].value
 				}
-			}).done(function(msg) {
-				var detail = JSON.parse(msg);
-	
-				var label = detail.label;
-				console.log(detail);
-	
-				var c_num = $('#cardNum')[0].value;
-	
-				var labelArr;
-				$('#labelDiv' + c_num + '_' + num).css('background-color',
-						backgroundColor);
-				if ('none' != isNone) {
-					labelArr = makeLabelArr(label, num, 'del');
-					$('#selected_label' + num).hide();
-					$('#labelDiv' + c_num + '_' + num).hide();
-				} else {
-					labelArr = makeLabelArr(label, num, 'ins');
-					$('#selected_label' + num).show();
-					$('#labelDiv' + c_num + '_' + num).show();
-				}
-	
-				var tempArr = labelArr.toString();
-	
-				
-				$.ajax({
-					method : 'post',
-					url : '/main/updateLabel',
-					data : {
-						c_key : $('#cardNum')[0].value,
-						label : tempArr
-					}
-				}).done(function(msg) {
-	
-				});
-	
-			});
+			}).done(
+					function(msg) {
+						var detail = JSON.parse(msg);
+
+						var label = detail.label;
+						console.log(detail);
+
+						var c_num = $('#cardNum')[0].value;
+
+						var labelArr;
+						$('#labelDiv' + c_num + '_' + num).css(
+								'background-color', backgroundColor);
+						if ('none' != isNone) {
+							labelArr = makeLabelArr(label, num, 'del');
+							$('#selected_label' + num).hide();
+							$('#labelDiv' + c_num + '_' + num).hide();
+						} else {
+							labelArr = makeLabelArr(label, num, 'ins');
+							$('#selected_label' + num).show();
+							$('#labelDiv' + c_num + '_' + num).show();
+						}
+
+						var tempArr = labelArr.toString();
+
+						$.ajax({
+							method : 'post',
+							url : '/main/updateLabel',
+							data : {
+								c_key : $('#cardNum')[0].value,
+								label : tempArr
+							}
+						}).done(function(msg) {
+
+						});
+
+					});
 		}
 	}
 
@@ -2114,7 +2178,7 @@ body::-webkit-scrollbar-thumb {
 
 	$(function() {
 		$("#wow").datepicker({
-				
+
 			changeMonth : true,
 			closeText : 'close',
 			dateFormat : 'yy-mm-dd',
@@ -2207,14 +2271,14 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
+
 			if (1 == choice) {
 				$('#board_Title').hide();
 				$('#up_board_Title').show();
 				$('#up_board_input').select();
 			} else if (2 == choice) {
 				var title = $('#up_board_input').val();
-	
+
 				$.ajax({
 					url : '/main/boardTitleUpdate',
 					method : 'post',
@@ -2222,7 +2286,7 @@ body::-webkit-scrollbar-thumb {
 						b_num : b_num,
 						title : title
 					}
-	
+
 				}).done(function(msg) {
 					var result = JSON.parse(msg);
 					if ('success' == result) {
@@ -2233,9 +2297,9 @@ body::-webkit-scrollbar-thumb {
 					} else if ('fail' == result) {
 						alert('수정 실패');
 					}
-	
+
 				});
-	
+
 			}
 		}
 	}
@@ -2244,7 +2308,7 @@ body::-webkit-scrollbar-thumb {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-				
+
 			//카드 타이틀
 			if (1 == choice) {
 				$('#card_title_view').hide();
@@ -2254,7 +2318,7 @@ body::-webkit-scrollbar-thumb {
 				var title = $('#card_title_input').val();
 				var l_num = $('#listNum').val();
 				var c_num = $('#cardNum').val();
-	
+
 				$.ajax({
 					url : '/main/cardTitleUpdate',
 					method : 'post',
@@ -2276,111 +2340,159 @@ body::-webkit-scrollbar-thumb {
 						alert('수정 실패');
 					}
 				});
-	
+
 				$('#card_title_update').hide();
 				$('#card_title_view').show();
 				$('#card_title_view').select();
 			}
 		}
 	}
-	
-	function beforeMsg(){
+
+	function beforeMsg() {
 		if (sessionChk()) {
 			alert('로그아웃되었습니다.');
 			location.href = '/';
 		} else {
-			
-			$("#display${sessionScope.b_num}").scroll(function() {
-				var dis = $("#display${sessionScope.b_num}");
-				if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
-					var beHeight = dis[0].scrollHeight - dis.scrollTop(); 
-					console.log(dis[0].scrollHeight - dis.scrollTop());
-					$.ajax({
-						method : 'post',
-						url : '/chat/beforeMsg',
-						data : {
-							b_num : '${sessionScope.b_num}',
-							userId : '${sessionScope.id}',
-							seq : firstSeq
-						}
-					}).done(function(msg) {
-						var data = JSON.parse(msg);
-						$.each(data, function(i) {
-							var regdate = data[i].date;
-							var msg = data[i].content;
-							var id = data[i].m_id;
-							firstSeq = data[i].firstSeq;
-							
-							if (id == '${sessionScope.id}') {
-	
-								var div = document.createElement('div');
-								div.className = 'myMsg';
-	
-								var content = document.createElement('pre');
-								content.className = "myContent";
-	
-								var date = document.createElement('div');
-								date.className = "myDate";
-	
-								var b = document.createElement('div');
-								b.className = 'b';
-	
-								var contentText = document.createTextNode(msg);
-								var dateText = document.createTextNode(regdate);
-	
-								content.appendChild(contentText);
-	
-								date.appendChild(dateText);
-	
-								div.append(b);
-								div.append(content);
-								div.append(date);
-	
-							} else {
-								var box = document.createElement('div');
-								box.className = 'box';
-	
-								var div = document.createElement('div');
-								div.className = 'memberMsg';
-	
-								var content = document.createElement('pre');
-								content.className = "memberContent";
-	
-								var writer = document.createElement('div');
-								writer.className = "memberWriter";
-	
-								var date = document.createElement('div');
-								date.className = "memberDate";
-	
-								var b = document.createElement('div');
-								b.className = 'm';
-	
-								var contentText = document.createTextNode(msg);
-								var writerText = document.createTextNode(id);
-								var dateText = document.createTextNode(regdate);
-	
-								content.appendChild(contentText);
-								writer.appendChild(writerText);
-								date.appendChild(dateText);
-	
-								box.append(writer);
-								box.append(b);
-								box.append(content);
-								box.append(date);
-	
-								div.append(box);
-								
-	
-							}
-							$('#display${sessionScope.b_num}').prepend(div);
-							
-						}); 
-						
-						$('#display${sessionScope.b_num}').scrollTop((dis[0].scrollHeight - dis.scrollTop())-beHeight);
-					});
-				}
-	
-			});
+
+			$("#display${sessionScope.b_num}")
+					.scroll(
+							function() {
+								var dis = $("#display${sessionScope.b_num}");
+								if (dis[0].scrollHeight - dis.scrollTop() == dis[0].scrollHeight) {
+									var beHeight = dis[0].scrollHeight
+											- dis.scrollTop();
+									console.log(dis[0].scrollHeight
+											- dis.scrollTop());
+									$
+											.ajax(
+													{
+														method : 'post',
+														url : '/chat/beforeMsg',
+														data : {
+															b_num : '${sessionScope.b_num}',
+															userId : '${sessionScope.id}',
+															seq : firstSeq
+														}
+													})
+											.done(
+													function(msg) {
+														var data = JSON
+																.parse(msg);
+														$
+																.each(
+																		data,
+																		function(
+																				i) {
+																			var regdate = data[i].date;
+																			var msg = data[i].content;
+																			var id = data[i].m_id;
+																			firstSeq = data[i].firstSeq;
+
+																			if (id == '${sessionScope.id}') {
+
+																				var div = document
+																						.createElement('div');
+																				div.className = 'myMsg';
+
+																				var content = document
+																						.createElement('pre');
+																				content.className = "myContent";
+
+																				var date = document
+																						.createElement('div');
+																				date.className = "myDate";
+
+																				var b = document
+																						.createElement('div');
+																				b.className = 'b';
+
+																				var contentText = document
+																						.createTextNode(msg);
+																				var dateText = document
+																						.createTextNode(regdate);
+
+																				content
+																						.appendChild(contentText);
+
+																				date
+																						.appendChild(dateText);
+
+																				div
+																						.append(b);
+																				div
+																						.append(content);
+																				div
+																						.append(date);
+
+																			} else {
+																				var box = document
+																						.createElement('div');
+																				box.className = 'box';
+
+																				var div = document
+																						.createElement('div');
+																				div.className = 'memberMsg';
+
+																				var content = document
+																						.createElement('pre');
+																				content.className = "memberContent";
+
+																				var writer = document
+																						.createElement('div');
+																				writer.className = "memberWriter";
+
+																				var date = document
+																						.createElement('div');
+																				date.className = "memberDate";
+
+																				var b = document
+																						.createElement('div');
+																				b.className = 'm';
+
+																				var contentText = document
+																						.createTextNode(msg);
+																				var writerText = document
+																						.createTextNode(id);
+																				var dateText = document
+																						.createTextNode(regdate);
+
+																				content
+																						.appendChild(contentText);
+																				writer
+																						.appendChild(writerText);
+																				date
+																						.appendChild(dateText);
+
+																				box
+																						.append(writer);
+																				box
+																						.append(b);
+																				box
+																						.append(content);
+																				box
+																						.append(date);
+
+																				div
+																						.append(box);
+
+																			}
+																			$(
+																					'#display${sessionScope.b_num}')
+																					.prepend(
+																							div);
+
+																		});
+
+														$(
+																'#display${sessionScope.b_num}')
+																.scrollTop(
+																		(dis[0].scrollHeight - dis
+																				.scrollTop())
+																				- beHeight);
+													});
+								}
+
+							});
 		}
 	}
 	// 	function checkEnter() {
@@ -2406,19 +2518,25 @@ body::-webkit-scrollbar-thumb {
 
 	<header id="header" class="clearfix">
 
-		<a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a> <a href="#" onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
+		<a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a>
+		<a href="#" onclick="logout()" class="btn_logout"> <span>LOGOUT</span></a>
 		<div id="sch_main_wrap">
 			<fieldset class="sch_field">
 				<input type="text" id="sch_main">
 			</fieldset>
-			<a href="#" onclick="searchFilter();" id="btn_search"><span class="btn_ico_sch"></span></a>
+			<a href="#" onclick="searchFilter();" id="btn_search"><span
+				class="btn_ico_sch"></span></a>
 		</div>
-		<a href="/main/board"><h1 style="top: -10px;" onclick="unConnect();">PROJECT 321</h1></a> <a href="#" class="js-toggle-right-slidebar">☰</a>
+		<a href="/main/board"><h1 style="top: -10px;"
+				onclick="unConnect();">PROJECT 321</h1></a> <a href="#"
+			class="js-toggle-right-slidebar">☰</a>
 	</header>
 
-	<div style="position: fixed; height: 50px; margin-top: 50px; color: #e4e2e2; font-size: 40px;">
+	<div
+		style="position: fixed; height: 50px; margin-top: 50px; color: #e4e2e2; font-size: 40px;">
 		<div id="board_Title" onclick="updateBoardTitle(1)">${title}</div>
-		<div id="up_board_Title" onclick="updateBoardTitle(2)" style="display: none;">
+		<div id="up_board_Title" onclick="updateBoardTitle(2)"
+			style="display: none;">
 			<input type="text" id="up_board_input" value="${title}">
 		</div>
 	</div>
@@ -2447,10 +2565,14 @@ body::-webkit-scrollbar-thumb {
 				<a class="menu-icon" href="#"><i class="icon-reorder"></i></a>
 				<ul class="side-menu">
 					<h2 class="title">Menu</h2>
-					<li class="link"><a href="#" class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
-					<li class="link" onclick="getHistory();"><a href="#" class="link_tag2" id="myBtn">History</a></li>
-					<li class="link"><a href="#" onclick="openChat();" class="link_tag3 js-close-right-slidebar">Chatting</a></li>
-					<li class="link"><a href="#" onclick="inviteMember()" class="link_tag5 js-close-right-slidebar">Members</a></li>
+					<li class="link"><a href="#"
+						class="link_tag1 js-close-right-slidebar" onclick="openFilter();">Filter</a></li>
+					<li class="link" onclick="getHistory();"><a href="#"
+						class="link_tag2" id="myBtn">History</a></li>
+					<li class="link"><a href="#" onclick="openChat();"
+						class="link_tag3 js-close-right-slidebar">Chatting</a></li>
+					<li class="link"><a href="#" onclick="inviteMember()"
+						class="link_tag5 js-close-right-slidebar">Members</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -2480,23 +2602,36 @@ body::-webkit-scrollbar-thumb {
 				<div id="cardView" class="cardView">
 					<div class="card-detail-main">
 
-						<input type="hidden" id="listNum"> <input type="hidden" id="cardNum">
+						<input type="hidden" id="listNum"> <input type="hidden"
+							id="cardNum">
 						<div id="card_title" style="font-size: 40px;">
 							<div id="card_title_view" onclick="updateCardTitle(1)"></div>
-							<div id="card_title_update" onclick="updateCardTitle(2)" style="display: none;">
+							<div id="card_title_update" onclick="updateCardTitle(2)"
+								style="display: none;">
 								<input type="text" id="card_title_input">
 							</div>
 
 						</div>
 						<div class="label_div">
-							<input id="selected_label1" type="button" onclick="label('1')" value="&nbsp;"> <input id="selected_label2" type="button" onclick="label('2')" value="&nbsp;"> <input id="selected_label3" type="button" onclick="label('3')" value="&nbsp;"> <input id="selected_label4" type="button" onclick="label('4')" value="&nbsp;"> <input id="selected_label5" type="button" onclick="label('5')" value="&nbsp;"> <input id="selected_label6" type="button" onclick="label('6')" value="&nbsp;"> <input id="selected_label7" type="button" onclick="label('7')" value="&nbsp;">
+							<input id="selected_label1" type="button" onclick="label('1')"
+								value="&nbsp;"> <input id="selected_label2"
+								type="button" onclick="label('2')" value="&nbsp;"> <input
+								id="selected_label3" type="button" onclick="label('3')"
+								value="&nbsp;"> <input id="selected_label4"
+								type="button" onclick="label('4')" value="&nbsp;"> <input
+								id="selected_label5" type="button" onclick="label('5')"
+								value="&nbsp;"> <input id="selected_label6"
+								type="button" onclick="label('6')" value="&nbsp;"> <input
+								id="selected_label7" type="button" onclick="label('7')"
+								value="&nbsp;">
 						</div>
 						<br>
 						<div class="nal_div"></div>
 						<div class="nal2_div"></div>
 						<br>
 						<div id="contentId">
-							<a href="#" class="	 glyphicon-pencil content_tag" onclick="handleDesc(1);">&nbsp;content...</a>
+							<a href="#" class="	 glyphicon-pencil content_tag"
+								onclick="handleDesc(1);">&nbsp;content...</a>
 							<!-- 					<div class="card-desc"> -->
 							<!-- 							<a href="#" class="	 glyphicon-pencil content_tag"	onclick="createDescriptionDiv();">&nbsp;description...</a> -->
 							<pre class="content_div"></pre>
@@ -2505,10 +2640,12 @@ body::-webkit-scrollbar-thumb {
 									<textarea class="content_textarea"></textarea>
 								</div>
 								<div>
-									<button value="SAVE" style="width: 40px; height: 30px;" onclick="sendDesc();">
+									<button value="SAVE" style="width: 40px; height: 30px;"
+										onclick="sendDesc();">
 										<img alt="send" src="/resources/images/btn_send.png">
 									</button>
-									<button value="X" style="width: 40px; height: 30px;" onclick="handleDesc(0);">
+									<button value="X" style="width: 40px; height: 30px;"
+										onclick="handleDesc(0);">
 										<img alt="send" src="/resources/images/btn_cancel.png">
 									</button>
 								</div>
@@ -2516,9 +2653,11 @@ body::-webkit-scrollbar-thumb {
 						</div>
 
 						<h3>Add Comment</h3>
-						<textarea id="commentArea" style="width: 100%; height: 100px;" required="required"></textarea>
+						<textarea id="commentArea" style="width: 100%; height: 100px;"
+							required="required"></textarea>
 
-						<input type="button" value="SAVE" onclick="comment();" id="btn_comment">
+						<input type="button" value="SAVE" onclick="comment();"
+							id="btn_comment">
 						<div id="attachLink"></div>
 						<div id="cardReply"></div>
 					</div>
@@ -2526,61 +2665,93 @@ body::-webkit-scrollbar-thumb {
 					<div class="card-detail-sidebar">
 						<button onclick="labelView();" class="btn-label-view dropdown">
 							<!-- 						<input type="button" onclick="labelView();" class="btn-label-view dropdown"> -->
-							<span class="btn_label_toggle"><img alt="label" src="/resources/images/btn_label.png" width="20px" height="20px" class="btn-label">&nbsp;Label</span>
+							<span class="btn_label_toggle"><img alt="label"
+								src="/resources/images/btn_label.png" width="20px" height="20px"
+								class="btn-label">&nbsp;Label</span>
 						</button>
 						<div class="submenu_hidden">
 							<ul class="submenu">
 								<span class="label_name">Labels</span>
-								<input type="text" id="label_name" placeholder=" Input label name...">
-								<li id="label1" onclick="label('1');">&nbsp; <span id="label_name1">&nbsp;</span>
+								<input type="text" id="label_name"
+									placeholder=" Input label name...">
+								<li id="label1" onclick="label('1');">&nbsp; <span
+									id="label_name1">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('1')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('1')">
 								</a>
-								<li id="label2" onclick="label('2');">&nbsp; <span id="label_name2">&nbsp;</span>
+								<li id="label2" onclick="label('2');">&nbsp; <span
+									id="label_name2">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('2')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('2')">
 								</a>
-								<li id="label3" onclick="label('3');">&nbsp; <span id="label_name3">&nbsp;</span>
+								<li id="label3" onclick="label('3');">&nbsp; <span
+									id="label_name3">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('3')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('3')">
 								</a>
-								<li id="label4" onclick="label('4');">&nbsp; <span id="label_name4">&nbsp;</span>
+								<li id="label4" onclick="label('4');">&nbsp; <span
+									id="label_name4">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('4')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('4')">
 								</a>
-								<li id="label5" onclick="label('5');">&nbsp; <span id="label_name5">&nbsp;</span>
+								<li id="label5" onclick="label('5');">&nbsp; <span
+									id="label_name5">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('5')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('5')">
 								</a>
-								<li id="label6" onclick="label('6');">&nbsp; <span id="label_name6">&nbsp;</span>
+								<li id="label6" onclick="label('6');">&nbsp; <span
+									id="label_name6">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('6')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('6')">
 								</a>
-								<li id="label7" onclick="label('7');">&nbsp; <span id="label_name7">&nbsp;</span>
+								<li id="label7" onclick="label('7');">&nbsp; <span
+									id="label_name7">&nbsp;</span>
 								</li>
-								<a href="#"> <img alt="label_setting" src="/resources/images/btn_label_setting.png" class="btn_label_setting" onclick="changeLabelName('7')">
+								<a href="#"> <img alt="label_setting"
+									src="/resources/images/btn_label_setting.png"
+									class="btn_label_setting" onclick="changeLabelName('7')">
 								</a>
 							</ul>
 						</div>
 
 						<br> <br>
 						<button id="insertLink">
-							<span><img alt="label" src="/resources/images/btn_attachment.png" width="20px" height="20px" class="btn-attachment">&nbsp;Attachment</span>
+							<span><img alt="label"
+								src="/resources/images/btn_attachment.png" width="20px"
+								height="20px" class="btn-attachment">&nbsp;Attachment</span>
 							<div id="overlay_t"></div>
 							<div id="popup_layer">
-								<input type="text" id="insertLinkInput" placeholder="attach link"> <input type="button" id="linkSubmit" class="close" value="save">
+								<input type="text" id="insertLinkInput"
+									placeholder="attach link"> <input type="button"
+									id="linkSubmit" class="close" value="save">
 
 							</div>
 						</button>
 						<br> <br>
 
 						<button id="deleteCard">
-							<span><img alt="label" src="/resources/images/btn_delete.png" width="20px" height="20px" class="btn-delete">&nbsp;Delete</span>
+							<span><img alt="label"
+								src="/resources/images/btn_delete.png" width="20px"
+								height="20px" class="btn-delete">&nbsp;Delete</span>
 						</button>
 						<br> <br>
 
 						<button id="calBtn" onclick="showCal()">
-							<span><img alt="label" src="/resources/images/calendar.jpg" width="25px" height="25px" class="btn-delete">&nbsp;Calendar</span>
+							<span><img alt="label"
+								src="/resources/images/calendar.jpg" width="25px" height="25px"
+								class="btn-delete">&nbsp;Calendar</span>
 						</button>
 						<div id="wow" style="display: none;"></div>
 						<br> <br>
@@ -2597,7 +2768,8 @@ body::-webkit-scrollbar-thumb {
 	</div>
 
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/slidebars.js"></script>
 <script src="/resources/js/scripts.js"></script>

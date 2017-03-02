@@ -204,16 +204,8 @@ public class MainController {
 		session.setAttribute("c_num", map.get("c_num"));
 
 		List list = memberService.selectCardDetail(map);
-
-		// for(int i=0; i<list.size(); i++) {
-		// Map getMap = (Map) list.get(i);
-		// }
-		//
-		// Iterator iterator = list.iterator();
-		// while (iterator.hasNext()) {
-		//
-		// list.get(iterator.next());
-		// }
+		
+		System.out.println("list: "+list);
 
 		return new Gson().toJson(list);
 	}
@@ -340,14 +332,14 @@ public class MainController {
 	public String selectLabelName(Locale locale, Model model, HttpSession session, HttpServletRequest request,
 			@RequestParam Map map) {
 		String str = memberService.selectLabelName(map);
+		
+		System.out.println("labelName: "+str);
+		
 		if (str == null) {
 			str = ",,,,,,";
 		}
-
-		JsonObject obj = new JsonObject();
-		obj.addProperty("labelName", str);
-
-		return new Gson().toJson(obj);
+		
+		return str;
 	}
 
 	@RequestMapping(value = "/updateLabel", method = { RequestMethod.POST,

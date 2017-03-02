@@ -260,8 +260,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectLabelName" resultType="String" parameterType="java.util.HashMap">
 		select labelName
-		from tb_card
-		where c_key = #{c_key}
+		from tb_labelname
+		where b_num = #{b_num}
 	</select>
 
 	<select id="updateLabel" resultType="java.util.HashMap" parameterType="java.util.HashMap">
@@ -271,11 +271,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="updateLabelName" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-		update tb_card tc, tb_board tb
-		set tc.labelName = #{labelName}
-		where tc.c_key = tb.c_num
-		and b_num = #{b_num};
+		update tb_labelname
+		set labelName = #{labelName}
+		where b_num = #{b_num};
 	</select>
+	
+<!-- 	<select id="insertLabelName" resultType="java.util.HashMap" parameterType="java.util.HashMap">> -->
+		
+<!-- 	</select> -->
 
 	<select id="memberConnection" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		update tb_member_connection

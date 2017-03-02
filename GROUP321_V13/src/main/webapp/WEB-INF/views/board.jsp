@@ -377,19 +377,7 @@ strong {
 	<!-- 상단바 -->
 	<header id="header" class="clearfix">
 		<a href="/main/board"><h1>PROJECT 321</h1></a> <a href="#" onclick="profile('${id}')" class="btn_board"><span>${id}</span></a> <a href="#" onclick="logout()" class="btn_logout"><span>LOGOUT</span></a>
-		<form action="#" method="post" id="sch_main_wrap">
-			<fieldset>
-				<input type="text" name="sch_main" id="sch_main">
-			</fieldset>
-			<a href="#"><span class="btn_ico_sch"></span></a>
-		</form>
 	</header>
-	<!-- 타이틀바 -->
-	<!-- <div class="title-bar">
-		<span class="title-main">Board</span>
-	</div> -->
-	<!-- 보드 -->
-
 
 	<div id="myBoard">
 		<h4 class="heading">
