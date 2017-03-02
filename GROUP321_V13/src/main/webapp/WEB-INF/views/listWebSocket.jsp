@@ -277,6 +277,7 @@
 			}
 		}).done(function(msg) {
 			var data = JSON.parse(msg);
+			$('.display').html('');
 			if ('err' != data) {
 
 				firstSeq = data[0].firstSeq;

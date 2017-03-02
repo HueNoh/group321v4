@@ -629,7 +629,7 @@ body::-webkit-scrollbar-thumb {
 	var chatOnOff = false;
 
 	var b_num = '${b_num}';
-	var webSocket = new WebSocket('ws://211.183.8.14/list');
+	var webSocket = new WebSocket('ws://211.183.8.20/list');
 	var firstSeq = 0;
 	webSocket.onopen = function(event) {
 		onOpen(event)
@@ -2267,6 +2267,7 @@ body::-webkit-scrollbar-thumb {
 		var result = confirm('로그아웃 하시겠습니까?');
 
 		if (result) { //yes 
+			unConnect();
 			location.replace('/main/logOut');
 		}
 	}

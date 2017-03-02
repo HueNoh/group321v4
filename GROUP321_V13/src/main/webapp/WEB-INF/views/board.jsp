@@ -62,7 +62,7 @@ strong {
 
 	var sessionId = '${sessionScope.id}';
 	var createDiv = '';
-	var webSocket = new WebSocket('ws://211.183.8.14/board');
+	var webSocket = new WebSocket('ws://211.183.8.20/board');
 	webSocket.onopen = function(event) {
 		onOpen(event)
 
