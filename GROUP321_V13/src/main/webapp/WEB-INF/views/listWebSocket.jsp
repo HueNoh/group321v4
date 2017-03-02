@@ -100,6 +100,29 @@
 
 				$('#inUser').empty();
 				inUsers();
+			} else if ("labelClick" == access) {
+				if ('${sessionScope.id}' != id) {
+
+					var data = msg.split(',');
+					var isNone = data[0];
+					var c_num = data[1];
+					var num = data[2];
+					var backgroundColor = data[3];
+					console.log(data);
+
+					$('#selected_label' + num).css('background-color',
+							backgroundColor);
+					$('#labelDiv' + c_num + '_' + num).css('background-color',
+							backgroundColor);
+					if ('none' != isNone) {
+						$('#selected_label' + num).hide();
+						$('#labelDiv' + c_num + '_' + num).hide();
+					} else {
+						$('#selected_label' + num).show();
+						$('#labelDiv' + c_num + '_' + num).show();
+					}
+				}
+
 			}
 			/* else if ("reply" == access) {
 								if (id != '${sessionScope.id}'
@@ -170,6 +193,9 @@
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
 		} else if ('memberAdd' == acc) {
+			var jsonStr = JSON.stringify(msg);
+			webSocket.send(jsonStr);
+		} else if ('labelClick' == acc) {
 			var jsonStr = JSON.stringify(msg);
 			webSocket.send(jsonStr);
 		}

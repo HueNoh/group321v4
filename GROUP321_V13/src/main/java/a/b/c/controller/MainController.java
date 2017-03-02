@@ -2,8 +2,11 @@ package a.b.c.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -204,8 +207,6 @@ public class MainController {
 		session.setAttribute("c_num", map.get("c_num"));
 
 		List list = memberService.selectCardDetail(map);
-		
-		System.out.println("list: "+list);
 
 		return new Gson().toJson(list);
 	}
@@ -258,12 +259,21 @@ public class MainController {
 			@RequestParam Map map) {
 
 		int result = memberService.addCardReply(map);
+		
+		long time = System.currentTimeMillis(); 
+		SimpleDateFormat dayTime = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a", Locale.US);
+		String regdate = dayTime.format(new Date(time));
+		
+		System.out.println(new Date(time).toString());
 		JsonObject obj = new JsonObject();
 
 		obj.addProperty("m_id", (String) map.get("m_id"));
 		obj.addProperty("content", (String) map.get("content"));
 		obj.addProperty("seq", (int) map.get("seq"));
-
+		obj.addProperty("regdate",dayTime.format(new Date(time)));
+		
+		
+		
 		return new Gson().toJson(obj);
 	}
 

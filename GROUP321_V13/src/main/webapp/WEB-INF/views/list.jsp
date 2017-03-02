@@ -605,6 +605,11 @@ body::-webkit-scrollbar-thumb {
 	border-radius: 5px;
 	border: 1px solid #4286af;
 }
+
+.comment_regdate {
+	float: right;
+	font-size: xx-small;
+}
 </style>
 <script>
 	document.onkeydown = refl;
@@ -645,11 +650,8 @@ body::-webkit-scrollbar-thumb {
 	var cardId = 0;
 	window.onload = function() {
 
-		var users = $
-		{
-			users
-		}
-		;
+
+		var users = ${users};
 
 		beforeMsg();
 		userConnection(users);
@@ -661,7 +663,6 @@ body::-webkit-scrollbar-thumb {
 							location.href = '/';
 						} else {
 
-							console.log(ev);
 							var result = $('#mainList').sortable('toArray');
 							console.log(result);
 
@@ -917,7 +918,7 @@ body::-webkit-scrollbar-thumb {
 				}
 			}).done(
 					function(msg) {
-						console.log('msg: ' + msg);
+
 						var detail = JSON.parse(msg);
 
 						var cardInfo = detail[0];
@@ -925,6 +926,7 @@ body::-webkit-scrollbar-thumb {
 						var cardReply = detail[1];
 						//hs
 						var cardLink = detail[2];
+
 						// console.log('cardLink=' + cardLink[0]);
 
 						handleDesc(0); // description textarea 숨기기
@@ -961,11 +963,11 @@ body::-webkit-scrollbar-thumb {
 							$('.nal_div').text('');
 							$('.nal2_div').text('');
 						}
+						
+						console.log('labelNameshow: '+labelName);
 
 						labelShow(label);
 						labelNameShow(labelName);
-
-						console.log('labelName: ' + labelName);
 
 						if (null != content) {
 							$('.content_div').html(content);
@@ -976,8 +978,8 @@ body::-webkit-scrollbar-thumb {
 						$.each(cardReply, function(i) {
 
 							createReplyDiv(cardReply[i].seq,
-									cardReply[i].content, cardReply[i].m_id);
-
+									cardReply[i].content, cardReply[i].m_id,
+									cardReply[i].regdate);
 						});
 
 						//hs
@@ -1082,7 +1084,8 @@ body::-webkit-scrollbar-thumb {
 							var replyInfo = JSON.parse(msg);
 
 							createReplyDiv(replyInfo.seq, replyInfo.content,
-									replyInfo.m_id);
+
+									replyInfo.m_id, replyInfo.regdate);
 
 							$('#commentArea').val('');
 
@@ -1135,7 +1138,7 @@ body::-webkit-scrollbar-thumb {
 
 	}
 
-	function createReplyDiv(seq, cnt, m_id) {
+	function createReplyDiv(seq, cnt, m_id, regdate) {
 
 		var reply = document.createElement('div');
 
@@ -1144,9 +1147,11 @@ body::-webkit-scrollbar-thumb {
 
 		var content = document.createElement('pre');
 		var writer = document.createElement('div');
+		var regdateDiv = document.createElement('div');
 
 		var contentText = document.createTextNode(cnt);
 		var writerText = document.createTextNode(m_id);
+		var regdateText = document.createTextNode(regdate);
 		var updateText = document.createTextNode('수정 ');
 		var updateText2 = document.createTextNode(' 수정 ');
 		var wallText = document.createTextNode('|');
@@ -1205,14 +1210,19 @@ body::-webkit-scrollbar-thumb {
 		inputCancleDiv.append(wallSpan2);
 		inputCancleDiv.append(cancleTag);
 
+		regdateDiv.className = 'comment_regdate';
+		regdateDiv.id = 'comment_regdate' + seq;
+
 		writer.className = 'comment_writer';
 		writer.id = 'comment_writer' + seq;
 		content.className = 'comment_content';
 
+		regdateDiv.appendChild(regdateText);
 		writer.appendChild(writerText);
 		content.appendChild(contentText);
 
 		reply.appendChild(writer);
+		reply.appendChild(regdateDiv);
 		reply.appendChild(content);
 
 		content.id = 'comment_content' + seq;
@@ -1267,10 +1277,10 @@ body::-webkit-scrollbar-thumb {
 						var replyInfo = JSON.parse(msg);
 
 						$('#cardReply').empty();
-
 						$.each(replyInfo, function(i) {
 							createReplyDiv(replyInfo[i].seq,
-									replyInfo[i].content, replyInfo[i].m_id);
+									replyInfo[i].content, replyInfo[i].m_id,
+									replyInfo[i].regdate);
 
 						});
 					});
@@ -1316,13 +1326,13 @@ body::-webkit-scrollbar-thumb {
 
 							$('#cardReply').empty();
 
-							console.log(replyInfo);
 
 							$.each(replyInfo,
 									function(i) {
 										createReplyDiv(replyInfo[i].seq,
 												replyInfo[i].content,
-												replyInfo[i].m_id);
+												replyInfo[i].m_id,
+												replyInfo[i].regdate);
 
 									});
 						});
@@ -2007,6 +2017,8 @@ body::-webkit-scrollbar-thumb {
 					}
 				}).done(function(msg) {
 					var labelName = msg;
+					
+					console.log("msg: "+msg);
 
 					if (labelWidth <= 4)
 						labelWidth = 4;
@@ -2026,8 +2038,6 @@ body::-webkit-scrollbar-thumb {
 						$('#label_name' + num).text(inputLabelName);
 					}
 
-					console.log("asdfasfd: " + inputLabelName);
-					console.log("getLabelNameArr: " + labelName);
 
 					$('#label_name').text('');
 
@@ -2122,6 +2132,37 @@ body::-webkit-scrollbar-thumb {
 
 						});
 
+						console.log(label);
+
+						var c_num = $('#cardNum')[0].value;
+
+						var labelArr;
+						$('#labelDiv' + c_num + '_' + num).css(
+								'background-color', backgroundColor);
+						if ('none' != isNone) {
+							labelArr = makeLabelArr(label, num, 'del');
+							$('#selected_label' + num).hide();
+							$('#labelDiv' + c_num + '_' + num).hide();
+						} else {
+							labelArr = makeLabelArr(label, num, 'ins');
+							$('#selected_label' + num).show();
+							$('#labelDiv' + c_num + '_' + num).show();
+						}
+
+						var tempArr = labelArr.toString();
+
+						$.ajax({
+							method : 'post',
+							url : '/main/updateLabel',
+							data : {
+								c_key : $('#cardNum')[0].value,
+								label : tempArr
+							}
+						});
+						send(isNone + ',' + c_num + ',' + num + ','
+								+ backgroundColor, 'labelClick',
+								'${sessionScope.id}', '${sessionScope.b_num}',
+								'0', c_num);
 					});
 		}
 	}
