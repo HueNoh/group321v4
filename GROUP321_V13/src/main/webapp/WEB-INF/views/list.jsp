@@ -2013,6 +2013,7 @@ body::-webkit-scrollbar-thumb {
 		} else {
 			
 			var backgroundColor = rgb2hex($('#label' + num).css("background-color"));
+			console.log(backgroundColor);
 			$('#selected_label' + num).css('background-color', backgroundColor);
 		
 			var isNone = $('#selected_label' + num).css('display');
@@ -2028,6 +2029,7 @@ body::-webkit-scrollbar-thumb {
 	
 				var label = detail.label;
 				console.log(detail);
+				console.log(label);
 	
 				var c_num = $('#cardNum')[0].value;
 	
@@ -2054,10 +2056,8 @@ body::-webkit-scrollbar-thumb {
 						c_key : $('#cardNum')[0].value,
 						label : tempArr
 					}
-				}).done(function(msg) {
-	
 				});
-	
+				send(isNone+','+c_num+','+num+','+backgroundColor,'labelClick','${sessionScope.id}','${sessionScope.b_num}','0',c_num);
 			});
 		}
 	}
